@@ -1,0 +1,28 @@
+{
+  "name": "angular-turnjs",
+  "version": "1.0.0",
+  "description": "Angular wrapper for TurnJS",
+  "main": "dist/angular-turnjs.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/embladev/Angular-TurnJS.git"
+  },
+  "keywords": [
+    "turnjs",
+    "angular"
+  ],
+  "author": "Embla Software Innovations",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/embladev/Angular-TurnJS/issues"
+  },
+  "homepage": "https://github.com/embladev/Angular-TurnJS#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-debug": "^2.1.2",
+    "gulp-minify": "0.0.14",
+    "gulp-rename": "^1.2.2",
+    "gulp-strip-debug": "^1.1.0"
+  }
+}
