@@ -1,6 +1,5 @@
 (function(){
 	"use strict";
-	
 	angular.module("angularTurn").directive("page", function () {
     var directive = {};
     directive.restrict = 'E';
@@ -12,8 +11,3 @@
     return directive;
 	});
 })();
-
-
-
-
-
