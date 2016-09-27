@@ -2,13 +2,17 @@
 
 ##Quick Start
 
-- Include Angular-TurnJS library in your `index.html` :
+- install Angular-TurnJS with npm
+```
+ npm install --save angular-turnjs
+```
+- Include Angular-TurnJS library in your `index.html`
 
 ```
-<script src="https://raw.githubusercontent.com/embladev/Angular-TurnJS/master/dist/angular-turn.min.js"></script>
+<script src="node_modules/angular-turnjs/dist/angular-turn.min.js"></script>
 ```
 
-- Inject the `angular-turnJS` module into your app.js:
+- Inject the `angular-turnJS` module into your app.js
 
 ```
 angular.module('myApp', ['angular-turnJS']);
@@ -52,3 +56,7 @@ angular.module('myApp', ['angular-turnJS']);
 - ngb-autoCenter - centers the book depending on how many pages are visible
 - ngb-template - url of the html template for the page
 - ngb-continuous - continuous flow of data throughout the pages
+
+## License
+
+[MIT License](https://github.com/embladev/Angular-TurnJS/blob/dev/LICENSE)
