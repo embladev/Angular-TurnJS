@@ -6,6 +6,15 @@
 ```
  npm install --save angular-turnjs
 ```
+
+- Download and include [TurnJS](http://www.turnjs.com/) library in your `index.html`
+
+- Include Jquery in your `index.html`
+
+```
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+```
+
 - Include Angular-TurnJS library in your `index.html`
 
 ```
