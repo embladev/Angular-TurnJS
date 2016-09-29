@@ -2,20 +2,20 @@
 <html>
     <head>
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>		
-		<script src="node_modules/angular-turnjs/dist/angular-turn.min.js"></script>
-        <script src="../example/turn.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+        <script src="../examples/TurnJS/turn.js"></script>
+		<script src="../dist/angular-turn.debug.js"></script>
         <script src="app.js"> </script>	
     </head>
     <body>       
         <div ng-app="appMain" ng-controller="ctrlMain">
-            <book ngb-title="Embla Family Treasure" ngb-mode="page" ngb-template="Templates/templateDefault.html">
-				<page ngb-template="Templates/template1.html"></page>
-				<page ngb-template="Templates/template2.html"></page>
-				<page ngb-template="Templates/template3.html"></page>
-				<page ngb-template="Templates/template4.html"></page>
-				<page ngb-template="Templates/template5.html"></page>
-				<page ngb-template="Templates/template6.html"></page>
+            <book ngb-width="800" ngb-height="600" ngb-autocenter="true" ngb-title="Embla Family Treasure" ngb-mode="page" ngb-template="Templates/templateDefault.html">
+                <page><div><h1>shdgjsa</h1></div></page>
+                <page gb-template="Templates/template2.html"></page>
+                <page><div><h1>123456</h1></div></page>
+                <page ngb-template="Templates/template4.html"></page>
+                <page ngb-template="Templates/template5.html"></page>
+                <page ngb-template="Templates/template6.html"></page>
 			</book>
         </div>
     </body>
