@@ -18,7 +18,7 @@ angular.module("angularTurn",[]);
             }
         }
 	}
-	angular.module("angularTurn").directive('page', pageDir);
+	angular.module("angularTurn").directive('book', bookDir);
 })();
 
 	
