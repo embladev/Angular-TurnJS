@@ -1,24 +1,22 @@
-(function(){
-	var pageDir = function () {
-		return {
-            restrict: 'E',
-            templateUrl: function (element,attrs) {
-                return attrs.ngbTemplate;
+(function () {
+    var pageDir = function ($compile) {
+        return {
+            replace : true,
+            scope: {
+                member: '='
             },
-			link: function(scope, element, attrs) {
-				
-			},
-            compile: function (scope, element, attrs) {
-                return {
-                    pre: function (scope, element, attrs) {
-						
-                    },
-                    post: function (scope, element, attrs) {
-						
-                    }
-                }
+            restrict: 'E',
+            link: function ($scope, $element, attrs) {
+
+                console.log($scope);
+                $scope.templt = attrs.ngbTemplate;
+                var DOM = angular.element("<div  ng-include='templt'> </div>");
+
+                var $e = $compile(DOM)($scope);
+                $element.replaceWith($e);
+
             }
         }
-	}	
-	angular.module("angularTurn").directive('page', pageDir);
+    };
+    angular.module("angularTurn").directive('page', pageDir);
 })();

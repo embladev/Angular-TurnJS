@@ -1,0 +1,30 @@
+.pageContainer{
+    margin: 10px;
+    border-style: outset;
+    background-color: #dcdcdc;
+}
+.pageBorder{
+    margin: 0 20px 0 20px;
+}
+h1 {
+    text-align:center;
+}
+
+h3 {
+    margin: 10px 0 10px 0;
+}
+
+p {
+    font-size: 1.1em;
+    font-family: "Times New Roman", Georgia, Monospace;
+
+}
+
+img{
+    display: block;
+    border-radius: 8px;
+    max-width: 100%;
+    height: auto;
+    margin: auto;
+
+}
