@@ -6,6 +6,16 @@
 ```
  npm install --save angular-turnjs
 ```
+- Include Angular-TurnJS library in your `index.html`
+
+```
+<script src="node_modules/angular-turnjs/dist/angular-turn.min.js"></script>
+```
+- Inject the `angular-turnJS` module into your app.js
+
+```
+angular.module('myApp', ['angular-turnJS']);
+```
 
 - Download and include [TurnJS](http://www.turnjs.com/) library in your `index.html`
 
@@ -13,18 +23,6 @@
 
 ```
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-```
-
-- Include Angular-TurnJS library in your `index.html`
-
-```
-<script src="node_modules/angular-turnjs/dist/angular-turn.min.js"></script>
-```
-
-- Inject the `angular-turnJS` module into your app.js
-
-```
-angular.module('myApp', ['angular-turnJS']);
 ```
 
 ## Requirements
@@ -43,9 +41,9 @@ angular.module('myApp', ['angular-turnJS']);
     ngb-autoCenter="true">
 	
             <cover ngb-template='cover.html'/>
-                <page ngb-template='firstPage.html'/> 
-                <page ngb-template='Person.html'  ngb-continuous/>
-                <page ngb-template='index.html'  ngb-continuous/>	
+            <page ngb-template='firstPage.html'/> 
+            <page ngb-template='Person.html'  ngb-continuous/>
+            <page ngb-template='index.html'  ngb-continuous/>	
             <cover template='backcover.html' />
     </Book>
 
