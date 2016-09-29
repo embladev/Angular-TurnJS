@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>		
+		<script src="node_modules/angular-turnjs/dist/angular-turn.min.js"></script>
+        <script src="app.js"> </script>	
+    </head>
+    <body>       
+        <div ng-app="appMain" ng-controller="ctrlMain">
+            <book ngb-title="Embla Family Treasure" ngb-mode="page" ngb-template="Templates/templateDefault.html">
+				<page ngb-template="Templates/template1.html"></page>
+				<page ngb-template="Templates/template2.html"></page>
+				<page ngb-template="Templates/template3.html"></page>
+				<page ngb-template="Templates/template4.html"></page>
+				<page ngb-template="Templates/template5.html"></page>
+				<page ngb-template="Templates/template6.html"></page>
+			</book>
+        </div>
+    </body>
+</html>
+

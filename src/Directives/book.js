@@ -1,15 +1,21 @@
 (function(){
-	"use strict";
-	angular.module("angularTurn").directive("book", function () {
-    var directive = {};
-    directive.restrict = 'E';
-    directive.transclude = true;
-    directive.template = "<h1> Made by a directive!</h1>";
-    directive.compile = function (element, attributes) {
-        var linkFunction = function ($scope, element, attributes) {
+	var bookDir = function(){
+		return {
+            restrict: 'E',
+			link: function(scope, element, attrs) {
+				
+			},
+            compile: function (element, attrs) {
+                return {
+                    pre: function (scope, element, attrs) {
+                    },
+                    post: function (scope, element, attrs) {
+                    }
+                }
+            }
         }
-        return linkFunction;
-    }
-    return directive;
-	});
+	}
+	angular.module("angularTurn").directive('page', pageDir);
 })();
+
+	
