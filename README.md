@@ -29,10 +29,10 @@ angular.module('myApp', ['angular-turnJS']);
 
 - Angular
 - jQuery 1.7 or later
-##Example
+
+## Example
 
 ```
-
 <div ng-app="myApp" ng-controller="myController">
 
     <Book 
