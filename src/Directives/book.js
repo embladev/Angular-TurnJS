@@ -1,6 +1,7 @@
 (function(){
 
     var pageContents = [];
+    var isTemplateGiven = true;
     
     var setBookContentFromInnerHTML = function ($filter) {
         angular.forEach($(document.getElementsByTagName("page")), function(value,key){
@@ -19,7 +20,7 @@
     }
     
     var setBookContentFromTemplate = function ($filter) {
-
+        console.log($(document.getElementsByTagName("page"))[0]);
     }
 
     var applyTurnStyles = function (attrs) {
@@ -42,7 +43,12 @@
                     },
                     post: function (scope, element, attrs) {
 
-                        //setBookContentFromInnerHTML($filter);
+                        if(isTemplateGiven){
+                            setBookContentFromTemplate($filter)
+                        } else {
+                            setBookContentFromInnerHTML($filter);
+                        }
+
                         //applyTurnStyles(attrs);
 
                     }
