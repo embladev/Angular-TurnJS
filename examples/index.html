@@ -11,18 +11,12 @@
     <body>       
         <div ng-app="appMain" ng-controller="ctrlMain">
             <book ngb-width="400" ngb-height="300" ngb-autocenter="true" ngb-title="Embla Family Treasure" ngb-mode="page" ngb-template="Templates/templateDefault.html">
-                <page><div ><h1>page 1</h1></div></page>
-                <page><div ><h1>page 2</h1></div></page>
-                <page><div ><h1>page 3</h1></div></page>
-                <page><div ><h1>page 4</h1></div></page>
-                <page><div ><h1>page 5</h1></div></page>
-                <page><div ><h1>page 6dsfds</h1></div></page>
-                <page><div ><h1>page 7</h1></div></page>
-                <page><div ><h1>page 8</h1></div></page>
-                <page><div ><h1>page 9</h1></div></page>
-                <page><div ><h1>page 10</h1></div></page>
-
-
+                <page ><div ><h1>page 1 inner html</h1></div></page>
+                <page ngb-template="Templates/template2.html"><div ><h1>page 2 inner html</h1></div></page>
+                <page ngb-template="Templates/template3.html"><div ><h1>page 3 inner html</h1></div></page>
+                <page ngb-template="Templates/template4.html"><div ><h1>page 4 inner html</h1></div></page>
+                <page ngb-template="Templates/template5.html"><div ><h1>page 5 inner html</h1></div></page>
+                <page ngb-template="Templates/template6.html"><div ><h1>page 6 inner html</h1></div></page>
 			</book>
         </div>
     </body>
