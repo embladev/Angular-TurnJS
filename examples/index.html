@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-    <script src="../dist/angular-turn.min.js"></script>
-    <script src="../examples/TurnJS/turn.js"></script>
-    <script src="app.js"> </script>
-</head>
-<body>
-<div ng-app="appMain" ng-controller="ctrlMain">
-    <book ngb-title="Embla Family Treasure" ngb-mode="page" ngb-template="Templates/templateDefault.html">
-        <page ngb-template="Templates/template1.html"></page>
-        <page ngb-template="Templates/template2.html"></page>
-        <page ngb-template="Templates/template3.html"></page>
-        <page ngb-template="Templates/template4.html"></page>
-        <page ngb-template="Templates/template5.html"></page>
-        <page ngb-template="Templates/template6.html"></page>
-    </book>
-</div>
-</body>
+    <head>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+        <script src="../examples/TurnJS/turn.js"></script>
+		<script src="../dist/angular-turn.debug.js"></script>
+        <script src="app.js"> </script>
+        <link rel="stylesheet" type="text/css" href="../examples/Styles/style.css">
+    </head>
+    <body>       
+        <div ng-app="appMain" ng-controller="ctrlMain">
+            <book ngb-width="400" ngb-height="300" ngb-autocenter="true" ngb-title="Embla Family Treasure" ngb-mode="page" ngb-template="Templates/templateDefault.html">
+                <page ><div ><h1>page 1 inner html</h1></div></page>
+                <page ngb-template="Templates/template2.html"><div ><h1>page 2 inner html</h1></div></page>
+                <page ngb-template="Templates/template3.html"><div ><h1>page 3 inner html</h1></div></page>
+                <page ngb-template="Templates/template4.html"><div ><h1>page 4 inner html</h1></div></page>
+                <page ngb-template="Templates/template5.html"><div ><h1>page 5 inner html</h1></div></page>
+                <page ngb-template="Templates/template6.html"><div ><h1>page 6 inner html</h1></div></page>
+			</book>
+        </div>
+    </body>
 </html>
+

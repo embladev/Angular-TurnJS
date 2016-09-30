@@ -1,0 +1,8 @@
+body{
+    background:#ccc;
+}
+
+#flipbook .turn-page{
+    background-color:#FFFFFF;
+    background-size:100% 100%;
+}
