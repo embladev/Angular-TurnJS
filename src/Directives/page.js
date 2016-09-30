@@ -37,21 +37,22 @@
                         }
                     },
                     post: function (scope, element, attrs) {
+                        isTemplateGiven = false;
                         if("ngbTemplate" in attrs){
-                            console.log("template available");
-                            console.log("main variable vaule before: " + isTemplateGiven);
+                            /*console.log("template available");
+                            console.log("main variable vaule before: " + isTemplateGiven);*/
                             isTemplateGiven = true;
-                            console.log(attrs.ngbTemplate);
-                            console.log("main variable vaule after: " + isTemplateGiven);
+                            /*console.log(attrs.ngbTemplate);
+                            console.log("main variable vaule after: " + isTemplateGiven);*/
                             dir.templateUrl = function (element, attrs) {
 
                                 return attrs.ngbTemplate;
                             }
                         } else {
-                            console.log("no template");
-                            console.log("main variable vaule before: " + isTemplateGiven);
+                            /*console.log("no template");
+                            console.log("main variable vaule before: " + isTemplateGiven);*/
                             isTemplateGiven = false;
-                            console.log("main variable vaule after: " + isTemplateGiven);
+                            /*console.log("main variable vaule after: " + isTemplateGiven);*/
                         }
                         console.log(" ");
                     }

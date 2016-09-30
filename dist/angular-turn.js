@@ -7,6 +7,7 @@ angular.module("angularTurn",[]);
     var isTemplateGiven = true;
     
     var setBookContentFromInnerHTML = function ($filter) {
+        void 0;
         angular.forEach($(document.getElementsByTagName("page")), function(value,key){
             pageContents.push($filter('filter')(value.childNodes,"div")[0]); //retriving main div wrapper of each page html content
         });
@@ -14,7 +15,7 @@ angular.module("angularTurn",[]);
         $("book").replaceWith($('<div id="flipbook"></div>'));
 
         var bookdiv = $(document.getElementById("flipbook"));
-
+        void 0;
         angular.forEach(pageContents,function(value,key){
             bookdiv.append(value);
         });
@@ -24,6 +25,15 @@ angular.module("angularTurn",[]);
     
     var setBookContentFromTemplate = function ($filter) {
         void 0;
+        angular.forEach($(document.getElementsByTagName("page")), function(value,key){
+            pageContents.push($filter('filter')(value.childNodes,"div")[0]); //retriving main div wrapper of each page html content
+        });
+        $("book").replaceWith($('<div id="flipbook"></div>'));
+        var bookdiv = $(document.getElementById("flipbook"));
+        void 0;
+        angular.forEach(pageContents,function(value,key){
+            bookdiv.append(value);
+        });
     }
 
     var applyTurnStyles = function (attrs) {
@@ -46,8 +56,10 @@ angular.module("angularTurn",[]);
                     },
                     post: function (scope, element, attrs) {
 
+
                         if(isTemplateGiven){
                             setBookContentFromTemplate($filter)
+                            void 0;
                         } else {
                             setBookContentFromInnerHTML($filter);
                         }
@@ -102,21 +114,22 @@ angular.module("angularTurn",[]);
                         }
                     },
                     post: function (scope, element, attrs) {
+                        isTemplateGiven = false;
                         if("ngbTemplate" in attrs){
-                            void 0;
-                            void 0;
+                            /*console.log("template available");
+                            console.log("main variable vaule before: " + isTemplateGiven);*/
                             isTemplateGiven = true;
-                            void 0;
-                            void 0;
+                            /*console.log(attrs.ngbTemplate);
+                            console.log("main variable vaule after: " + isTemplateGiven);*/
                             dir.templateUrl = function (element, attrs) {
 
                                 return attrs.ngbTemplate;
                             }
                         } else {
-                            void 0;
-                            void 0;
+                            /*console.log("no template");
+                            console.log("main variable vaule before: " + isTemplateGiven);*/
                             isTemplateGiven = false;
-                            void 0;
+                            /*console.log("main variable vaule after: " + isTemplateGiven);*/
                         }
                         void 0;
                     }
