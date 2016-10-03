@@ -4,12 +4,17 @@ angular.module("angularTurn",[]);
 (function(){
 
     var pageContents = [];
-    var isTemplateGiven = true;
+    var isTemplateGiven = false;
     
     var setBookContentFromInnerHTML = function ($filter) {
         void 0;
         angular.forEach($(document.getElementsByTagName("page")), function(value,key){
-            pageContents.push($filter('filter')(value.childNodes,"div")[0]); //retriving main div wrapper of each page html content
+           //pageContents.push($filter('filter')(value.childNodes,"div")[0]); //retriving main div wrapper of each page html content
+            angular.forEach(value.childNodes, function (innerElement,key) {
+                if( innerElement.nodeName!="#text"){
+                    pageContents.push(innerElement);
+                }
+            });
         });
 
         $("book").replaceWith($('<div id="flipbook"></div>'));
@@ -58,13 +63,13 @@ angular.module("angularTurn",[]);
 
 
                         if(isTemplateGiven){
-                            setBookContentFromTemplate($filter)
+                            //setBookContentFromTemplate($filter)
                             void 0;
                         } else {
                             setBookContentFromInnerHTML($filter);
                         }
 
-                        //applyTurnStyles(attrs);
+                        applyTurnStyles(attrs);
 
                     }
                 }
@@ -77,7 +82,7 @@ angular.module("angularTurn",[]);
 	
 (function(){
 
-    var isTemplateGiven = true;
+    var isTemplateGiven = false;
 
 
 
@@ -106,7 +111,6 @@ angular.module("angularTurn",[]);
                 return {
                     pre: function (scope, element, attrs) {
                         if("ngbTemplate" in attrs){
-                            void 0;
                             dir.templateUrl = function (element, attrs) {
 
                                 return attrs.ngbTemplate;

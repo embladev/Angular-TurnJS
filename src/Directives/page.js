@@ -1,6 +1,6 @@
 (function(){
 
-    var isTemplateGiven = true;
+    var isTemplateGiven = false;
 
 
 
@@ -29,7 +29,6 @@
                 return {
                     pre: function (scope, element, attrs) {
                         if("ngbTemplate" in attrs){
-                            alert(attrs.ngbTemplate);
                             dir.templateUrl = function (element, attrs) {
 
                                 return attrs.ngbTemplate;
