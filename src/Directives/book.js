@@ -1,17 +1,23 @@
 (function(){
 
     var pageContents = [];
-    var isTemplateGiven = true;
+    var isTemplateGiven = false;
     
     var setBookContentFromInnerHTML = function ($filter) {
+        console.log($(document.getElementsByTagName("page")));
         angular.forEach($(document.getElementsByTagName("page")), function(value,key){
-            pageContents.push($filter('filter')(value.childNodes,"div")[0]); //retriving main div wrapper of each page html content
+           //pageContents.push($filter('filter')(value.childNodes,"div")[0]); //retriving main div wrapper of each page html content
+            angular.forEach(value.childNodes, function (innerElement,key) {
+                if( innerElement.nodeName!="#text"){
+                    pageContents.push(innerElement);
+                }
+            });
         });
 
         $("book").replaceWith($('<div id="flipbook"></div>'));
 
         var bookdiv = $(document.getElementById("flipbook"));
-
+        console.log(pageContents);
         angular.forEach(pageContents,function(value,key){
             bookdiv.append(value);
         });
@@ -20,7 +26,16 @@
     }
     
     var setBookContentFromTemplate = function ($filter) {
-        console.log($(document.getElementsByTagName("page"))[0]);
+        console.log($(document.getElementsByTagName("page")));
+        angular.forEach($(document.getElementsByTagName("page")), function(value,key){
+            pageContents.push($filter('filter')(value.childNodes,"div")[0]); //retriving main div wrapper of each page html content
+        });
+        $("book").replaceWith($('<div id="flipbook"></div>'));
+        var bookdiv = $(document.getElementById("flipbook"));
+        console.log(pageContents);
+        angular.forEach(pageContents,function(value,key){
+            bookdiv.append(value);
+        });
     }
 
     var applyTurnStyles = function (attrs) {
@@ -43,13 +58,15 @@
                     },
                     post: function (scope, element, attrs) {
 
+
                         if(isTemplateGiven){
-                            setBookContentFromTemplate($filter)
+                            //setBookContentFromTemplate($filter)
+                            console.log(element.html());
                         } else {
                             setBookContentFromInnerHTML($filter);
                         }
 
-                        //applyTurnStyles(attrs);
+                        applyTurnStyles(attrs);
 
                     }
                 }
