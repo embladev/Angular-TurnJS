@@ -11,9 +11,14 @@
 <body>
 <div ng-app="appMain" ng-controller="ctrlMain">
     <book ngb-width="1000" ngb-height="680" ngb-autocenter="true" ngb-title="Embla Family Treasure" ngb-mode="page">
+        <cover >
+            <div class="pageContainer frontPage">
+                <h1>Test Cover</h1>
+            </div>
+        </cover>
         <cover>
             <div>
-                <h1>Test Cover</h1>
+                <h1>Inner Cover</h1>
             </div>
         </cover>
         <page>
@@ -103,6 +108,16 @@
                 </div>
             </div>
         </page>
+        <cover>
+            <div>
+                <h1>Back Inner Cover</h1>
+            </div>
+        </cover>
+        <cover>
+            <div>
+                <h1>Back outer Cover</h1>
+            </div>
+        </cover>
     </book>
 </div>
 </body>
