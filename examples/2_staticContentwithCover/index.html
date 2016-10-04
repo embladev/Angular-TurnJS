@@ -3,20 +3,25 @@
 <head>
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-    <script src="../examples/TurnJS/turn.js"></script>
-    <script src="../dist/angular-turn.debug.js"></script>
+    <script src="../tools/turn.js"></script>
+    <script src="../../dist/angular-turn.debug.js"></script>
     <script src="app.js"></script>
-    <link rel="stylesheet" type="text/css" href="../examples/Styles/style.css">
+    <link rel="stylesheet" type="text/css" href="Styles/style.css">
 </head>
 <body>
 <div ng-app="appMain" ng-controller="ctrlMain">
     <book ngb-width="1000" ngb-height="680" ngb-autocenter="true" ngb-title="Embla Family Treasure" ngb-mode="page">
-        <page>
+        <cover>
             <div class="pageContainer frontPage">
                 <h1>Example Turn Book</h1>
                 <img src="https://a248.e.akamai.net/secure.meetupstatic.com/photos/theme_body/6/2/4/0/preview_2125152.jpeg"/>
             </div>
-        </page>
+        </cover>
+        <cover>
+            <div class="pageContainer">
+                <h1>Inner Cover</h1>
+            </div>
+        </cover>
         <page>
             <div class="pageContainer">
                 <div class="pageBorder">
@@ -92,12 +97,16 @@
                 </div>
             </div>
         </page>
-        <page >
+        <cover>
             <div class="pageContainer">
-                <div class="pageBorder">
-                </div>
+                <h1>Back Inner Cover</h1>
             </div>
-        </page>
+        </cover>
+        <cover>
+            <div class="pageContainer">
+                <h1>Back outer Cover</h1>
+            </div>
+        </cover>
     </book>
 </div>
 </body>
