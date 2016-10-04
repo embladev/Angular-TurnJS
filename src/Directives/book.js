@@ -29,21 +29,26 @@
 
         var bookdiv = $(document.getElementById("flipbook"));
         console.log(coverContents);
-        //var cov1 = $('<div class="hard"></div>').append(coverContents[0]);
-        bookdiv.append($('<div class="hard"></div>').append(coverContents[0]));
-        //var cov2 = $('<div class="hard"></div>').append(coverContents[1]);
-        bookdiv.append($('<div class="hard"></div>').append(coverContents[1]));
-        console.log(pageContents);
-        angular.forEach(pageContents,function(value,key){
-            bookdiv.append(value);
-        });
-        //var cov3 = $('<div class="hard"></div>').append(coverContents[2]);
-        bookdiv.append($('<div class="hard"></div>').append(coverContents[2]));
-        //var cov4 = $('<div class="hard"></div>').append(coverContents[3]);
-        bookdiv.append($('<div class="hard"></div>').append(coverContents[3]));
 
+        if (coverContents.length!=0){
+            console.log("cover");
+            bookdiv.append($('<div class="hard"></div>').append(coverContents[0]));
+            bookdiv.append($('<div class="hard"></div>').append(coverContents[1]));
+            console.log(pageContents);
+            angular.forEach(pageContents,function(value,key){
+                bookdiv.append(value);
+            });
+            bookdiv.append($('<div class="hard"></div>').append(coverContents[2]));
+            bookdiv.append($('<div class="hard"></div>').append(coverContents[3]));
+        }
 
-
+        else{
+            console.log("NO Cover Page");
+            console.log(pageContents);
+            angular.forEach(pageContents,function(value,key){
+                bookdiv.append(value);
+            });
+        }
         console.log(bookdiv);
     }
     
