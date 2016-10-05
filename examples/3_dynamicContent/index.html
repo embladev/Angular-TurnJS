@@ -11,32 +11,22 @@
 
 <body>
 <div ng-app="appMain" ng-controller="ctrlMain">
-    <book ngb-width="1000" ngb-height="680" ngb-autocenter="true">
+
+    <book ngb-width="1000" ngb-height="680" ngb-autocenter="false">
         <cover>
             <h1>Example Turn Book<br> -Dynamic content-</h1>
         </cover>
-        <cover>
+        <cover></cover>
+        
+        <page> {{pageOneContent}}   </page>
+        <page> {{pageTwoContent}}   </page>
+        <page> {{pageThreeContent}} </page>
+        <page> {{pageFourContent}}  </page>
 
-        </cover>
-        <page>
-            {{pageOneContent}}
-        </page>
-        <page>
-            {{pageTwoContent}}
-        </page>
-        <page>
-            {{pageThreeContent}}
-        </page>
-        <page>
-            {{pageFourContent}}
-        </page>
-        <cover>
-
-        </cover>
-        <cover>
-
-        </cover>
+        <cover></cover>
+        <cover></cover>
     </book>
+
 </div>
 </body>
 </html>
