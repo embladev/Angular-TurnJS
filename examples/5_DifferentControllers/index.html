@@ -18,10 +18,10 @@
         </cover>
         <cover></cover>
         
-        <page ngbController="personController"> {{pageOneContent}}   </page>
-        <page ngbController="FarmController"> {{pageTwoContent}}   </page>
-        <page ngbController="FamilyController"> {{pageThreeContent}} </page>
-        <page ngbController="indexController"> {{pageFourContent}}  </page>
+        <page ngbController="personController"  ngb-template="Templates/template1.html"  > {{pageOneContent}}   </page>
+        <page ngbController="FarmController" ngb-template="Templates/template2.html"> {{pageTwoContent}}   </page>
+        <page ngbController="FamilyController" ngb-template="Templates/template3.html"> {{pageThreeContent}} </page>
+        <page ngbController="indexController" ngb-template="Templates/template4.html"> {{pageFourContent}}  </page>
 
         <cover></cover>
         <cover></cover>

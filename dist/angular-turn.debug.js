@@ -15,20 +15,20 @@ angular.module("angularTurn",[]);
      * @description  book directive for Angular-TurnJS wrapper
      */
 
-    var virtualPages = [];
+    var controller;
+ /*   var virtualPages = [];
     var cacheArray = [];
     var dataArray = [];
-    var controller;
 
     var initialize = function(){};
-    var addPages = function(n){};
+    var addPages = function(n){};*/
 
     var bookDir = function () {
         return {
             restrict: 'E',
             replace: true,
             transclude: true,
-            template: '<div ng-transclude></div>',
+            template: '<div ng-transclude> </div>',
             compile: function (tElem, tAttrs) {
                 return {
                     pre: function (scope, iElem, iAttrs) {
@@ -38,8 +38,10 @@ angular.module("angularTurn",[]);
                         iElem.turn({
                             width: iAttrs.ngbWidth,
                             height: iAttrs.ngbHeight,
-                            autoCenter: iAttrs.ngbAutocenter
-                        });
+                            autoCenter: iAttrs.ngbAutocenter,
+                            display: iAttrs.ngbDisplay,
+                            duration: iAttrs.ngbDuration,
+                      });
                     }
                 }
             }
@@ -47,6 +49,10 @@ angular.module("angularTurn",[]);
     };
     angular.module("angularTurn").directive('book', bookDir);
 })();
+
+// TODO:-   cover make HARD, template URL(asynchronous load --- promise???), virtual pages[has processed HTML content?, 6 or?]( how to load virtual pages, call turn on virtual pages)
+
+ 
 
 (function () {
     'use strict';
@@ -92,22 +98,22 @@ angular.module("angularTurn",[]);
      * @description  page directive for Angular-TurnJS wrapper
      */
 
-    var getHtmlPage = function () {};
+   /* var getHtmlPage = function () {};*/
     var pageDir = function () {
         return {
             restrict: 'E',
             replace: true,
             transclude: true,
-            template: '<div ng-transclude></div>',
+            template: '<div ng-transclude> </div>',
             compile: function (tElem, tAttrs) {
                 return {
                     pre: function (scope, iElem, iAttrs) {
 
                     },
                     post: function (scope, iElem, iAttrs) {
-                        scope.data = iAttrs.ngbData;
+                        /*scope.data = iAttrs.ngbData;
                         var templateUrl = iAttrs.ngbTemplateUrl;
-                        var controller = iAttrs.ngbController;
+                        var controller = iAttrs.ngbController;*/
                     }
                 }
             }
