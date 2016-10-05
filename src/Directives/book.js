@@ -1,86 +1,41 @@
+(function () {
+    'use strict';
 
-//commentd?
-(function(){
+    /**
+     * @ngdoc directive
+     * @name  angularTurn.book
+     * @description  book directive for Angular-TurnJS wrapper
+     */
 
-    var coverContents =[];
-    var pageContents = [];
-    var isTemplateGiven = false;
+    var virtualPages = [];
+    var cacheArray = [];
+    var dataArray = [];
+    var controller;
 
-    var setBookContentFromInnerHTML = function () {
-        angular.forEach($(document.getElementsByTagName("cover")), function (value,key) {
-            angular.forEach(value.childNodes, function (innerElement,key) {
-                if( innerElement.nodeName!="#text"){
-                    coverContents.push(innerElement);
-                }
-            });
-        })
+    var initialize = function(){};
+    var addPages = function(n){};
 
-        angular.forEach($(document.getElementsByTagName("page")), function(value,key){
-            angular.forEach(value.childNodes, function (innerElement,key) {
-                if( innerElement.nodeName!="#text"){
-                    pageContents.push(innerElement);
-                }
-            });
-        });
-
-        $("book").replaceWith($('<div id="flipbook"></div>'));
-
-        var bookdiv = $(document.getElementById("flipbook"));
-
-        if (coverContents.length!=0){
-            bookdiv.append($('<div class="hard"></div>').append(coverContents[0]));
-            bookdiv.append($('<div class="hard"></div>').append(coverContents[1]));
-            angular.forEach(pageContents,function(value,key){
-                bookdiv.append(value);
-            });
-            bookdiv.append($('<div class="hard"></div>').append(coverContents[2]));
-            bookdiv.append($('<div class="hard"></div>').append(coverContents[3]));
-        }
-
-        else{
-
-            angular.forEach(pageContents,function(value,key){
-                bookdiv.append(value);
-            });
-        }
-    }
-
-    var setBookContentFromTemplate = function () {
-
-    };
-
-    var applyTurnStyles = function (attrs) {
-        $("#flipbook").turn({
-            width: attrs.ngbWidth,
-            height: attrs.ngbHeight,
-            autoCenter: attrs.ngbAutocenter
-        });
-    }
-
-    var bookDir = function(){
+    var bookDir = function () {
         return {
             restrict: 'E',
-       
-            compile: function (element, attrs) {
+            replace: true,
+            transclude: true,
+            template: '<div ng-transclude></div>',
+            compile: function (tElem, tAttrs) {
                 return {
-                    pre: function (scope, element, attrs) {
+                    pre: function (scope, iElem, iAttrs) {
                     },
-                    post: function (scope, element, attrs) {
-
-                        if(isTemplateGiven){
-                            //setBookContentFromTemplate()
-                        } else {
-                            setBookContentFromInnerHTML();
-                        }
-
-                        applyTurnStyles(attrs);
-
+                    post: function (scope, iElem, iAttrs) {
+                        controller = iAttrs.ngbController;
+                        iElem.turn({
+                            width: iAttrs.ngbWidth,
+                            height: iAttrs.ngbHeight,
+                            autoCenter: iAttrs.ngbAutocenter
+                        });
                     }
                 }
             }
         }
-    }
+    };
     angular.module("angularTurn").directive('book', bookDir);
 })();
-
-	

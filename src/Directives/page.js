@@ -1,50 +1,32 @@
-(function(){
+(function () {
+    'use strict';
 
-    var isTemplateGiven = false;
+    /**
+     * @ngdoc directive
+     * @name  angularTurn.page
+     * @description  page directive for Angular-TurnJS wrapper
+     */
 
-
-
-	var pageDir = function () {
-		var dir = {
+    var getHtmlPage = function () {};
+    var pageDir = function () {
+        return {
             restrict: 'E',
-            scope: {},
-
-            compile: function (scope, element, attrs) {
+            replace: true,
+            transclude: true,
+            template: '<div ng-transclude></div>',
+            compile: function (tElem, tAttrs) {
                 return {
-                    pre: function (scope, element, attrs) {
-                        if("ngbTemplate" in attrs){
-                            dir.templateUrl = function (element, attrs) {
+                    pre: function (scope, iElem, iAttrs) {
 
-                                return attrs.ngbTemplate;
-                            }
-                        }
                     },
-                    post: function (scope, element, attrs) {
-                        isTemplateGiven = false;
-                        if("ngbTemplate" in attrs){
-                            isTemplateGiven = true;
-                            dir.templateUrl = function (element, attrs) {
-
-                                return attrs.ngbTemplate;
-                            }
-                        } else {
-                            isTemplateGiven = false;
-                        }
-                        console.log(" ");
+                    post: function (scope, iElem, iAttrs) {
+                        scope.data = iAttrs.ngbData;
+                        var templateUrl = iAttrs.ngbTemplateUrl;
+                        var controller = iAttrs.ngbController;
                     }
                 }
             }
         }
-
-        if(isTemplateGiven){
-            dir.templateUrl = function (element, attrs) {
-                    return attrs.ngbTemplate;
-            }
-        }
-
-        console.log(dir);
-        return dir;
-
-	}	
-	angular.module("angularTurn").directive('page', pageDir);
+    }
+    angular.module("angularTurn").directive('page', pageDir);
 })();

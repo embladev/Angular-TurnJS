@@ -1,186 +1,117 @@
+/**
+ * @ngdoc module
+ * @name  angularTurn
+ * @description  Angular wrapper for TurnJS
+ */
 angular.module("angularTurn",[]);
 
 
-(function(){
+(function () {
+    'use strict';
 
-    var coverContents =[];
-    var pageContents = [];
-    var isTemplateGiven = false;
+    /**
+     * @ngdoc directive
+     * @name  angularTurn.book
+     * @description  book directive for Angular-TurnJS wrapper
+     */
 
-    var setBookContentFromInnerHTML = function () {
-        angular.forEach($(document.getElementsByTagName("cover")), function (value,key) {
-            angular.forEach(value.childNodes, function (innerElement,key) {
-                if( innerElement.nodeName!="#text"){
-                    coverContents.push(innerElement);
-                }
-            });
-        })
+    var virtualPages = [];
+    var cacheArray = [];
+    var dataArray = [];
+    var controller;
 
-        angular.forEach($(document.getElementsByTagName("page")), function(value,key){
-            angular.forEach(value.childNodes, function (innerElement,key) {
-                if( innerElement.nodeName!="#text"){
-                    pageContents.push(innerElement);
-                }
-            });
-        });
+    var initialize = function(){};
+    var addPages = function(n){};
 
-        $("book").replaceWith($('<div id="flipbook"></div>'));
-
-        var bookdiv = $(document.getElementById("flipbook"));
-
-        if (coverContents.length!=0){
-            bookdiv.append($('<div class="hard"></div>').append(coverContents[0]));
-            bookdiv.append($('<div class="hard"></div>').append(coverContents[1]));
-            angular.forEach(pageContents,function(value,key){
-                bookdiv.append(value);
-            });
-            bookdiv.append($('<div class="hard"></div>').append(coverContents[2]));
-            bookdiv.append($('<div class="hard"></div>').append(coverContents[3]));
-        }
-
-        else{
-
-            angular.forEach(pageContents,function(value,key){
-                bookdiv.append(value);
-            });
-        }
-    }
-
-    var setBookContentFromTemplate = function () {
-
-    };
-
-    var applyTurnStyles = function (attrs) {
-        $("#flipbook").turn({
-            width: attrs.ngbWidth,
-            height: attrs.ngbHeight,
-            autoCenter: attrs.ngbAutocenter
-        });
-    }
-
-    var bookDir = function(){
+    var bookDir = function () {
         return {
             restrict: 'E',
-            link: function(scope, element, attrs) {
-            },
-
-            compile: function (element, attrs) {
+            replace: true,
+            transclude: true,
+            template: '<div ng-transclude></div>',
+            compile: function (tElem, tAttrs) {
                 return {
-                    pre: function (scope, element, attrs) {
+                    pre: function (scope, iElem, iAttrs) {
                     },
-                    post: function (scope, element, attrs) {
-
-                        if(isTemplateGiven){
-                            //setBookContentFromTemplate()
-                        } else {
-                            setBookContentFromInnerHTML();
-                        }
-
-                        applyTurnStyles(attrs);
-
+                    post: function (scope, iElem, iAttrs) {
+                        controller = iAttrs.ngbController;
+                        iElem.turn({
+                            width: iAttrs.ngbWidth,
+                            height: iAttrs.ngbHeight,
+                            autoCenter: iAttrs.ngbAutocenter
+                        });
                     }
                 }
             }
         }
-    }
+    };
     angular.module("angularTurn").directive('book', bookDir);
 })();
 
-	
-(function(){
+(function () {
+    'use strict';
 
-    var isTemplateGiven = false;
+    /**
+     * @ngdoc directive
+     * @name  angularTurn.cover
+     * @description  cover directive for Angular-TurnJS wrapper
+     */
 
     var coverDir = function () {
-        var dir = {
+        return {
             restrict: 'E',
-            link: function(scope, element, attrs) {
+            replace: true,
+            transclude: true,
+            template: function(iElem, iAttrs){
+                var title = iAttrs.ngbTitle;
+                if (title){
+                    return '<div  class="hard"><h1>'+ title+'</h1><div ng-transclude></div></div>';
+                }else{
+                    return '<div  class="hard"><div ng-transclude></div></div>';
+                }
             },
-            scope: {},
-            compile: function (scope, element, attrs) {
+            compile: function (tElem, tAttrs) {
                 return {
-                    pre: function (scope, element, attrs) {
-                        if("ngbTemplate" in attrs){
-                            dir.templateUrl = function (element, attrs) {
-                                return attrs.ngbTemplate;
-                            }
-                        }
+                    pre: function (scope, iElem, iAttrs) {
                     },
-                    post: function (scope, element, attrs) {
-                        isTemplateGiven = false;
-                        if("ngbTemplate" in attrs){
-                            isTemplateGiven = true;
-                            dir.templateUrl = function (element, attrs) {
-                                return attrs.ngbTemplate;
-                            }
-                        } else {
-                            isTemplateGiven = false;
-                        }
+                    post: function (scope, iElem, iAttrs) {
+                        scope.title = iAttrs.ngbTitle;
                     }
                 }
             }
         }
-
-        if(isTemplateGiven){
-            dir.templateUrl = function (element, attrs) {
-                return attrs.ngbTemplate;
-            }
-        }
-
-        return dir;
-
     }
-
     angular.module("angularTurn").directive('cover', coverDir);
-
 })();
-(function(){
+(function () {
+    'use strict';
 
-    var isTemplateGiven = false;
+    /**
+     * @ngdoc directive
+     * @name  angularTurn.page
+     * @description  page directive for Angular-TurnJS wrapper
+     */
 
-
-
-	var pageDir = function () {
-		var dir = {
+    var getHtmlPage = function () {};
+    var pageDir = function () {
+        return {
             restrict: 'E',
-            scope: {},
-
-            compile: function (scope, element, attrs) {
+            replace: true,
+            transclude: true,
+            template: '<div ng-transclude></div>',
+            compile: function (tElem, tAttrs) {
                 return {
-                    pre: function (scope, element, attrs) {
-                        if("ngbTemplate" in attrs){
-                            dir.templateUrl = function (element, attrs) {
+                    pre: function (scope, iElem, iAttrs) {
 
-                                return attrs.ngbTemplate;
-                            }
-                        }
                     },
-                    post: function (scope, element, attrs) {
-                        isTemplateGiven = false;
-                        if("ngbTemplate" in attrs){
-                            isTemplateGiven = true;
-                            dir.templateUrl = function (element, attrs) {
-
-                                return attrs.ngbTemplate;
-                            }
-                        } else {
-                            isTemplateGiven = false;
-                        }
-                        console.log(" ");
+                    post: function (scope, iElem, iAttrs) {
+                        scope.data = iAttrs.ngbData;
+                        var templateUrl = iAttrs.ngbTemplateUrl;
+                        var controller = iAttrs.ngbController;
                     }
                 }
             }
         }
-
-        if(isTemplateGiven){
-            dir.templateUrl = function (element, attrs) {
-                    return attrs.ngbTemplate;
-            }
-        }
-
-        console.log(dir);
-        return dir;
-
-	}	
-	angular.module("angularTurn").directive('page', pageDir);
+    }
+    angular.module("angularTurn").directive('page', pageDir);
 })();

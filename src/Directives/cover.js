@@ -1,47 +1,35 @@
-(function(){
+(function () {
+    'use strict';
 
-    var isTemplateGiven = false;
+    /**
+     * @ngdoc directive
+     * @name  angularTurn.cover
+     * @description  cover directive for Angular-TurnJS wrapper
+     */
 
     var coverDir = function () {
-        var dir = {
+        return {
             restrict: 'E',
-            link: function(scope, element, attrs) {
+            replace: true,
+            transclude: true,
+            template: function(iElem, iAttrs){
+                var title = iAttrs.ngbTitle;
+                if (title){
+                    return '<div  class="hard"><h1>'+ title+'</h1><div ng-transclude></div></div>';
+                }else{
+                    return '<div  class="hard"><div ng-transclude></div></div>';
+                }
             },
-            scope: {},
-            compile: function (scope, element, attrs) {
+            compile: function (tElem, tAttrs) {
                 return {
-                    pre: function (scope, element, attrs) {
-                        if("ngbTemplate" in attrs){
-                            dir.templateUrl = function (element, attrs) {
-                                return attrs.ngbTemplate;
-                            }
-                        }
+                    pre: function (scope, iElem, iAttrs) {
                     },
-                    post: function (scope, element, attrs) {
-                        isTemplateGiven = false;
-                        if("ngbTemplate" in attrs){
-                            isTemplateGiven = true;
-                            dir.templateUrl = function (element, attrs) {
-                                return attrs.ngbTemplate;
-                            }
-                        } else {
-                            isTemplateGiven = false;
-                        }
+                    post: function (scope, iElem, iAttrs) {
+                        scope.title = iAttrs.ngbTitle;
                     }
                 }
             }
         }
-
-        if(isTemplateGiven){
-            dir.templateUrl = function (element, attrs) {
-                return attrs.ngbTemplate;
-            }
-        }
-
-        return dir;
-
     }
-
     angular.module("angularTurn").directive('cover', coverDir);
-
 })();

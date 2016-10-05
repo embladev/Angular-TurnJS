@@ -12,15 +12,16 @@
 <body>
 <div ng-app="appMain" ng-controller="ctrlMain">
 
-    <book ngb-width="1000" ngb-height="680" ngb-autocenter="true">
-
-        <cover ngb-title="Example Turn Book"> <h2>Sub Title</h2> </cover>
-        <cover> </cover>
-
-        <page>  page1  </page>
-        <page>  page2  </page>
-        <page>  page3  </page>
-        <page>  page4  </page>
+    <book ngb-width="1000" ngb-height="680" ngb-autocenter="false">
+        <cover>
+            <h1>Example Turn Book<br> -Dynamic content-</h1><br><h3>Different Controller per Page</h3>
+        </cover>
+        <cover></cover>
+        
+        <page ngbController="personController"> {{pageOneContent}}   </page>
+        <page ngbController="FarmController"> {{pageTwoContent}}   </page>
+        <page ngbController="FamilyController"> {{pageThreeContent}} </page>
+        <page ngbController="indexController"> {{pageFourContent}}  </page>
 
         <cover></cover>
         <cover></cover>
