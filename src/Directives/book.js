@@ -1,15 +1,41 @@
-(function(){
-	"use strict";
-	angular.module("angularTurn").directive("book", function () {
-    var directive = {};
-    directive.restrict = 'E';
-    directive.transclude = true;
-    directive.template = "<h1> Made by a directive!</h1>";
-    directive.compile = function (element, attributes) {
-        var linkFunction = function ($scope, element, attributes) {
+(function () {
+    'use strict';
+
+    /**
+     * @ngdoc directive
+     * @name  angularTurn.book
+     * @description  book directive for Angular-TurnJS wrapper
+     */
+
+    var virtualPages = [];
+    var cacheArray = [];
+    var dataArray = [];
+    var controller;
+
+    var initialize = function(){};
+    var addPages = function(n){};
+
+    var bookDir = function () {
+        return {
+            restrict: 'E',
+            replace: true,
+            transclude: true,
+            template: '<div ng-transclude></div>',
+            compile: function (tElem, tAttrs) {
+                return {
+                    pre: function (scope, iElem, iAttrs) {
+                    },
+                    post: function (scope, iElem, iAttrs) {
+                        controller = iAttrs.ngbController;
+                        iElem.turn({
+                            width: iAttrs.ngbWidth,
+                            height: iAttrs.ngbHeight,
+                            autoCenter: iAttrs.ngbAutocenter
+                        });
+                    }
+                }
+            }
         }
-        return linkFunction;
-    }
-    return directive;
-	});
+    };
+    angular.module("angularTurn").directive('book', bookDir);
 })();

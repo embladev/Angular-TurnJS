@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="../tools/jquery.min.js"></script>
+    <script type="text/javascript" src="../tools/angular.min.js"></script>
+    <script type="text/javascript" src="../tools/turn.js"></script>
+    <script type="text/javascript" src="../../dist/angular-turn.debug.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+    <link rel="stylesheet" type="text/css" href="Styles/style.css">
+</head>
+
+<body>
+<div ng-app="appMain" ng-controller="ctrlMain">
+
+    <book ngb-width="1000" ngb-height="680" ngb-autocenter="false">
+        <cover>
+            <h1>Example Turn Book<br> -Dynamic content-</h1><br><h3>Different Controller per Page</h3>
+        </cover>
+        <cover></cover>
+        
+        <page ngbController="personController"> {{pageOneContent}}   </page>
+        <page ngbController="FarmController"> {{pageTwoContent}}   </page>
+        <page ngbController="FamilyController"> {{pageThreeContent}} </page>
+        <page ngbController="indexController"> {{pageFourContent}}  </page>
+
+        <cover></cover>
+        <cover></cover>
+    </book>
+
+</div>
+</body>
+</html>
+
