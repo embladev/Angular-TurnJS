@@ -2,10 +2,10 @@ var moduleMain = angular.module('appMain',['angularTurn']); //defines ng-app div
 
 moduleMain.controller('ctrlMain',['$http', '$scope', function($http, $scope){
 
-    $scope.members;
-    $http.get('members.json').success(function(data) {
-        $scope.members = data;
-    });
+    $scope.pageOneContent = "page 1";
+    $scope.pageTwoContent = "page 2";
+    $scope.pageThreeContent = "page 3";
+    $scope.pageFourContent = "page 4";
 
 }]);
 
