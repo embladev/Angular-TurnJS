@@ -30,26 +30,63 @@ angular.module('myApp', ['angular-turnJS']);
 - Angular
 - jQuery 1.7 or later
 
-## Example
+## Example 1 - static content
 
 ```
-<div ng-app="myApp" ng-controller="myController">
+<div ng-app="appMain" ng-controller="ctrlMain">
 
-    <Book 
-    ngb-height="200"
-    ngb-width="100"
-    ngb-autoCenter="true">
-	
-            <cover ngb-template='cover.html'/>
-            <page ngb-template='firstPage.html'/> 
-            <page ngb-template='Person.html'  ngb-continuous/>
-            <page ngb-template='index.html'  ngb-continuous/>	
-            <cover template='backcover.html' />
-    </Book>
+    <book ngb-width="1000" ngb-height="680" ngb-autocenter="true">
+        <page> page1  </page>
+        <page> page2  </page>
+        <page> page3  </page>
+        <page> page4  </page>
+    </book>
 
 </div>
 ```
+## Example 2 - cover page
 
+```
+<div ng-app="appMain" ng-controller="ctrlMain">
+
+    <book ngb-width="1000" ngb-height="680" ngb-autocenter="true">
+
+        <cover ngb-title="Example Turn Book"> <h2>Sub Title</h2> </cover>
+        <cover> </cover>
+
+        <page>  page1  </page>
+        <page>  page2  </page>
+        <page>  page3  </page>
+        <page>  page4  </page>
+
+        <cover></cover>
+        <cover></cover>
+    </book>
+
+</div>
+```
+## Example 3 - dynamic content
+
+```
+<div ng-app="appMain" ng-controller="ctrlMain">
+
+    <book ngb-width="1000" ngb-height="680" ngb-autocenter="false">
+        <cover>
+            <h1>Example Turn Book<br> -Dynamic content-</h1>
+        </cover>
+        <cover></cover>
+        
+        <page> {{pageOneContent}}   </page>
+        <page> {{pageTwoContent}}   </page>
+        <page> {{pageThreeContent}} </page>
+        <page> {{pageFourContent}}  </page>
+
+        <cover></cover>
+        <cover></cover>
+    </book>
+
+</div>
+```
 ## Elements
 
 - book - defines the book. ngb-height, ngb-width and ngb-autoCenter options can be added as attributes.
@@ -62,7 +99,7 @@ angular.module('myApp', ['angular-turnJS']);
 - ngb-width - sets the width of the book
 - ngb-autoCenter - centers the book depending on how many pages are visible
 - ngb-template - url of the html template for the page
-- ngb-continuous - continuous flow of data throughout the pages
+- ngb-title - title for the front cover page
 
 ## License
 
