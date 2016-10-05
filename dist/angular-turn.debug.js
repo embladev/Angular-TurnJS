@@ -7,17 +7,14 @@ angular.module("angularTurn",[]);
     var pageContents = [];
     var isTemplateGiven = false;
 
-    var setBookContentFromInnerHTML = function ($filter) {
-        console.log($(document.getElementsByTagName("cover")));
-        console.log($(document.getElementsByTagName("page")));
-
+    var setBookContentFromInnerHTML = function () {
         angular.forEach($(document.getElementsByTagName("cover")), function (value,key) {
             angular.forEach(value.childNodes, function (innerElement,key) {
                 if( innerElement.nodeName!="#text"){
                     coverContents.push(innerElement);
                 }
             });
-        });
+        })
 
         angular.forEach($(document.getElementsByTagName("page")), function(value,key){
             angular.forEach(value.childNodes, function (innerElement,key) {
@@ -28,29 +25,29 @@ angular.module("angularTurn",[]);
         });
 
         $("book").replaceWith($('<div id="flipbook"></div>'));
+
         var bookdiv = $(document.getElementById("flipbook"));
-        var cov1 = $('<div class="hard"></div>').append(coverContents[0])
-        bookdiv.append(cov1);
-        var cov2 = $('<div class="hard"></div>').append(coverContents[1])
-        bookdiv.append(cov2);
-        angular.forEach(pageContents,function(value,key){
-            bookdiv.append(value);
-        });
-        var cov3 = $('<div class="hard"></div>').append(coverContents[2])
-        bookdiv.append(cov3);
-        var cov4 = $('<div class="hard"></div>').append(coverContents[3])
-        bookdiv.append(cov4);
+
+        if (coverContents.length!=0){
+            bookdiv.append($('<div class="hard"></div>').append(coverContents[0]));
+            bookdiv.append($('<div class="hard"></div>').append(coverContents[1]));
+            angular.forEach(pageContents,function(value,key){
+                bookdiv.append(value);
+            });
+            bookdiv.append($('<div class="hard"></div>').append(coverContents[2]));
+            bookdiv.append($('<div class="hard"></div>').append(coverContents[3]));
+        }
+
+        else{
+
+            angular.forEach(pageContents,function(value,key){
+                bookdiv.append(value);
+            });
+        }
     }
 
-    var setBookContentFromTemplate = function ($filter) {
-        angular.forEach($(document.getElementsByTagName("page")), function(value,key){
-            pageContents.push($filter('filter')(value.childNodes,"div")[0]); //retriving main div wrapper of each page html content
-        });
-        $("book").replaceWith($('<div id="flipbook"></div>'));
-        var bookdiv = $(document.getElementById("flipbook"));
-        angular.forEach(pageContents,function(value,key){
-            bookdiv.append(value);
-        });
+    var setBookContentFromTemplate = function () {
+
     };
 
     var applyTurnStyles = function (attrs) {
@@ -59,22 +56,24 @@ angular.module("angularTurn",[]);
             height: attrs.ngbHeight,
             autoCenter: attrs.ngbAutocenter
         });
-    };
+    }
 
-    var bookDir = function($filter){
+    var bookDir = function(){
         return {
             restrict: 'E',
+            link: function(scope, element, attrs) {
+            },
+
             compile: function (element, attrs) {
                 return {
                     pre: function (scope, element, attrs) {
                     },
                     post: function (scope, element, attrs) {
 
-
                         if(isTemplateGiven){
-                            //setBookContentFromTemplate($filter)
+                            //setBookContentFromTemplate()
                         } else {
-                            setBookContentFromInnerHTML($filter);
+                            setBookContentFromInnerHTML();
                         }
 
                         applyTurnStyles(attrs);
