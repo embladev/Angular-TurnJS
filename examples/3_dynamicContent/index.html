@@ -12,20 +12,27 @@
 <body>
 <div ng-app="appMain"  ng-controller="ctrlMain">
 
-    <book ngb-width="1000" ngb-height="680" ngb-autocenter="false">
+    <book ngb-width="1000" ngb-height="680" ngb-autocenter="false" ngb-template="myTemplate.html">
         <cover>
-            <h1>Example Turn Book<br> -Dynamic content-</h1>
+
+            <h1>Example Turn Book<br><br> -Dynamic content-</h1>
         </cover>
         <cover></cover>
         
-        <page> {{pageOneContent}}   </page>
-        <page> {{pageTwoContent}}   </page>
-        <page> {{pageThreeContent}} </page>
-        <page> {{pageFourContent}}  </page>
-
+        <page> page 3  </page>
+        <page> page4   </page>
+      <!--  <page> {{pageThreeContent}} </page>
+        <page> {{pageFourContent}}  </page>-->
+<!--
         <cover></cover>
-        <cover></cover>
+        <cover></cover>-->
     </book>
+
+    <p>page 1 content: <input type="text" ng-model="pageOneContent"></p>
+    <p>page 2 content: <input type="text" ng-model="pageTwoContent"></p>
+    <p>page 3 content: <input type="text" ng-model="pageThreeContent"></p>
+    <p>page 4 content: <input type="text" ng-model="pageFourContent"></p>
+
 
 </div>
 </body>

@@ -5,18 +5,17 @@ body{
 }
 
 #flipbook{
-    line-height:100px;
+    line-height:35px;
     font-size:20px;
     text-align:center;
 }
-
 
 
 /* default turn Styles*/
 
 .turn-page{
     background-color:white;
-    line-height:100px;
+    line-height:35px;
     font-size:20px;
     text-align:center;
 }
