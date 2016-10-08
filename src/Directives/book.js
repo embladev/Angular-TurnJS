@@ -26,52 +26,52 @@
             controller: function ($http, $scope, $attrs, $element) {
 
                 console.log($attrs.ngbTemplate);
-                $http.get($attrs.ngbTemplate).success(function (data) {
-                    console.log('inside template loading call');
-                    // $scope.pageTemplate = data;
+                AddNextPageSet($http, $scope, $attrs, $element);
 
-                    $timeout(function () { // timeout is to simulate Ajax request delay
+                function AddNextPageSet($http, $scope, $attrs, $element) {
+                    $http.get($attrs.ngbTemplate).success(function (data) {
+                        console.log('inside template loading call');
+                        // $scope.pageTemplate = data;
 
-                        $http.get('members.json').success(function (members) {
-                            console.log('inside data loading call');
-                            $scope.members = members;
-                            $scope.dynaContent = 'initialvalue';
+                        $timeout(function () { // timeout is to simulate Ajax request delay
 
-                            /*    var templateElement = angular.element(data);
-                             console.log(templateElement);*/
+                            $http.get('members.json').success(function (members) {
+                                console.log('inside data loading call');
+                                $scope.members = members;
+                                $scope.dynaContent = 'initialvalue';
 
-                            var compiledMemberArray = []; // contained the compiled member details (before dividing in to pages)
-                            var innerCoverPage = $compile('<cover>inner cover page</cover>')($scope);
-                            var outerCoverPage = $compile('<cover>outer cover page</cover>')($scope);
+                                /*    var templateElement = angular.element(data);
+                                 console.log(templateElement);*/
 
-                            var temp;
-                            for (var i = 0; i < members.length; i++) {
-                                temp = '<div>page Content:- {{members['+i+'].name}} <br>{{dynaContent}} <input type="text" ng-model="dynaContent"></div>';
-                                compiledMemberArray.push($compile(temp)($scope));
-                            }
-                            console.log(compiledMemberArray);
+                                var compiledMemberArray = []; // contained the compiled member details (before dividing in to pages)
+                                var innerCoverPage = $compile('<cover>inner cover page</cover>')($scope);
+                                var outerCoverPage = $compile('<cover>outer cover page</cover>')($scope);
 
-                            // here the compiled content inside compiledMemberArray should be divided among pages -- call page breaker method [returns pages array]
-                            var breakedPagesArray = pageBreaker(compiledMemberArray);
+                                var temp;
+                                for (var i = 0; i < members.length; i++) {
+                                    temp = '<div>page Content:- {{members[' + i + '].name}} <br>{{dynaContent}} <input type="text" ng-model="dynaContent"></div>';
+                                    compiledMemberArray.push($compile(temp)($scope));
+                                }
+                                console.log(compiledMemberArray);
+
+                                // here the compiled content inside compiledMemberArray should be divided among pages -- call page breaker method [returns pages array]
+                                var breakedPagesArray = pageBreaker(compiledMemberArray);
 
 
-                            breakedPagesArray.forEach(function(page){
-                                $element.turn("addPage", page, ++lastPage);
+                                breakedPagesArray.forEach(function (page) {
+                                    $element.turn("addPage", page, ++lastPage);
+                                });
+                                $element.turn("addPage", innerCoverPage, ++lastPage);
+                                $element.turn("addPage", outerCoverPage, ++lastPage);
+
                             });
-                            $element.turn("addPage", innerCoverPage, ++lastPage);
-                            $element.turn("addPage", outerCoverPage, ++lastPage);
 
-                        });
-
-                    }, 7000);
+                        }, 7000);
 
 
-                });
-
-
-                console.log('outside');
-
-                function pageBreaker(compiledMemberArray){
+                    });
+                }
+                function pageBreaker(compiledMemberArray) {
                     // do the page breaking process
                     return compiledMemberArray;
                 }
