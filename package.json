@@ -1,6 +1,6 @@
 {
   "name": "angular-turnjs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Angular wrapper for TurnJS",
   "main": "dist/angular-turnjs.js",
   "repository": {
