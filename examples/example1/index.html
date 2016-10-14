@@ -11,8 +11,9 @@
 
 <body>
 <div ng-app="appMain" ng-controller="ctrlMain">
-    <book>
-        <page ctrl="externalCtrl1" h="600", w="800", templt='myTemplate.html'></page>
+    <book ngb-height="300" ngb-width="400" ngb-autocenter="true">
+        <page ctrl="externalCtrl1" templt='myTemplate.html'></page>
+        <page ctrl="externalCtrl2" templt='myTemplate2.html'></page>
         <page ctrl="externalCtrl2" templt='myTemplate2.html'></page>
         <page ctrl="externalCtrl2" templt='myTemplate2.html'></page>
         <page ctrl="externalCtrl2" templt='myTemplate2.html'></page>

@@ -1,6 +1,6 @@
 angular.module('appMain', ['angularTurn'])
     .controller('ctrlMain', function ($scope) {
-        $scope.myName = 'value from INTETERNAL Controller';
+
     })
     // External controller to send in to a child directive
     .controller('externalCtrl1', function ($scope) {

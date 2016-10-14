@@ -17,8 +17,6 @@
 
             //page properties
             ctrl.id = pageDirId;
-            ctrl.h = $attrs.h;
-            ctrl.w = $attrs.w;
             ctrl.pageTemplatePath = $attrs.templt;
             ctrl.pageTemplate = null;
             ctrl.htmlContent;
@@ -43,7 +41,7 @@
                             console.log('error loading template');
                             reject('Failure!');
                         });
-                    }, 250);
+                    }, 3000);
                 });
             }
 
@@ -79,9 +77,19 @@
 
 
                 // below is for DEMO only (without breaking html pages and without virtual pages, just set the page content)
-                var angularElement = angular.element(html);
-                $element.append(angularElement);     // also replaceWith
+               var angularElement = angular.element(html);
+               /* $element.append(angularElement);     // also replaceWith
+                console.log($scope);
                 $compile(angularElement)($scope);
+*/
+                /*
+                 $compile('<fieldset>...</fieldset>')(scope, function(clone) {
+                 $element.append(clone)
+                 });*/
+
+                $scope.$apply(function () {
+                    $element.append($compile(angularElement)($scope));
+                });
 
             }
 
@@ -115,7 +123,10 @@
             require: ["^book", "page"],
             link: linkFn,
             scope: {},
-            controller: internalCtrl
+            controller: internalCtrl,
+            replace: true,
+            transclude: true,
+            template: '<div ng-transclude> </div>'
         }
     }
     angular.module("angularTurn").directive('page', pageDir);
