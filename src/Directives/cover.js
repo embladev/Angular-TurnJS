@@ -25,7 +25,7 @@
                     pre: function (scope, iElem, iAttrs) {
                     },
                     post: function (scope, iElem, iAttrs) {
-                        scope.title = iAttrs.ngbTitle;
+
                     }
                 }
             }

@@ -11,20 +11,13 @@
 
 <body>
 <div ng-app="appMain" ng-controller="ctrlMain">
-
-    <book ngb-width="1000" ngb-height="680" ngb-autocenter="true">
-        <cover>
-            <h1>Example Turn Book<br> -HTML URL-</h1>
-        </cover>
-        <cover></cover>
-
-        <page ngb-template="Templates/template1.html"> </page>
-        <page ngb-template="Templates/template1.html"> </page>
-
-        <cover></cover>
-        <cover></cover>
+    <book>
+        <page ctrl="externalCtrl1" h="600", w="800", templt='myTemplate.html'></page>
+        <page ctrl="externalCtrl2" templt='myTemplate2.html'></page>
+        <page ctrl="externalCtrl2" templt='myTemplate2.html'></page>
+        <page ctrl="externalCtrl2" templt='myTemplate2.html'></page>
+        <page ctrl="externalCtrl2" templt='myTemplate2.html'></page>
     </book>
-
 </div>
 </body>
 </html>
