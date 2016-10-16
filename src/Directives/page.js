@@ -37,7 +37,7 @@
                     $timeout(function () {                                      //************** timeout is to simulate Ajax request delay (only for demo)
                         $http.get(ctrl.pageTemplatePath).then(function (data) {
                             console.log('done loading template!', data.data);
-                            ctrl.pageTemplate = data.data;
+                            ctrl.pageTemplate = '<div>' + data.data + '</div>';
                             resolve('Success!');
 
                         }, function () {
@@ -51,7 +51,7 @@
             // returns virtual pages >= noOfVirtualPages (precession depends on k, can also send exact number of pages requested by merging the excess pages as overflow html)
             ctrl.makeVirtualPages = function (noOfVirtualPages) {
                 //clear buffers
-                var brokenPagesBuffer = ['sdf','asdf'];
+                var brokenPagesBuffer = [];
                 var breakResults = {};
                 var buffer = {};
                 buffer.overflowHtmlContent = '';
@@ -100,7 +100,7 @@
                 });
                 */
                 console.log(compiledHtmlContent.html());
-                $element.append(compiledHtmlContent);
+                //$element.append(compiledHtmlContent);
                 return compiledHtmlContent.html();
 
             }
