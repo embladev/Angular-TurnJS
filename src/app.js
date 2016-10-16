@@ -1,4 +1,5 @@
 /**
+ * by malithJKMT
  * @ngdoc module
  * @name  angularTurn
  * @description  Angular wrapper for TurnJS

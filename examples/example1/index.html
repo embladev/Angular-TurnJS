@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="../tools/jquery.min.js"></script>
+    <script type="text/javascript" src="../tools/angular.min.js"></script>
+    <script type="text/javascript" src="../tools/turn.js"></script>
+    <script type="text/javascript" src="../../dist/angular-turn.debug.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+    <link rel="stylesheet" type="text/css" href="Styles/style.css">
+</head>
+
+<body>
+<div ng-app="appMain" ng-controller="ctrlMain">
+    <book ngb-height="300" ngb-width="400" ngb-autocenter="true">
+        <page ngb-controller="externalCtrl1" ngb-template='template1.html'></page>
+        <page ngb-controller="externalCtrl2" ngb-template='template1.html'></page>
+        <page ngb-controller="externalCtrl2" ngb-template='template2.html'></page>
+        <page ngb-controller="externalCtrl2" ngb-template='template2.html'></page>
+        <page ngb-controller="externalCtrl2" ngb-template='template2.html'></page>
+        <page ngb-controller="externalCtrl2" ngb-template='template2.html'></page>
+    </book>
+</div>
+</body>
+</html>
+
