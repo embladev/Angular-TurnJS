@@ -19,10 +19,7 @@ angular.module("angularTurn",[]);
      * @description  book directive for Angular-TurnJS wrapper
      */
 
-
-
     var bookDir = function ($timeout, $compile) {
-
 
         var bookCtrl = function ($scope, $element, $attrs) {
             var ctrl = this;
@@ -30,15 +27,11 @@ angular.module("angularTurn",[]);
             ctrl.isPageLoadEnabled = false;
             ctrl.pageDirCtrls = [];
             ctrl.currentPage = 1;
-            ctrl.virtualPages = [];
-            ctrl.noOfActualPages = 0;
-            ctrl.virtualPagesBuffer = [];
-            ctrl.minVirtualPages = 0;
-
+            ctrl.noOfActualPages = -1; // no of actual ages in the turn book
+            ctrl.virtualPagesBuffer = [];  // contains the virtual pages that hasn't been added to the turn book yet
             ctrl.height = $attrs.ngbHeight;
             ctrl.width = $attrs.ngbWidth;
             ctrl.autoCenter = $attrs.ngbAutocenter;
-
 
             /******************Book controller functions***********************/
 
@@ -47,11 +40,12 @@ angular.module("angularTurn",[]);
                 // show loading gif or Loading text...
                 console.log('initialize front view');
                 $element.parent().append('<div id="frontView"><h1>Loading book...</h1></div>');
-
             }
 
             // store page dir instances
             ctrl.register = function (pageDirCtrl) {
+
+                // handover the token to first page directive
                 if (ctrl.isFirstDir) {
                     ctrl.isFirstDir = false;
                     pageDirCtrl.hasToken = true;
@@ -61,24 +55,57 @@ angular.module("angularTurn",[]);
 
             }
             ctrl.turnPageForward = function () {
-                 if(ctrl.virtualPagesBuffer.length < 6){
-                 ctrl.loadNextPages();
-                 }
-                // if turn book hasn't got enough pages(not in the safe range...), add turn add 2 pages
-                var page = ctrl.virtualPagesBuffer[0].shift();
-                console.log(page, ctrl.noOfActualPages);
-                if(page != undefined){
-                    $element.turn("addPage", page, ctrl.noOfActualPages++);
+                if (ctrl.virtualPagesBuffer.length <= 2) {
+                    console.log('need more virtual pages.....');
+                    ctrl.loadNextPages().then(function (response) {
+                            console.log(response);
+                          //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+
+                            ////////////////////////////////////////////////////////////////////////////////////////
+                            // if turn book hasn't got enough pages(not in the safe range...), add turn add 2 pages
+                            var page = ctrl.virtualPagesBuffer.shift();
+                            console.log('new turn page added, page No:- ', ctrl.noOfActualPages + 1);
+                            $element.turn("addPage", page, ++ctrl.noOfActualPages);
+
+
+                            page = ctrl.virtualPagesBuffer.shift();
+                            console.log('new turn page added, page No:- ', ctrl.noOfActualPages + 1);
+                            $element.turn("addPage", page, ++ctrl.noOfActualPages);
+
+                            console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                            ////////////////////////////////////////////////////////////////////////////////////////
+
+                            // Async call to load new virtual pages, if not enough  --- refactor (if user turn another page before this call finishes.....)
+                            if (ctrl.virtualPagesBuffer.length < 6) {
+                                console.log('backing up more virtual pages.....');
+                                ctrl.loadNextPages();
+                            }
+                        },
+                        function (error) {
+                            console.log(error);
+                        });
                 }
+                else {
+                  //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                    ////////////////////////////////////////////////////////////////////////////////////////
+                    // if turn book hasn't got enough pages(not in the safe range...), add turn add 2 pages
+                    var page = ctrl.virtualPagesBuffer.shift();
+                    console.log('new turn page added, page No:-  ', ctrl.noOfActualPages + 1);
+                    $element.turn("addPage", page, ++ctrl.noOfActualPages);
 
-                page = ctrl.virtualPagesBuffer[0].shift();
-                console.log(page, ctrl.noOfActualPages);
-                if(page != undefined){
-                    $element.turn("addPage", page, ctrl.noOfActualPages++);
+                    page = ctrl.virtualPagesBuffer.shift();
+                    console.log('new turn page added, page No:- ', ctrl.noOfActualPages + 1);
+                    $element.turn("addPage", page, ++ctrl.noOfActualPages);
+
+                    console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                    ////////////////////////////////////////////////////////////////////////////////////////
+
+                    // Async call to load new virtual pages, if not enough  --- refactor (if user turn another page before this call finishes.....)
+                    if (ctrl.virtualPagesBuffer.length < 6) {
+                        console.log('backing up more virtual pages.....');
+                        ctrl.loadNextPages();
+                    }
                 }
-                ctrl.noOfActualPages++;
-
-
             }
             ctrl.loadNextPages = function () {
                 return new Promise(function (resolve, reject) {
@@ -94,25 +121,25 @@ angular.module("angularTurn",[]);
                                 pageDir.loadTemplate()
                                     .then(function (response) {
                                         console.log(response);
+                                        //////////////////////////////////////////////////////////////////////////////////
                                         //  if there's enough content, request new virtual pages
                                         if (pageDir.hasMoreContent) {
 
                                             // save received virtual pages
-                                            ctrl.virtualPagesBuffer.push(pageDir.makeVirtualPages(6));
+                                            ctrl.virtualPagesBuffer = ctrl.virtualPagesBuffer.concat(pageDir.makeVirtualPages(6));
+                                          //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
 
-                                            // pageDir.getHtml();
-                                            //   resolve('Success!'); // move these to right position
                                             // if sufficient virtual pages has received stop requesting new virtual pages
                                             if (ctrl.virtualPagesBuffer[0].length >= 6) {
-
-                                                console.log(ctrl.virtualPagesBuffer);
-                                                ctrl.virtualPages = ctrl.virtualPages.concat(ctrl.virtualPagesBuffer);
-                                                console.log(ctrl.virtualPages);
-                                                //add new virtual pages to turn BOOK
                                                 resolve('Success!');
                                             }
-
                                         }
+                                        else {
+                                            // handover the token to next page directive
+                                            pageDir.hasToken = false;
+                                            ctrl.pageDirCtrls[pageDir.id + 1].hasToken = true;
+                                        }
+                                        /////////////////////////////////////////////////////////////////////////////////////
 
                                     }, function (error) {
                                         console.error(error);
@@ -123,22 +150,26 @@ angular.module("angularTurn",[]);
                             else {
                                 // process pageDIR
                                 console.log('template has already loaded');
-                                //  if there's content request new virtual pages
+
+                                /////////////////////////////////////////////////////////////////////////////////////
+                                //  if there's enough content, request new virtual pages
                                 if (pageDir.hasMoreContent) {
 
                                     // save received virtual pages
-                                    ctrl.virtualPagesBuffer.push(pageDir.makeVirtualPages(6));
-                                    // pageDir.getHtml();
-                                    //  resolve('Success!');
+                                    ctrl.virtualPagesBuffer = ctrl.virtualPagesBuffer.concat(pageDir.makeVirtualPages(6));
+                                   // console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
 
-                                    // if sufficient virtual pages has received, stop requesting new virtual pages
+                                    // if sufficient virtual pages has received stop requesting new virtual pages
                                     if (ctrl.virtualPagesBuffer[0].length >= 6) {
-                                        console.log(ctrl.virtualPagesBuffer);
-                                        ctrl.virtualPages = ctrl.virtualPages.concat(ctrl.virtualPagesBuffer);
-                                        console.log(ctrl.virtualPages);
                                         resolve('Success!');
                                     }
                                 }
+                                else {
+                                    // handover the token to next page directive
+                                    pageDir.hasToken = false;
+                                    ctrl.pageDirCtrls[pageDir.id + 1].hasToken = true;
+                                }
+                                /////////////////////////////////////////////////////////////////////////////////////
                             }
                         }
                     });
@@ -148,22 +179,23 @@ angular.module("angularTurn",[]);
 
             console.log('initializing the book.....');
             ctrl.initializeFrontView();
-
         }
 
         function linkFn(scope, element, attrs, ctrls) {
             console.log('BOOKs LINK FUNCTION');
 
-            //
             element.bind('turned', function (event, page, view) {
-                console.log("Page: " + page);
+                console.log('#########################################################');
+                console.log('current status:- ');
+                console.log('No of actual turn pages in the book:- ',scope.ctrl.noOfActualPages);
+                console.log('virtual pages buffer size:- ', scope.ctrl.virtualPagesBuffer.length);
+                console.log('----------------------------');
+                console.log("Turned to a new page: " + page);
                 // this 'page' is the left side page
                 scope.ctrl.currentPage = page;
-                if (scope.ctrl.isPageLoadEnabled && page >= scope.ctrl.noOfActualPages -4) {
-                    console.log('loading next pages set....');
+                if (scope.ctrl.isPageLoadEnabled && page >= scope.ctrl.noOfActualPages - 4) {
                     scope.ctrl.turnPageForward();
                 }
-
             });
 
             // load initial page set
@@ -182,20 +214,23 @@ angular.module("angularTurn",[]);
                     // add first set of virtual pages (4 pages)
                     var newPage;
                     for (var i = 0; i < 4; i++) {
-                        newPage = scope.ctrl.virtualPagesBuffer[0].shift();
-                        console.log(newPage, scope.ctrl.noOfActualPages);
-                        element.turn("addPage", newPage, scope.ctrl.noOfActualPages++);
-
-
+                        newPage = scope.ctrl.virtualPagesBuffer.shift();
+                        console.log('new turn page added, page No:- ', scope.ctrl.noOfActualPages + 1);
+                        element.turn("addPage", newPage, ++scope.ctrl.noOfActualPages);
                     }
+                    console.log('virtualPagesBuffer size is ', scope.ctrl.virtualPagesBuffer.length);
                     scope.ctrl.isPageLoadEnabled = true;
+
+                    // Async call to load new virtual pages, if not enough  --- refactor (if user turn another page before this call finishes.....)
+                    if (scope.ctrl.virtualPagesBuffer.length < 6) {
+                        console.log('backing up more virtual pages.....');
+                        scope.ctrl.loadNextPages();
+                    }
 
                 }, function (error) {
                     console.error(error);
                 });
-
         }
-
 
         return {
             restrict: 'E',
@@ -207,57 +242,14 @@ angular.module("angularTurn",[]);
             transclude: true,
             template: '<div ng-transclude></div>'
         };
-
     };
     angular.module("angularTurn").directive('book', bookDir);
 })();
-
-
-//<div ng-show="true"><h1>Front View</h1></div>
 /**
  * by malithJKMT
  */
 (function () {
     'use strict';
-
-    /**
-     * @ngdoc directive
-     * @name  angularTurn.cover
-     * @description  cover directive for Angular-TurnJS wrapper
-     */
-
-    var coverDir = function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            transclude: true,
-            template: function(iElem, iAttrs){
-                var title = iAttrs.ngbTitle;
-                if (title){
-                    return '<div  class="hard"><h1>'+ title+'</h1><div ng-transclude></div></div>';
-                }else{
-                    return '<div  class="hard"><div ng-transclude></div></div>';
-                }
-            },
-            compile: function (tElem, tAttrs) {
-                return {
-                    pre: function (scope, iElem, iAttrs) {
-                    },
-                    post: function (scope, iElem, iAttrs) {
-
-                    }
-                }
-            }
-        }
-    }
-    angular.module("angularTurn").directive('cover', coverDir);
-})();
-/**
- * by malithJKMT
- */
-(function () {
-    'use strict';
-
     /**
      * @ngdoc directive
      * @name  angularTurn.page
@@ -274,13 +266,13 @@ angular.module("angularTurn",[]);
 
             //page properties
             ctrl.id = pageDirId;
-            ctrl.pageTemplatePath = $attrs.templt;
+            ctrl.pageTemplatePath = $attrs.ngbTemplate;
             ctrl.pageTemplate = null;
+            ctrl.pageTemplateElement = null;
             ctrl.brokenPagesBuffer = [];
             ctrl.overflowHtmlContent = '';
             ctrl.hasMoreContent = true;
             ctrl.hasToken = false;
-
 
             // load template at 'pageTemplatePath' and store in 'pageTemplate'
             ctrl.loadTemplate = function () {
@@ -292,6 +284,7 @@ angular.module("angularTurn",[]);
                         $http.get(ctrl.pageTemplatePath).then(function (data) {
                             console.log('done loading template!', data.data);
                             ctrl.pageTemplate = '<div>' + data.data + '</div>';
+                            ctrl.pageTemplateElement = angular.element(ctrl.pageTemplate);
                             resolve('Success!');
 
                         }, function () {
@@ -330,33 +323,21 @@ angular.module("angularTurn",[]);
 
             // page template + $scope => compiled HTML content
             ctrl.getHtml = function (noOfDataPoints) {
-                var template = ctrl.pageTemplate;
-
-                // compile  (pageTemplate + $scope)
 
                 // if(there is no more content)
                 //          set ctrl.hasMoreContent = false;
-
+                //          now the next page directive can process...
 
                 // below is for DEMO only (without breaking html pages and without virtual pages, just set the page content)
-                var templateElement = angular.element(template);
-
                 var compiledHtmlContent;
-
-
                 // http://jimhoskins.com/2012/12/17/angularjs-and-apply.html
                 $scope.$apply(function () {
-                   compiledHtmlContent= $compile(templateElement)($scope);
+                   compiledHtmlContent= $compile(ctrl.pageTemplateElement)($scope);
 
                 });
-              /*  var clonedElement = $compile(templateElement)($scope, function(clonedElement, $scope) {
-                    //attach the clone to DOM document at the right place
-                });
-                */
-                console.log(compiledHtmlContent.html());
-                //$element.append(compiledHtmlContent);
+
+                console.log('new compiled html content for new data point is, ', compiledHtmlContent.html());
                 return compiledHtmlContent.html();
-
             }
 
             // breaks HTML content in to pages,  move this to  common - util
@@ -371,14 +352,13 @@ angular.module("angularTurn",[]);
                 // dummy value (return 2 pages with no overFlowHtmlContent)
                 return {brokenPages:[html, html], overflowHtmlContent:''};
             }
-
         }
 
         function linkFn(scope, element, attrs, ctrls) {
             console.log('run link function');
             pageDirId++;
             // create a controller instance of page directive with controller sent from user + isolate scope of page element
-            $controller(attrs.ctrl, {
+            $controller(attrs.ngbController, {
                 $scope: scope
             });
 

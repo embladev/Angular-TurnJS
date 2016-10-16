@@ -12,12 +12,12 @@
 <body>
 <div ng-app="appMain" ng-controller="ctrlMain">
     <book ngb-height="300" ngb-width="400" ngb-autocenter="true">
-        <page ctrl="externalCtrl1" templt='myTemplate.html'></page>
-        <page ctrl="externalCtrl2" templt='myTemplate2.html'></page>
-        <page ctrl="externalCtrl2" templt='myTemplate2.html'></page>
-        <page ctrl="externalCtrl2" templt='myTemplate2.html'></page>
-        <page ctrl="externalCtrl2" templt='myTemplate2.html'></page>
-        <page ctrl="externalCtrl2" templt='myTemplate2.html'></page>
+        <page ngb-controller="externalCtrl1" ngb-template='template1.html'></page>
+        <page ngb-controller="externalCtrl2" ngb-template='template1.html'></page>
+        <page ngb-controller="externalCtrl2" ngb-template='template2.html'></page>
+        <page ngb-controller="externalCtrl2" ngb-template='template2.html'></page>
+        <page ngb-controller="externalCtrl2" ngb-template='template2.html'></page>
+        <page ngb-controller="externalCtrl2" ngb-template='template2.html'></page>
     </book>
 </div>
 </body>

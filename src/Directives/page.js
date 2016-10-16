@@ -3,7 +3,6 @@
  */
 (function () {
     'use strict';
-
     /**
      * @ngdoc directive
      * @name  angularTurn.page
@@ -20,13 +19,13 @@
 
             //page properties
             ctrl.id = pageDirId;
-            ctrl.pageTemplatePath = $attrs.templt;
+            ctrl.pageTemplatePath = $attrs.ngbTemplate;
             ctrl.pageTemplate = null;
+            ctrl.pageTemplateElement = null;
             ctrl.brokenPagesBuffer = [];
             ctrl.overflowHtmlContent = '';
             ctrl.hasMoreContent = true;
             ctrl.hasToken = false;
-
 
             // load template at 'pageTemplatePath' and store in 'pageTemplate'
             ctrl.loadTemplate = function () {
@@ -38,6 +37,7 @@
                         $http.get(ctrl.pageTemplatePath).then(function (data) {
                             console.log('done loading template!', data.data);
                             ctrl.pageTemplate = '<div>' + data.data + '</div>';
+                            ctrl.pageTemplateElement = angular.element(ctrl.pageTemplate);
                             resolve('Success!');
 
                         }, function () {
@@ -76,33 +76,21 @@
 
             // page template + $scope => compiled HTML content
             ctrl.getHtml = function (noOfDataPoints) {
-                var template = ctrl.pageTemplate;
-
-                // compile  (pageTemplate + $scope)
 
                 // if(there is no more content)
                 //          set ctrl.hasMoreContent = false;
-
+                //          now the next page directive can process...
 
                 // below is for DEMO only (without breaking html pages and without virtual pages, just set the page content)
-                var templateElement = angular.element(template);
-
                 var compiledHtmlContent;
-
-
                 // http://jimhoskins.com/2012/12/17/angularjs-and-apply.html
                 $scope.$apply(function () {
-                   compiledHtmlContent= $compile(templateElement)($scope);
+                   compiledHtmlContent= $compile(ctrl.pageTemplateElement)($scope);
 
                 });
-              /*  var clonedElement = $compile(templateElement)($scope, function(clonedElement, $scope) {
-                    //attach the clone to DOM document at the right place
-                });
-                */
-                console.log(compiledHtmlContent.html());
-                //$element.append(compiledHtmlContent);
+
+                console.log('new compiled html content for new data point is, ', compiledHtmlContent.html());
                 return compiledHtmlContent.html();
-
             }
 
             // breaks HTML content in to pages,  move this to  common - util
@@ -117,14 +105,13 @@
                 // dummy value (return 2 pages with no overFlowHtmlContent)
                 return {brokenPages:[html, html], overflowHtmlContent:''};
             }
-
         }
 
         function linkFn(scope, element, attrs, ctrls) {
             console.log('run link function');
             pageDirId++;
             // create a controller instance of page directive with controller sent from user + isolate scope of page element
-            $controller(attrs.ctrl, {
+            $controller(attrs.ngbController, {
                 $scope: scope
             });
 
