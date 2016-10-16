@@ -1,3 +1,6 @@
+/**
+ * by malithJKMT
+ */
 (function () {
     'use strict';
 

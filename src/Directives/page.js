@@ -1,3 +1,6 @@
+/**
+ * by malithJKMT
+ */
 (function () {
     'use strict';
 
@@ -19,10 +22,10 @@
             ctrl.id = pageDirId;
             ctrl.pageTemplatePath = $attrs.templt;
             ctrl.pageTemplate = null;
-            ctrl.htmlContent;
             ctrl.brokenPagesBuffer = [];
             ctrl.overflowHtmlContent = '';
             ctrl.hasMoreContent = true;
+            ctrl.hasToken = false;
 
 
             // load template at 'pageTemplatePath' and store in 'pageTemplate'
@@ -45,30 +48,35 @@
                 });
             }
 
-            // returns virtual pages
+            // returns virtual pages >= noOfVirtualPages (precession depends on k, can also send exact number of pages requested by merging the excess pages as overflow html)
             ctrl.makeVirtualPages = function (noOfVirtualPages) {
                 //clear buffers
-                ctrl.brokenPagesBuffer = [];
+                var brokenPagesBuffer = ['sdf','asdf'];
+                var breakResults = {};
                 var buffer = {};
                 buffer.overflowHtmlContent = '';
+                var htmlContent = '';
 
-                while(ctrl.brokenPagesBuffer.length < noOfVirtualPages) {
-                    ctrl.htmlContent += getHtml(10);    // how many data points to request 10?   (eg:- data points = family members) determine this by a algorithm..?
-                    var temp = ctrl.breakPages(ctrl.htmlContent,  buffer.overflowHtmlContent);
+                while (brokenPagesBuffer.length < noOfVirtualPages) {
+                    //  TODO:- determine k ....... how many data points to request k?   (eg:- data points = family members) determine this by a algorithm..?
+                    var k = 10;
+
+                    htmlContent = ctrl.getHtml(k);
+                    breakResults = ctrl.breakPages(htmlContent + buffer.overflowHtmlContent);
 
                     // fill the buffer
-                    ctrl.brokenPagesBuffer.concat(temp.brokenPages);
+                    brokenPagesBuffer = brokenPagesBuffer.concat(breakResults.brokenPages);
                     // save the overflow htmlContent for next iteration
-                    buffer.overflowHtmlContent =temp.overflowHtmlContent;
+                    buffer.overflowHtmlContent = breakResults.overflowHtmlContent;
                 }
                 // save the overflow htmlContent for next virtual pages request
-                ctrl.overflowHtmlContent =temp.overflowHtmlContent;
-                return ctrl.brokenPagesBuffer;
+                ctrl.overflowHtmlContent = breakResults.overflowHtmlContent;
+                return brokenPagesBuffer;
             }
 
             // page template + $scope => compiled HTML content
             ctrl.getHtml = function (noOfDataPoints) {
-                var html = ctrl.pageTemplate;
+                var template = ctrl.pageTemplate;
 
                 // compile  (pageTemplate + $scope)
 
@@ -77,30 +85,37 @@
 
 
                 // below is for DEMO only (without breaking html pages and without virtual pages, just set the page content)
-               var angularElement = angular.element(html);
-               /* $element.append(angularElement);     // also replaceWith
-                console.log($scope);
-                $compile(angularElement)($scope);
-*/
-                /*
-                 $compile('<fieldset>...</fieldset>')(scope, function(clone) {
-                 $element.append(clone)
-                 });*/
+                var templateElement = angular.element(template);
 
+                var compiledHtmlContent;
+
+
+                // http://jimhoskins.com/2012/12/17/angularjs-and-apply.html
                 $scope.$apply(function () {
-                    $element.append($compile(angularElement)($scope));
+                   compiledHtmlContent= $compile(templateElement)($scope);
+
                 });
+              /*  var clonedElement = $compile(templateElement)($scope, function(clonedElement, $scope) {
+                    //attach the clone to DOM document at the right place
+                });
+                */
+                console.log(compiledHtmlContent.html());
+                $element.append(compiledHtmlContent);
+                return compiledHtmlContent.html();
 
             }
 
             // breaks HTML content in to pages,  move this to  common - util
-            ctrl.breakPages = function (html, overflowContent) {
+            ctrl.breakPages = function (html) {
                 // Draw invisible page
                 // add tag <break>
 
                 //break based on tag
 
-                // this should return an object, {overflowHtmlContent:'', brokenPages:pages[]}
+                // this should return an object, {brokenPages:pages[], overflowHtmlContent:  }
+
+                // dummy value (return 2 pages with no overFlowHtmlContent)
+                return {brokenPages:[html, html], overflowHtmlContent:''};
             }
 
         }
@@ -108,25 +123,26 @@
         function linkFn(scope, element, attrs, ctrls) {
             console.log('run link function');
             pageDirId++;
+            // create a controller instance of page directive with controller sent from user + isolate scope of page element
             $controller(attrs.ctrl, {
                 $scope: scope
             });
 
             bookCtrl = ctrls[0];
+
+            // send page directive's controller instance to book directive's controller
             bookCtrl.register(ctrls[1]);
         }
 
         return {
             restrict: 'E',
-            // controller: ['$scope', ctrlWrapper],
-            // template: '<div>this value is received from external controller:- {{myName}}</div>',
             require: ["^book", "page"],
             link: linkFn,
-            scope: {},
+            scope: {}, // isolate page instance's scope from user's angular app
             controller: internalCtrl,
-            replace: true,
+            replace: true, // replace <page> tag with <div> tag (turnJS reads only divs)
             transclude: true,
-            template: '<div ng-transclude> </div>'
+            template: '<div ng-transclude></div>'
         }
     }
     angular.module("angularTurn").directive('page', pageDir);

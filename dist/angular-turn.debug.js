@@ -1,4 +1,5 @@
 /**
+ * by malithJKMT
  * @ngdoc module
  * @name  angularTurn
  * @description  Angular wrapper for TurnJS
@@ -6,6 +7,9 @@
 angular.module("angularTurn",[]);
 
 
+/**
+ * by malithJKMT
+ */
 (function () {
     'use strict';
 
@@ -17,17 +21,17 @@ angular.module("angularTurn",[]);
 
 
 
-    var bookDir = function ($timeout,$compile) {
+    var bookDir = function ($timeout, $compile) {
 
 
         var bookCtrl = function ($scope, $element, $attrs) {
             var ctrl = this;
+            ctrl.isFirstDir = true;
             ctrl.isPageLoadEnabled = false;
             ctrl.pageDirCtrls = [];
-            ctrl.lastProcessedPageDir = 0;
             ctrl.currentPage;
             ctrl.virtualPages = [];
-            ctrl.minVirtualPages = 6;
+            ctrl.minVirtualPages = 0;
 
             ctrl.height = $attrs.ngbHeight;
             ctrl.width = $attrs.ngbWidth;
@@ -38,7 +42,7 @@ angular.module("angularTurn",[]);
 
             // show initial book loading view
             ctrl.initializeFrontView = function () {
-                // show loading gif or something...
+                // show loading gif or Loading text...
                 console.log('initialize front view');
                 $element.parent().append('<div id="frontView"><h1>Loading book...</h1></div>');
 
@@ -46,8 +50,13 @@ angular.module("angularTurn",[]);
 
             // store page dir instances
             ctrl.register = function (pageDirCtrl) {
+                if (ctrl.isFirstDir) {
+                    ctrl.isFirstDir = false;
+                    pageDirCtrl.hasToken = true;
+                }
                 console.log(pageDirCtrl);
                 ctrl.pageDirCtrls.push(pageDirCtrl);
+
             }
             ctrl.turnPageForward = function () {
                 ctrl.loadNextPages();
@@ -55,52 +64,56 @@ angular.module("angularTurn",[]);
             ctrl.loadNextPages = function () {
                 return new Promise(function (resolve, reject) {
                     ctrl.pageDirCtrls.forEach(function (pageDir) {
-                        // if template for pageDir hasn't loaded before
-                        if (pageDir.pageTemplate == null) {
-                            pageDir.loadTemplate()
-                                .then(function (response) {
-                                    console.log(response);
-                                    //  if there's enough content, request new virtual pages
-                                    if (pageDir.hasMoreContent) {
+                        if (pageDir.hasToken==true) {
+                            // if template for pageDir hasn't loaded before
+                            if (pageDir.pageTemplate == null) {
+                                pageDir.loadTemplate()
+                                    .then(function (response) {
+                                        console.log(response);
+                                        //  if there's enough content, request new virtual pages
+                                        if (pageDir.hasMoreContent) {
 
-                                        // save received virtual pages
-                                        //  ctrl.virtualPages.push(pageDir.makeVirtualPages());
-                                        pageDir.getHtml();
-                                        resolve('Success!'); // move these to right position
-                                        // if sufficient virtual pages has received stop requesting new virtual pages
-                                     /*   if (ctrl.virtualPages.length > ctrl.minVirtualPages + 6) {
-                                            ctrl.minVirtualPages += 6;
-                                            //add new virtual pages to turn BOOK
-                                            resolve('Success!');
-                                        }*/
+                                            // save received virtual pages
+                                            ctrl.virtualPages.push(pageDir.makeVirtualPages(5));
 
+                                            // pageDir.getHtml();
+                                            //   resolve('Success!'); // move these to right position
+                                            // if sufficient virtual pages has received stop requesting new virtual pages
+                                            if (ctrl.virtualPages[0].length > ctrl.minVirtualPages + 5) {
+                                                ctrl.minVirtualPages += 5;
+                                                console.log(ctrl.virtualPages);
+                                                //add new virtual pages to turn BOOK
+                                                resolve('Success!');
+                                            }
+
+                                        }
+
+                                    }, function (error) {
+                                        console.error(error);
+                                        //add new virtual pages to turn BOOK
+                                        reject('Failure!');
+                                    });
+                            }
+                            else {
+                                // process pageDIR
+                                console.log('template has already loaded');
+                                //  if there's content request new virtual pages
+                                if (pageDir.hasMoreContent) {
+
+                                    // save received virtual pages
+                                    ctrl.virtualPages.push(pageDir.makeVirtualPages());
+                                    // pageDir.getHtml();
+                                    //  resolve('Success!');
+
+                                    // if sufficient virtual pages has received stop requesting new virtual pages
+                                    if (ctrl.virtualPages[0].length > ctrl.minVirtualPages + 6) {
+                                        ctrl.minVirtualPages += 6;
+                                        console.log(ctrl.virtualPages);
+                                        resolve('Success!');
                                     }
-
-                                }, function (error) {
-                                    console.error(error);
-                                    //add new virtual pages to turn BOOK
-                                    reject('Failure!');
-                                });
-                        }
-                        else {
-                            // process pageDIR
-                            console.log('template has already loaded');
-                            //  if there's content request new virtual pages
-                            if (pageDir.hasMoreContent) {
-
-                                // save received virtual pages
-                               // ctrl.virtualPages.push(pageDir.makeVirtualPages());
-                                pageDir.getHtml();
-                                resolve('Success!');
-
-                                // if sufficient virtual pages has received stop requesting new virtual pages
-                               /* if (ctrl.virtualPages.length > ctrl.minVirtualPages + 6) {
-                                    ctrl.minVirtualPages += 6;
-                                    resolve('Success!');
-                                }*/
+                                }
                             }
                         }
-
                     });
 
                 });
@@ -114,10 +127,11 @@ angular.module("angularTurn",[]);
         function linkFn(scope, element, attrs, ctrls) {
             console.log('BOOKs LINK FUNCTION');
 
-            element.bind("turned", function(event, page, view) {
-                console.log("Page: "+page);
-                if(scope.ctrl.isPageLoadEnabled){
-                   console.log('loading next pages set....');
+            //
+            element.bind('turned', function (event, page, view) {
+                console.log("Page: " + page);
+                if (scope.ctrl.isPageLoadEnabled) {
+                    console.log('loading next pages set....');
                     scope.ctrl.loadNextPages();
                 }
 
@@ -126,17 +140,19 @@ angular.module("angularTurn",[]);
             // load initial page set
             scope.ctrl.loadNextPages()
                 .then(function (response) {
+                    console.log(response);
+                    // remove the "loading..." view
                     document.getElementById('frontView').remove();
-                    element.turn({
+                    // initialize turnJS book
+                   /* element.turn({
                         width: scope.ctrl.width,
                         height: scope.ctrl.height,
                         autoCenter: scope.ctrl.autoCenter
-                    });
+                    });*/
                     scope.ctrl.isPageLoadEnabled = true;
 
                 }, function (error) {
                     console.error(error);
-
                 });
 
         }
@@ -144,13 +160,13 @@ angular.module("angularTurn",[]);
 
         return {
             restrict: 'E',
-            scope: {},
+            scope: {}, // isolate book component's scope from user's app
             controller: bookCtrl,
             controllerAs: 'ctrl',
             link: linkFn,
-            replace: true,
+            replace: true, // replace <book> tag with <div> tag (turnJS reads only divs)
             transclude: true,
-            template: '<div id="angularTurnBook" ng-transclude></div>'
+            template: '<div ng-transclude></div>'
         };
 
     };
@@ -159,6 +175,9 @@ angular.module("angularTurn",[]);
 
 
 //<div ng-show="true"><h1>Front View</h1></div>
+/**
+ * by malithJKMT
+ */
 (function () {
     'use strict';
 
@@ -194,6 +213,9 @@ angular.module("angularTurn",[]);
     }
     angular.module("angularTurn").directive('cover', coverDir);
 })();
+/**
+ * by malithJKMT
+ */
 (function () {
     'use strict';
 
@@ -215,10 +237,10 @@ angular.module("angularTurn",[]);
             ctrl.id = pageDirId;
             ctrl.pageTemplatePath = $attrs.templt;
             ctrl.pageTemplate = null;
-            ctrl.htmlContent;
             ctrl.brokenPagesBuffer = [];
             ctrl.overflowHtmlContent = '';
             ctrl.hasMoreContent = true;
+            ctrl.hasToken = false;
 
 
             // load template at 'pageTemplatePath' and store in 'pageTemplate'
@@ -241,30 +263,35 @@ angular.module("angularTurn",[]);
                 });
             }
 
-            // returns virtual pages
+            // returns virtual pages >= noOfVirtualPages (precession depends on k, can also send exact number of pages requested by merging the excess pages as overflow html)
             ctrl.makeVirtualPages = function (noOfVirtualPages) {
                 //clear buffers
-                ctrl.brokenPagesBuffer = [];
+                var brokenPagesBuffer = ['sdf','asdf'];
+                var breakResults = {};
                 var buffer = {};
                 buffer.overflowHtmlContent = '';
+                var htmlContent = '';
 
-                while(ctrl.brokenPagesBuffer.length < noOfVirtualPages) {
-                    ctrl.htmlContent += getHtml(10);    // how many data points to request 10?   (eg:- data points = family members) determine this by a algorithm..?
-                    var temp = ctrl.breakPages(ctrl.htmlContent,  buffer.overflowHtmlContent);
+                while (brokenPagesBuffer.length < noOfVirtualPages) {
+                    //  TODO:- determine k ....... how many data points to request k?   (eg:- data points = family members) determine this by a algorithm..?
+                    var k = 10;
+
+                    htmlContent = ctrl.getHtml(k);
+                    breakResults = ctrl.breakPages(htmlContent + buffer.overflowHtmlContent);
 
                     // fill the buffer
-                    ctrl.brokenPagesBuffer.concat(temp.brokenPages);
+                    brokenPagesBuffer = brokenPagesBuffer.concat(breakResults.brokenPages);
                     // save the overflow htmlContent for next iteration
-                    buffer.overflowHtmlContent =temp.overflowHtmlContent;
+                    buffer.overflowHtmlContent = breakResults.overflowHtmlContent;
                 }
                 // save the overflow htmlContent for next virtual pages request
-                ctrl.overflowHtmlContent =temp.overflowHtmlContent;
-                return ctrl.brokenPagesBuffer;
+                ctrl.overflowHtmlContent = breakResults.overflowHtmlContent;
+                return brokenPagesBuffer;
             }
 
             // page template + $scope => compiled HTML content
             ctrl.getHtml = function (noOfDataPoints) {
-                var html = ctrl.pageTemplate;
+                var template = ctrl.pageTemplate;
 
                 // compile  (pageTemplate + $scope)
 
@@ -273,30 +300,37 @@ angular.module("angularTurn",[]);
 
 
                 // below is for DEMO only (without breaking html pages and without virtual pages, just set the page content)
-               var angularElement = angular.element(html);
-               /* $element.append(angularElement);     // also replaceWith
-                console.log($scope);
-                $compile(angularElement)($scope);
-*/
-                /*
-                 $compile('<fieldset>...</fieldset>')(scope, function(clone) {
-                 $element.append(clone)
-                 });*/
+                var templateElement = angular.element(template);
 
+                var compiledHtmlContent;
+
+
+                // http://jimhoskins.com/2012/12/17/angularjs-and-apply.html
                 $scope.$apply(function () {
-                    $element.append($compile(angularElement)($scope));
+                   compiledHtmlContent= $compile(templateElement)($scope);
+
                 });
+              /*  var clonedElement = $compile(templateElement)($scope, function(clonedElement, $scope) {
+                    //attach the clone to DOM document at the right place
+                });
+                */
+                console.log(compiledHtmlContent.html());
+                $element.append(compiledHtmlContent);
+                return compiledHtmlContent.html();
 
             }
 
             // breaks HTML content in to pages,  move this to  common - util
-            ctrl.breakPages = function (html, overflowContent) {
+            ctrl.breakPages = function (html) {
                 // Draw invisible page
                 // add tag <break>
 
                 //break based on tag
 
-                // this should return an object, {overflowHtmlContent:'', brokenPages:pages[]}
+                // this should return an object, {brokenPages:pages[], overflowHtmlContent:  }
+
+                // dummy value (return 2 pages with no overFlowHtmlContent)
+                return {brokenPages:[html, html], overflowHtmlContent:''};
             }
 
         }
@@ -304,25 +338,26 @@ angular.module("angularTurn",[]);
         function linkFn(scope, element, attrs, ctrls) {
             console.log('run link function');
             pageDirId++;
+            // create a controller instance of page directive with controller sent from user + isolate scope of page element
             $controller(attrs.ctrl, {
                 $scope: scope
             });
 
             bookCtrl = ctrls[0];
+
+            // send page directive's controller instance to book directive's controller
             bookCtrl.register(ctrls[1]);
         }
 
         return {
             restrict: 'E',
-            // controller: ['$scope', ctrlWrapper],
-            // template: '<div>this value is received from external controller:- {{myName}}</div>',
             require: ["^book", "page"],
             link: linkFn,
-            scope: {},
+            scope: {}, // isolate page instance's scope from user's angular app
             controller: internalCtrl,
-            replace: true,
+            replace: true, // replace <page> tag with <div> tag (turnJS reads only divs)
             transclude: true,
-            template: '<div ng-transclude> </div>'
+            template: '<div ng-transclude></div>'
         }
     }
     angular.module("angularTurn").directive('page', pageDir);

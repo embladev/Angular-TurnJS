@@ -1,3 +1,6 @@
+/**
+ * by malithJKMT
+ */
 (function () {
     'use strict';
 
@@ -9,17 +12,17 @@
 
 
 
-    var bookDir = function ($timeout,$compile) {
+    var bookDir = function ($timeout, $compile) {
 
 
         var bookCtrl = function ($scope, $element, $attrs) {
             var ctrl = this;
+            ctrl.isFirstDir = true;
             ctrl.isPageLoadEnabled = false;
             ctrl.pageDirCtrls = [];
-            ctrl.lastProcessedPageDir = 0;
             ctrl.currentPage;
             ctrl.virtualPages = [];
-            ctrl.minVirtualPages = 6;
+            ctrl.minVirtualPages = 0;
 
             ctrl.height = $attrs.ngbHeight;
             ctrl.width = $attrs.ngbWidth;
@@ -30,7 +33,7 @@
 
             // show initial book loading view
             ctrl.initializeFrontView = function () {
-                // show loading gif or something...
+                // show loading gif or Loading text...
                 console.log('initialize front view');
                 $element.parent().append('<div id="frontView"><h1>Loading book...</h1></div>');
 
@@ -38,8 +41,13 @@
 
             // store page dir instances
             ctrl.register = function (pageDirCtrl) {
+                if (ctrl.isFirstDir) {
+                    ctrl.isFirstDir = false;
+                    pageDirCtrl.hasToken = true;
+                }
                 console.log(pageDirCtrl);
                 ctrl.pageDirCtrls.push(pageDirCtrl);
+
             }
             ctrl.turnPageForward = function () {
                 ctrl.loadNextPages();
@@ -47,52 +55,56 @@
             ctrl.loadNextPages = function () {
                 return new Promise(function (resolve, reject) {
                     ctrl.pageDirCtrls.forEach(function (pageDir) {
-                        // if template for pageDir hasn't loaded before
-                        if (pageDir.pageTemplate == null) {
-                            pageDir.loadTemplate()
-                                .then(function (response) {
-                                    console.log(response);
-                                    //  if there's enough content, request new virtual pages
-                                    if (pageDir.hasMoreContent) {
+                        if (pageDir.hasToken==true) {
+                            // if template for pageDir hasn't loaded before
+                            if (pageDir.pageTemplate == null) {
+                                pageDir.loadTemplate()
+                                    .then(function (response) {
+                                        console.log(response);
+                                        //  if there's enough content, request new virtual pages
+                                        if (pageDir.hasMoreContent) {
 
-                                        // save received virtual pages
-                                        //  ctrl.virtualPages.push(pageDir.makeVirtualPages());
-                                        pageDir.getHtml();
-                                        resolve('Success!'); // move these to right position
-                                        // if sufficient virtual pages has received stop requesting new virtual pages
-                                     /*   if (ctrl.virtualPages.length > ctrl.minVirtualPages + 6) {
-                                            ctrl.minVirtualPages += 6;
-                                            //add new virtual pages to turn BOOK
-                                            resolve('Success!');
-                                        }*/
+                                            // save received virtual pages
+                                            ctrl.virtualPages.push(pageDir.makeVirtualPages(5));
 
+                                            // pageDir.getHtml();
+                                            //   resolve('Success!'); // move these to right position
+                                            // if sufficient virtual pages has received stop requesting new virtual pages
+                                            if (ctrl.virtualPages[0].length > ctrl.minVirtualPages + 5) {
+                                                ctrl.minVirtualPages += 5;
+                                                console.log(ctrl.virtualPages);
+                                                //add new virtual pages to turn BOOK
+                                                resolve('Success!');
+                                            }
+
+                                        }
+
+                                    }, function (error) {
+                                        console.error(error);
+                                        //add new virtual pages to turn BOOK
+                                        reject('Failure!');
+                                    });
+                            }
+                            else {
+                                // process pageDIR
+                                console.log('template has already loaded');
+                                //  if there's content request new virtual pages
+                                if (pageDir.hasMoreContent) {
+
+                                    // save received virtual pages
+                                    ctrl.virtualPages.push(pageDir.makeVirtualPages());
+                                    // pageDir.getHtml();
+                                    //  resolve('Success!');
+
+                                    // if sufficient virtual pages has received stop requesting new virtual pages
+                                    if (ctrl.virtualPages[0].length > ctrl.minVirtualPages + 6) {
+                                        ctrl.minVirtualPages += 6;
+                                        console.log(ctrl.virtualPages);
+                                        resolve('Success!');
                                     }
-
-                                }, function (error) {
-                                    console.error(error);
-                                    //add new virtual pages to turn BOOK
-                                    reject('Failure!');
-                                });
-                        }
-                        else {
-                            // process pageDIR
-                            console.log('template has already loaded');
-                            //  if there's content request new virtual pages
-                            if (pageDir.hasMoreContent) {
-
-                                // save received virtual pages
-                               // ctrl.virtualPages.push(pageDir.makeVirtualPages());
-                                pageDir.getHtml();
-                                resolve('Success!');
-
-                                // if sufficient virtual pages has received stop requesting new virtual pages
-                               /* if (ctrl.virtualPages.length > ctrl.minVirtualPages + 6) {
-                                    ctrl.minVirtualPages += 6;
-                                    resolve('Success!');
-                                }*/
+                                }
                             }
                         }
-
                     });
 
                 });
@@ -106,10 +118,11 @@
         function linkFn(scope, element, attrs, ctrls) {
             console.log('BOOKs LINK FUNCTION');
 
-            element.bind("turned", function(event, page, view) {
-                console.log("Page: "+page);
-                if(scope.ctrl.isPageLoadEnabled){
-                   console.log('loading next pages set....');
+            //
+            element.bind('turned', function (event, page, view) {
+                console.log("Page: " + page);
+                if (scope.ctrl.isPageLoadEnabled) {
+                    console.log('loading next pages set....');
                     scope.ctrl.loadNextPages();
                 }
 
@@ -118,17 +131,19 @@
             // load initial page set
             scope.ctrl.loadNextPages()
                 .then(function (response) {
+                    console.log(response);
+                    // remove the "loading..." view
                     document.getElementById('frontView').remove();
-                    element.turn({
+                    // initialize turnJS book
+                   /* element.turn({
                         width: scope.ctrl.width,
                         height: scope.ctrl.height,
                         autoCenter: scope.ctrl.autoCenter
-                    });
+                    });*/
                     scope.ctrl.isPageLoadEnabled = true;
 
                 }, function (error) {
                     console.error(error);
-
                 });
 
         }
@@ -136,13 +151,13 @@
 
         return {
             restrict: 'E',
-            scope: {},
+            scope: {}, // isolate book component's scope from user's app
             controller: bookCtrl,
             controllerAs: 'ctrl',
             link: linkFn,
-            replace: true,
+            replace: true, // replace <book> tag with <div> tag (turnJS reads only divs)
             transclude: true,
-            template: '<div id="angularTurnBook" ng-transclude></div>'
+            template: '<div ng-transclude></div>'
         };
 
     };
