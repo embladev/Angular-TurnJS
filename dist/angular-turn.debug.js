@@ -325,6 +325,7 @@ angular.module("angularTurn",[]);
                 return brokenPagesBuffer;
             }
 
+            // TODO:-  get different data for the template, from user
             // page template + $scope => compiled HTML content
             ctrl.getHtml = function (noOfDataPoints) {
 
@@ -346,6 +347,7 @@ angular.module("angularTurn",[]);
                 return compiledHtmlContent.html();
             }
 
+            // TODO:- break compiled HTML content in to pages
             // breaks HTML content in to pages,  move this to  common - util
             ctrl.breakPages = function (html) {
                 // Draw invisible page
