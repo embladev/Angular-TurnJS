@@ -58,7 +58,7 @@ angular.module("angularTurn",[]);
                 if (ctrl.virtualPagesBuffer.length <= 2) {
                     void 0;
                     ctrl.loadNextPages().then(function (response) {
-                            void 0;
+                           // console.log(response);
                           //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
 
                             ////////////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +120,7 @@ angular.module("angularTurn",[]);
                             if (pageDir.pageTemplate == null) {
                                 pageDir.loadTemplate()
                                     .then(function (response) {
-                                        void 0;
+                                        //console.log(response);
                                         //////////////////////////////////////////////////////////////////////////////////
                                         //  if there's enough content, request new virtual pages
                                         if (pageDir.hasMoreContent) {
@@ -182,8 +182,6 @@ angular.module("angularTurn",[]);
         }
 
         function linkFn(scope, element, attrs, ctrls) {
-            void 0;
-
             element.bind('turned', function (event, page, view) {
                 void 0;
                 void 0;
@@ -201,7 +199,7 @@ angular.module("angularTurn",[]);
             // load initial page set
             scope.ctrl.loadNextPages()
                 .then(function (response) {
-                    void 0;
+                   // console.log(response);
                     // remove the "loading..." view
                     document.getElementById('frontView').remove();
                     // initialize turnJS book
@@ -337,6 +335,7 @@ angular.module("angularTurn",[]);
                 });
 
                 void 0;
+                void 0;
                 return compiledHtmlContent.html();
             }
 
@@ -355,7 +354,6 @@ angular.module("angularTurn",[]);
         }
 
         function linkFn(scope, element, attrs, ctrls) {
-            void 0;
             pageDirId++;
             // create a controller instance of page directive with controller sent from user + isolate scope of page element
             $controller(attrs.ngbController, {

@@ -49,7 +49,7 @@
                 if (ctrl.virtualPagesBuffer.length <= 2) {
                     console.log('need more virtual pages.....');
                     ctrl.loadNextPages().then(function (response) {
-                            console.log(response);
+                           // console.log(response);
                           //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
 
                             ////////////////////////////////////////////////////////////////////////////////////////
@@ -111,7 +111,7 @@
                             if (pageDir.pageTemplate == null) {
                                 pageDir.loadTemplate()
                                     .then(function (response) {
-                                        console.log(response);
+                                        //console.log(response);
                                         //////////////////////////////////////////////////////////////////////////////////
                                         //  if there's enough content, request new virtual pages
                                         if (pageDir.hasMoreContent) {
@@ -173,8 +173,6 @@
         }
 
         function linkFn(scope, element, attrs, ctrls) {
-            console.log('BOOKs LINK FUNCTION');
-
             element.bind('turned', function (event, page, view) {
                 console.log('#########################################################');
                 console.log('current status:- ');
@@ -192,7 +190,7 @@
             // load initial page set
             scope.ctrl.loadNextPages()
                 .then(function (response) {
-                    console.log(response);
+                   // console.log(response);
                     // remove the "loading..." view
                     document.getElementById('frontView').remove();
                     // initialize turnJS book

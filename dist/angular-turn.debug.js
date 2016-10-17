@@ -58,7 +58,7 @@ angular.module("angularTurn",[]);
                 if (ctrl.virtualPagesBuffer.length <= 2) {
                     console.log('need more virtual pages.....');
                     ctrl.loadNextPages().then(function (response) {
-                            console.log(response);
+                           // console.log(response);
                           //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
 
                             ////////////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +120,7 @@ angular.module("angularTurn",[]);
                             if (pageDir.pageTemplate == null) {
                                 pageDir.loadTemplate()
                                     .then(function (response) {
-                                        console.log(response);
+                                        //console.log(response);
                                         //////////////////////////////////////////////////////////////////////////////////
                                         //  if there's enough content, request new virtual pages
                                         if (pageDir.hasMoreContent) {
@@ -182,8 +182,6 @@ angular.module("angularTurn",[]);
         }
 
         function linkFn(scope, element, attrs, ctrls) {
-            console.log('BOOKs LINK FUNCTION');
-
             element.bind('turned', function (event, page, view) {
                 console.log('#########################################################');
                 console.log('current status:- ');
@@ -201,7 +199,7 @@ angular.module("angularTurn",[]);
             // load initial page set
             scope.ctrl.loadNextPages()
                 .then(function (response) {
-                    console.log(response);
+                   // console.log(response);
                     // remove the "loading..." view
                     document.getElementById('frontView').remove();
                     // initialize turnJS book
@@ -336,7 +334,8 @@ angular.module("angularTurn",[]);
 
                 });
 
-                console.log('new compiled html content for new data point is, ', compiledHtmlContent.html());
+                console.log('new compiled html content for new data point is:-');
+                console.log(compiledHtmlContent.html());
                 return compiledHtmlContent.html();
             }
 
@@ -355,7 +354,6 @@ angular.module("angularTurn",[]);
         }
 
         function linkFn(scope, element, attrs, ctrls) {
-            console.log('run link function');
             pageDirId++;
             // create a controller instance of page directive with controller sent from user + isolate scope of page element
             $controller(attrs.ngbController, {

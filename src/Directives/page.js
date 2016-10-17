@@ -89,7 +89,8 @@
 
                 });
 
-                console.log('new compiled html content for new data point is, ', compiledHtmlContent.html());
+                console.log('new compiled html content for new data point is:-');
+                console.log(compiledHtmlContent.html());
                 return compiledHtmlContent.html();
             }
 
@@ -108,7 +109,6 @@
         }
 
         function linkFn(scope, element, attrs, ctrls) {
-            console.log('run link function');
             pageDirId++;
             // create a controller instance of page directive with controller sent from user + isolate scope of page element
             $controller(attrs.ngbController, {
