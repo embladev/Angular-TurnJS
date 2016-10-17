@@ -58,8 +58,8 @@ angular.module("angularTurn",[]);
                 if (ctrl.virtualPagesBuffer.length <= 2) {
                     void 0;
                     ctrl.loadNextPages().then(function (response) {
-                           // console.log(response);
-                          //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                            // console.log(response);
+                            //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
 
                             ////////////////////////////////////////////////////////////////////////////////////////
                             // if turn book hasn't got enough pages(not in the safe range...), add turn add 2 pages
@@ -72,6 +72,9 @@ angular.module("angularTurn",[]);
                             void 0;
                             $element.turn("addPage", page, ++ctrl.noOfActualPages);
 
+                            void 0;
+                            void 0;
+                            void 0;
                             void 0;
                             ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -86,7 +89,7 @@ angular.module("angularTurn",[]);
                         });
                 }
                 else {
-                  //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                    //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
                     ////////////////////////////////////////////////////////////////////////////////////////
                     // if turn book hasn't got enough pages(not in the safe range...), add turn add 2 pages
                     var page = ctrl.virtualPagesBuffer.shift();
@@ -97,6 +100,9 @@ angular.module("angularTurn",[]);
                     void 0;
                     $element.turn("addPage", page, ++ctrl.noOfActualPages);
 
+                    void 0;
+                    void 0;
+                    void 0;
                     void 0;
                     ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -127,7 +133,7 @@ angular.module("angularTurn",[]);
 
                                             // save received virtual pages
                                             ctrl.virtualPagesBuffer = ctrl.virtualPagesBuffer.concat(pageDir.makeVirtualPages(6));
-                                          //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                                            //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
 
                                             // if sufficient virtual pages has received stop requesting new virtual pages
                                             if (ctrl.virtualPagesBuffer[0].length >= 6) {
@@ -157,7 +163,7 @@ angular.module("angularTurn",[]);
 
                                     // save received virtual pages
                                     ctrl.virtualPagesBuffer = ctrl.virtualPagesBuffer.concat(pageDir.makeVirtualPages(6));
-                                   // console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                                    // console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
 
                                     // if sufficient virtual pages has received stop requesting new virtual pages
                                     if (ctrl.virtualPagesBuffer[0].length >= 6) {
@@ -199,7 +205,7 @@ angular.module("angularTurn",[]);
             // load initial page set
             scope.ctrl.loadNextPages()
                 .then(function (response) {
-                   // console.log(response);
+                    // console.log(response);
                     // remove the "loading..." view
                     document.getElementById('frontView').remove();
                     // initialize turnJS book
@@ -334,7 +340,8 @@ angular.module("angularTurn",[]);
 
                 });
 
-                void 0;
+               // console.log('new compiled html content for new data point is:-');
+               // console.log(compiledHtmlContent.html());
                 void 0;
                 return compiledHtmlContent.html();
             }
@@ -346,7 +353,7 @@ angular.module("angularTurn",[]);
 
                 //break based on tag
 
-                // this should return an object, {brokenPages:pages[], overflowHtmlContent:  }
+                // this should return an object, {brokenPages:['html1', 'html2', ......], overflowHtmlContent:  }
 
                 // dummy value (return 2 pages with no overFlowHtmlContent)
                 return {brokenPages:[html, html], overflowHtmlContent:''};

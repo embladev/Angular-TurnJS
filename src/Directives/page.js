@@ -89,8 +89,9 @@
 
                 });
 
-                console.log('new compiled html content for new data point is:-');
-                console.log(compiledHtmlContent.html());
+               // console.log('new compiled html content for new data point is:-');
+               // console.log(compiledHtmlContent.html());
+                console.log('**********new HTML compiled!!************');
                 return compiledHtmlContent.html();
             }
 
@@ -101,7 +102,7 @@
 
                 //break based on tag
 
-                // this should return an object, {brokenPages:pages[], overflowHtmlContent:  }
+                // this should return an object, {brokenPages:['html1', 'html2', ......], overflowHtmlContent:  }
 
                 // dummy value (return 2 pages with no overFlowHtmlContent)
                 return {brokenPages:[html, html], overflowHtmlContent:''};

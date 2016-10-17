@@ -58,8 +58,8 @@ angular.module("angularTurn",[]);
                 if (ctrl.virtualPagesBuffer.length <= 2) {
                     console.log('need more virtual pages.....');
                     ctrl.loadNextPages().then(function (response) {
-                           // console.log(response);
-                          //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                            // console.log(response);
+                            //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
 
                             ////////////////////////////////////////////////////////////////////////////////////////
                             // if turn book hasn't got enough pages(not in the safe range...), add turn add 2 pages
@@ -72,7 +72,10 @@ angular.module("angularTurn",[]);
                             console.log('new turn page added, page No:- ', ctrl.noOfActualPages + 1);
                             $element.turn("addPage", page, ++ctrl.noOfActualPages);
 
+                            console.log('new status:-');
+                            console.log('No of actual turn pages in the book:- ' + ctrl.noOfActualPages);
                             console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                            console.log('----------------------------');
                             ////////////////////////////////////////////////////////////////////////////////////////
 
                             // Async call to load new virtual pages, if not enough  --- refactor (if user turn another page before this call finishes.....)
@@ -86,7 +89,7 @@ angular.module("angularTurn",[]);
                         });
                 }
                 else {
-                  //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                    //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
                     ////////////////////////////////////////////////////////////////////////////////////////
                     // if turn book hasn't got enough pages(not in the safe range...), add turn add 2 pages
                     var page = ctrl.virtualPagesBuffer.shift();
@@ -97,7 +100,10 @@ angular.module("angularTurn",[]);
                     console.log('new turn page added, page No:- ', ctrl.noOfActualPages + 1);
                     $element.turn("addPage", page, ++ctrl.noOfActualPages);
 
+                    console.log('new status:-');
+                    console.log('No of actual turn pages in the book:- ' + ctrl.noOfActualPages);
                     console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                    console.log('----------------------------');
                     ////////////////////////////////////////////////////////////////////////////////////////
 
                     // Async call to load new virtual pages, if not enough  --- refactor (if user turn another page before this call finishes.....)
@@ -127,7 +133,7 @@ angular.module("angularTurn",[]);
 
                                             // save received virtual pages
                                             ctrl.virtualPagesBuffer = ctrl.virtualPagesBuffer.concat(pageDir.makeVirtualPages(6));
-                                          //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                                            //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
 
                                             // if sufficient virtual pages has received stop requesting new virtual pages
                                             if (ctrl.virtualPagesBuffer[0].length >= 6) {
@@ -157,7 +163,7 @@ angular.module("angularTurn",[]);
 
                                     // save received virtual pages
                                     ctrl.virtualPagesBuffer = ctrl.virtualPagesBuffer.concat(pageDir.makeVirtualPages(6));
-                                   // console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                                    // console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
 
                                     // if sufficient virtual pages has received stop requesting new virtual pages
                                     if (ctrl.virtualPagesBuffer[0].length >= 6) {
@@ -185,7 +191,7 @@ angular.module("angularTurn",[]);
             element.bind('turned', function (event, page, view) {
                 console.log('#########################################################');
                 console.log('current status:- ');
-                console.log('No of actual turn pages in the book:- ',scope.ctrl.noOfActualPages);
+                console.log('No of actual turn pages in the book:- ', scope.ctrl.noOfActualPages);
                 console.log('virtual pages buffer size:- ', scope.ctrl.virtualPagesBuffer.length);
                 console.log('----------------------------');
                 console.log("Turned to a new page: " + page);
@@ -199,7 +205,7 @@ angular.module("angularTurn",[]);
             // load initial page set
             scope.ctrl.loadNextPages()
                 .then(function (response) {
-                   // console.log(response);
+                    // console.log(response);
                     // remove the "loading..." view
                     document.getElementById('frontView').remove();
                     // initialize turnJS book
@@ -334,8 +340,9 @@ angular.module("angularTurn",[]);
 
                 });
 
-                console.log('new compiled html content for new data point is:-');
-                console.log(compiledHtmlContent.html());
+               // console.log('new compiled html content for new data point is:-');
+               // console.log(compiledHtmlContent.html());
+                console.log('**********new HTML compiled!!************');
                 return compiledHtmlContent.html();
             }
 
@@ -346,7 +353,7 @@ angular.module("angularTurn",[]);
 
                 //break based on tag
 
-                // this should return an object, {brokenPages:pages[], overflowHtmlContent:  }
+                // this should return an object, {brokenPages:['html1', 'html2', ......], overflowHtmlContent:  }
 
                 // dummy value (return 2 pages with no overFlowHtmlContent)
                 return {brokenPages:[html, html], overflowHtmlContent:''};
