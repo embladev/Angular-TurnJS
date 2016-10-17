@@ -74,6 +74,7 @@
                 return brokenPagesBuffer;
             }
 
+            // TODO:-  get different data for the template, from user
             // page template + $scope => compiled HTML content
             ctrl.getHtml = function (noOfDataPoints) {
 
@@ -89,10 +90,13 @@
 
                 });
 
-                console.log('new compiled html content for new data point is, ', compiledHtmlContent.html());
+               // console.log('new compiled html content for new data point is:-');
+               // console.log(compiledHtmlContent.html());
+                console.log('**********new HTML compiled!!************');
                 return compiledHtmlContent.html();
             }
 
+            // TODO:- break compiled HTML content in to pages
             // breaks HTML content in to pages,  move this to  common - util
             ctrl.breakPages = function (html) {
                 // Draw invisible page
@@ -100,7 +104,7 @@
 
                 //break based on tag
 
-                // this should return an object, {brokenPages:pages[], overflowHtmlContent:  }
+                // this should return an object, {brokenPages:['html1', 'html2', ......], overflowHtmlContent:  }
 
                 // dummy value (return 2 pages with no overFlowHtmlContent)
                 return {brokenPages:[html, html], overflowHtmlContent:''};
@@ -108,7 +112,6 @@
         }
 
         function linkFn(scope, element, attrs, ctrls) {
-            console.log('run link function');
             pageDirId++;
             // create a controller instance of page directive with controller sent from user + isolate scope of page element
             $controller(attrs.ngbController, {

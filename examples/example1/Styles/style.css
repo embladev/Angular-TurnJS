@@ -10,6 +10,19 @@ body{
     text-align:center;
 }
 
+.pageBorder{
+    margin: 0 20px 0 20px;
+}
+
+img{
+    display: block;
+    border-radius: 8px;
+    max-width: 100%;
+    height: auto;
+    margin: auto;
+
+}
+
 
 /* default turn Styles*/
 
@@ -20,7 +33,7 @@ body{
     text-align:center;
 }
 
-.hard{
+/*.hard{
     background:#80dfff !important;
     color:#333;
     -webkit-box-shadow:inset 0 0 5px #666;
@@ -29,7 +42,7 @@ body{
     -ms-box-shadow:inset 0 0 5px #666;
     box-shadow:inset 0 0 5px #666;
     font-weight:bold;
-}
+}*/
 #frontView{
     opacity:1;
     background-color:#ccc;

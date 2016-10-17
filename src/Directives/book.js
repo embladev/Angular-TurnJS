@@ -49,8 +49,8 @@
                 if (ctrl.virtualPagesBuffer.length <= 2) {
                     console.log('need more virtual pages.....');
                     ctrl.loadNextPages().then(function (response) {
-                            console.log(response);
-                          //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                            // console.log(response);
+                            //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
 
                             ////////////////////////////////////////////////////////////////////////////////////////
                             // if turn book hasn't got enough pages(not in the safe range...), add turn add 2 pages
@@ -63,7 +63,10 @@
                             console.log('new turn page added, page No:- ', ctrl.noOfActualPages + 1);
                             $element.turn("addPage", page, ++ctrl.noOfActualPages);
 
+                            console.log('new status:-');
+                            console.log('No of actual turn pages in the book:- ' + ctrl.noOfActualPages);
                             console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                            console.log('----------------------------');
                             ////////////////////////////////////////////////////////////////////////////////////////
 
                             // Async call to load new virtual pages, if not enough  --- refactor (if user turn another page before this call finishes.....)
@@ -77,7 +80,7 @@
                         });
                 }
                 else {
-                  //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                    //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
                     ////////////////////////////////////////////////////////////////////////////////////////
                     // if turn book hasn't got enough pages(not in the safe range...), add turn add 2 pages
                     var page = ctrl.virtualPagesBuffer.shift();
@@ -88,7 +91,10 @@
                     console.log('new turn page added, page No:- ', ctrl.noOfActualPages + 1);
                     $element.turn("addPage", page, ++ctrl.noOfActualPages);
 
+                    console.log('new status:-');
+                    console.log('No of actual turn pages in the book:- ' + ctrl.noOfActualPages);
                     console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                    console.log('----------------------------');
                     ////////////////////////////////////////////////////////////////////////////////////////
 
                     // Async call to load new virtual pages, if not enough  --- refactor (if user turn another page before this call finishes.....)
@@ -111,14 +117,14 @@
                             if (pageDir.pageTemplate == null) {
                                 pageDir.loadTemplate()
                                     .then(function (response) {
-                                        console.log(response);
+                                        //console.log(response);
                                         //////////////////////////////////////////////////////////////////////////////////
                                         //  if there's enough content, request new virtual pages
                                         if (pageDir.hasMoreContent) {
 
                                             // save received virtual pages
                                             ctrl.virtualPagesBuffer = ctrl.virtualPagesBuffer.concat(pageDir.makeVirtualPages(6));
-                                          //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                                            //  console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
 
                                             // if sufficient virtual pages has received stop requesting new virtual pages
                                             if (ctrl.virtualPagesBuffer[0].length >= 6) {
@@ -148,7 +154,7 @@
 
                                     // save received virtual pages
                                     ctrl.virtualPagesBuffer = ctrl.virtualPagesBuffer.concat(pageDir.makeVirtualPages(6));
-                                   // console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
+                                    // console.log('virtualPagesBuffer size is ', ctrl.virtualPagesBuffer.length);
 
                                     // if sufficient virtual pages has received stop requesting new virtual pages
                                     if (ctrl.virtualPagesBuffer[0].length >= 6) {
@@ -173,12 +179,10 @@
         }
 
         function linkFn(scope, element, attrs, ctrls) {
-            console.log('BOOKs LINK FUNCTION');
-
             element.bind('turned', function (event, page, view) {
                 console.log('#########################################################');
                 console.log('current status:- ');
-                console.log('No of actual turn pages in the book:- ',scope.ctrl.noOfActualPages);
+                console.log('No of actual turn pages in the book:- ', scope.ctrl.noOfActualPages);
                 console.log('virtual pages buffer size:- ', scope.ctrl.virtualPagesBuffer.length);
                 console.log('----------------------------');
                 console.log("Turned to a new page: " + page);
@@ -192,7 +196,7 @@
             // load initial page set
             scope.ctrl.loadNextPages()
                 .then(function (response) {
-                    console.log(response);
+                    // console.log(response);
                     // remove the "loading..." view
                     document.getElementById('frontView').remove();
                     // initialize turnJS book
