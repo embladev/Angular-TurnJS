@@ -85,7 +85,15 @@ template2.html
 
 ## For developers
 
-At project root directory start the gulp watch
+ 1 clone the repository 
+```
+git clone https://github.com/embladev/Angular-TurnJS.git
+```
+ 2 install dependencies 
+```
+npm install
+```
+ 3 start the gulp watch
 ````
 gulp watch 
 ````
