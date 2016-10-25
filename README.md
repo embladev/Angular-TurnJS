@@ -82,3 +82,10 @@ template2.html
 - ngb-autoCenter - centers the book depending on how many pages are visible
 - ngb-template - url of the html template for the page
 - ngb-controller - controller name for the page
+
+## For developers
+
+At project root directory start the gulp watch
+````
+gulp watch 
+````
