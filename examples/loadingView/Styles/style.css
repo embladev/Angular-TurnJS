@@ -1,0 +1,40 @@
+/*User styles*/
+
+body {
+    background: #ccc;
+}
+
+.bookContainer {
+    margin:50px;
+    height:400px;
+}
+
+#b1 .page {
+    background-color: white;
+
+}
+
+#b2 .page {
+    background-color: green;
+}
+
+#loader1{
+    background-color: cornsilk;
+    border-style: solid;
+    text-align: center;
+    line-height: 190px;
+}
+
+
+#loader2{
+    background-color: cadetblue;
+    border-style: solid;
+    text-align: center;
+    line-height: 190px;
+}
+
+.myPage{
+
+}
+
+

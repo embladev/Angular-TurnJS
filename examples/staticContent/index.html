@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="../tools/jquery.min.js"></script>
+    <script type="text/javascript" src="../tools/angular.min.js"></script>
+    <script type="text/javascript" src="../tools/turn.min.js"></script>
+    <script type="text/javascript" src="../../dist/angular-turn.debug.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+    <link rel="stylesheet" type="text/css" href="Styles/style.css">
+</head>
+
+<body>
+<div ng-app="appMain" ng-controller="ctrlMain">
+
+    <div class="bookContainer">
+        <book ngb-height="600" ngb-width="1000" ngb-autocenter="true" load>
+            <page>
+                <div>
+                    <div class="pageBorder">
+                        <strong>Ronaldinho"</strong>
+                        <br><img ng-src="img/ronaldino.jpg"/><br>
+                        Ronaldo de Assis Moreira (born 21 March 1980), commonly known as Ronaldinho, is a Brazilian
+                        professional footballer and current club ambassador for Spanish club FC Barcelona after signing
+                        for
+                        them in September 2016.
+                    </div>
+                </div>
+            </page>
+
+            <page>
+                <div>
+                    <div class="pageBorder">
+                        <strong>Kumar Sangakkara</strong>
+                        <br><img ng-src="img/sanga.jpg"/><br>
+                        Kumar Sanga Chokshanada Sangakkara is a former Sri Lankan cricketer and captain of the Sri
+                        Lankan national team. Widely regarded as one of the world's most influential
+                        cricketers,Sangakkara rated as the second greatest ODI batsman of all time in a recent public
+                        poll.
+                    </div>
+                </div>
+
+            </page>
+
+            <page>
+                <div>
+                    <div class="pageBorder">
+                        <strong>Cristiano Ronaldo</strong>
+                        <br><img ng-src="img/cristiano.jpg"/><br>
+                        Cristiano Ronaldo dos Santos Aveiro, ComM, GOIH born 5 February 1985) is a Portuguese
+                        professional footballer who plays for Spanish club Real Madrid and the Portugal national team.
+                    </div>
+                </div>
+            </page>
+
+            <page></page>
+        </book>
+    </div>
+</div>
+</body>
+</html>
+

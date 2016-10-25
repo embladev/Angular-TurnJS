@@ -1,0 +1,32 @@
+/*User styles*/
+
+body{
+    background:#ccc;
+}
+
+.pageBorder{
+    margin: 0 20px 0 20px;
+}
+
+img{
+    display: block;
+    border-radius: 8px;
+    max-width: 100%;
+    height: 230px;
+    margin: auto;
+
+}
+
+
+/* default turn Styles*/
+
+.turn-page{
+    background-color:white;
+    line-height:35px;
+    font-size:20px;
+    text-align:center;
+}
+
+.hard{
+}
+

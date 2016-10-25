@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="../tools/jquery.min.js"></script>
+    <script type="text/javascript" src="../tools/angular.min.js"></script>
+    <script type="text/javascript" src="../tools/turn.min.js"></script>
+    <script type="text/javascript" src="../../dist/angular-turn.debug.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+    <link rel="stylesheet" type="text/css" href="Styles/style.css">
+</head>
+
+<body>
+<div ng-app="appMain" ng-controller="ctrlMain">
+    <div class="bookContainer">
+        <book ngb-height="400" ngb-width="600" ngb-autocenter="true" id="b1">
+            <loader id="loader1">
+            <h3>Book 1 Loading...</h3>
+        </loader>
+            </page>
+            <page>
+               Book 1 page 1
+            </page>
+
+            <page class="myPage">
+                page 2
+            </page>
+
+            <page class="myPage">
+                page 3
+            </page>
+
+            <page class="myPage">
+                page 4
+            </page>
+            <page class="myPage">
+                page 5
+            </page>
+        </book>
+    </div>
+
+    <div class="bookContainer">
+        <book ngb-height="400" ngb-width="600" ngb-autocenter="true" id="b2">
+            <loader id="loader2">
+                <h3>Book 2 Loading...</h3>
+            </loader>
+            <page class="myPage">
+               Book 2 page 1
+            </page>
+
+            <page class="myPage">
+                page 2
+            </page>
+
+            <page class="myPage">
+                page 3
+            </page>
+
+            <page class="myPage">
+                page 4
+            </page>
+            <page class="myPage">
+                page 5
+            </page>
+        </book>
+    </div>
+
+</div>
+</body>
+</html>
