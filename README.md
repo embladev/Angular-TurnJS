@@ -5,7 +5,7 @@
 * Clone repository
 git clone [url]
 
-Runtime
+* Runtime
 npm install  ( to install the all the gulp dependancies )
 gulp test-server to start the local server
 
