@@ -9,7 +9,6 @@
      * @name  angularTurn.book
      * @description  book directive for Angular-TurnJS wrapper
      */
-
     var bookDir = function ($timeout, $compile) {
 
         var bookCtrl = function ($scope, $element, $attrs) {
