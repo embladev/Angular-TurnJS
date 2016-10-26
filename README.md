@@ -1,5 +1,14 @@
 # AngularJS Wrapper for [TurnJS](http://www.turnjs.com/)
 
+##Quick Developer start up
+
+* Clone repository
+git clone [url]
+
+Runtime
+npm install  ( to install the all the gulp dependancies )
+gulp test-server to start the local server
+
 ##Quick Start
 
 - install Angular-TurnJS with npm
