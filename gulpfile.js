@@ -1,8 +1,16 @@
-var gulp = require('gulp');
-var concat = require('gulp-concat');
-var minify = require('gulp-minify');
-var stripDebug = require('gulp-strip-debug');
-var rename = require('gulp-rename');
+// Initialize dependancies
+var gulp 		= require('gulp');
+var concat 		= require('gulp-concat');
+var minify 		= require('gulp-minify');
+var stripDebug 	= require('gulp-strip-debug');
+var rename 		= require('gulp-rename');
+var connect		= require('gulp-connect');              // Stand alone server for testing purposes
+
+/*
+ *
+ *         Default compile function / copy to distribution
+ *
+ */
 
 gulp.task('default', function () {
   gulp.src(['src/**/module.js', 'src/**/*.js'])
@@ -18,6 +26,12 @@ gulp.task('default', function () {
 		    }))
 		    .pipe(gulp.dest('./dist'))
 		})
+
+/*
+ *
+ *         Watch task
+ *
+ */
 
 gulp.task('watch', ['default'], function () {
   gulp.watch('src/**/*.js', ['default'])
