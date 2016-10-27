@@ -30,7 +30,7 @@ GitHub.sublime-settings
 
 ### VisualStudioCode ###
 .vscode/*
-
+dist/
 
 ### VisualStudio ###
 ## Ignore Visual Studio temporary files, build results, and
@@ -56,7 +56,6 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
-dist/
 
 # Visual Studio 2015 cache/options directory
 .vs/
