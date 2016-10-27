@@ -1,10 +1,10 @@
 // Initialize dependancies
-var gulp 		= require('gulp');
-var concat 		= require('gulp-concat');
-var minify 		= require('gulp-minify');
-var stripDebug 	= require('gulp-strip-debug');
-var rename 		= require('gulp-rename');
-var connect		= require('gulp-connect');              // Stand alone server for testing purposes
+var gulp = require('gulp');
+var concat = require('gulp-concat');
+var minify = require('gulp-minify');
+var stripDebug = require('gulp-strip-debug');
+var rename = require('gulp-rename');
+var connect = require('gulp-connect');              // Stand alone server for testing purposes
 
 /*
  *
@@ -13,19 +13,19 @@ var connect		= require('gulp-connect');              // Stand alone server for t
  */
 
 gulp.task('default', function () {
-  gulp.src(['src/**/module.js', 'src/**/*.js'])
-      .pipe(concat('angular-turn.debug.js'))      
-        .pipe(gulp.dest('./dist'))  
-         .pipe(rename('angular-turn.js'))
-        .pipe(stripDebug())   
-		.pipe(minify({
-		        ext:{
-		            src:'.js',
-		            min:'.min.js'
-		        }
-		    }))
-		    .pipe(gulp.dest('./dist'))
-		})
+    gulp.src(['src/**/module.js', 'src/**/*.js'])
+        .pipe(concat('angular-turn.debug.js'))
+        .pipe(gulp.dest('./dist'))
+        .pipe(rename('angular-turn.js'))
+        .pipe(stripDebug())
+        .pipe(minify({
+            ext: {
+                src: '.js',
+                min: '.min.js'
+            }
+        }))
+        .pipe(gulp.dest('./dist'))
+})
 
 /*
  *
@@ -34,7 +34,8 @@ gulp.task('default', function () {
  */
 
 gulp.task('watch', ['default'], function () {
-  gulp.watch('src/**/*.js', ['default'])
+    connect.server(serverConfig);
+    gulp.watch('src/**/*.js', ['default'])
 })
 
 var serverConfig = {

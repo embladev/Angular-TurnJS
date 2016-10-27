@@ -11,14 +11,13 @@
 
     var dir = function ($controller) {
 
-
-
         var loaderCtrl = function ($scope, $element, $attrs) {
-
+            console.log('loader controller');
         }
 
         function linkFn(scope, element, attrs, ctrl) {
             //element.css("border-style", "solid");
+            console.log('loader link');
             ctrl.setLoader(element);
 
         }

@@ -93,23 +93,24 @@ git clone https://github.com/embladev/Angular-TurnJS.git
 ```
 npm install
 ```
- 3 start the gulp watch
+ 3 start the gulp watch. This will start a server at  http://localhost:9001 and watch changes to src.
 ````
 gulp watch 
 ````
 
-## Flow ( without transclude )
+## Flow ( with transclude )
 Book.ctrl
 Loader.Ctrl
 Loader.Linkfn
 Page.Ctrl
-    bookCtrl.register(ctrls[1]);    
+    bookCtrl.register(pageCtrl);    
 Page.Linkfn
 Page.Ctrl
-    bookCtrl.register(ctrls[1]);    
+    bookCtrl.register(pageCtrl);    
 Page.Linkfn
 Book.Linkfn   
-        bind event
-        turnJS
-
-## Flow ( with transclude )            
+    bind event
+    load first page set 
+        then initialize turnJS
+            add first set of pages to the book
+                     

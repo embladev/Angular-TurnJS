@@ -11,8 +11,8 @@
      */
 
     var bookDir = function ($timeout, $compile) {
-
         var bookCtrl = function ($scope, $element, $attrs) {
+            console.log('book constroller');
             var ctrl = this;
             ctrl.loader;
             ctrl.pageDirCtrls = [];
@@ -56,7 +56,7 @@
         }
 
         function linkFn(scope, element, attrs) {
-
+            console.log('book link');
             $timeout(   // just to demo the loading page
                 function () {
 

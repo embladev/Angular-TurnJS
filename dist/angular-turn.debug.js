@@ -20,8 +20,8 @@ angular.module("angularTurn",[]);
      */
 
     var bookDir = function ($timeout, $compile) {
-
         var bookCtrl = function ($scope, $element, $attrs) {
+            console.log('book constroller');
             var ctrl = this;
             ctrl.loader;
             ctrl.pageDirCtrls = [];
@@ -65,7 +65,7 @@ angular.module("angularTurn",[]);
         }
 
         function linkFn(scope, element, attrs) {
-
+            console.log('book link');
             $timeout(   // just to demo the loading page
                 function () {
 
@@ -120,14 +120,13 @@ angular.module("angularTurn",[]);
 
     var dir = function ($controller) {
 
-
-
         var loaderCtrl = function ($scope, $element, $attrs) {
-
+            console.log('loader controller');
         }
 
         function linkFn(scope, element, attrs, ctrl) {
             //element.css("border-style", "solid");
+            console.log('loader link');
             ctrl.setLoader(element);
 
         }
@@ -159,9 +158,9 @@ angular.module("angularTurn",[]);
     var pageDir = function ($controller) {
         var bookCtrl;
         var pageDirId = 0;
-
         // page directive controller (a instance of this is sent and sored in book dir controller)
-        function internalCtrl($scope, $element, $attrs, $http, $compile, $timeout) {
+        function pageCtrl($scope, $element, $attrs, $http, $compile, $timeout) {
+            console.log('page controller');
             var ctrl = this;
 
             //page properties
@@ -195,6 +194,7 @@ angular.module("angularTurn",[]);
         }
 
         function linkFn(scope, element, attrs, ctrls) {
+            console.log('page link');
             element[0].style.display = 'none';
             pageDirId++;
 
@@ -213,7 +213,7 @@ angular.module("angularTurn",[]);
             require: ["^book", "page"],
             link: linkFn,
             scope: {}, // isolate page instance's scope from user's angular app
-            controller: internalCtrl,
+            controller: pageCtrl,
             controllerAs: 'ctrl',
            // replace: true, // replace <page> tag with <div> tag (turnJS reads only divs)
             transclude: true,

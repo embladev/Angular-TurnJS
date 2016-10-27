@@ -12,9 +12,9 @@
     var pageDir = function ($controller) {
         var bookCtrl;
         var pageDirId = 0;
-
         // page directive controller (a instance of this is sent and sored in book dir controller)
-        function internalCtrl($scope, $element, $attrs, $http, $compile, $timeout) {
+        function pageCtrl($scope, $element, $attrs, $http, $compile, $timeout) {
+            console.log('page controller');
             var ctrl = this;
 
             //page properties
@@ -48,6 +48,7 @@
         }
 
         function linkFn(scope, element, attrs, ctrls) {
+            console.log('page link');
             element[0].style.display = 'none';
             pageDirId++;
 
@@ -66,7 +67,7 @@
             require: ["^book", "page"],
             link: linkFn,
             scope: {}, // isolate page instance's scope from user's angular app
-            controller: internalCtrl,
+            controller: pageCtrl,
             controllerAs: 'ctrl',
            // replace: true, // replace <page> tag with <div> tag (turnJS reads only divs)
             transclude: true,
