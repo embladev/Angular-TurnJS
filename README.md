@@ -93,9 +93,9 @@ git clone https://github.com/embladev/Angular-TurnJS.git
 ```
 npm install
 ```
- 3 start the gulp watch. This will start a server at  http://localhost:9001 and watch changes to src.
+ 3 start the server. This will start a server at  http://localhost:9001 and watch changes to src.
 ````
-gulp watch 
+gulp server 
 ````
 
 ## Flow ( with transclude )

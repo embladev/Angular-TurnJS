@@ -33,10 +33,7 @@ gulp.task('default', function () {
  *
  */
 
-gulp.task('watch', ['default'], function () {
-    connect.server(serverConfig);
-    gulp.watch('src/**/*.js', ['default'])
-})
+
 
 var serverConfig = {
     root: ".",
@@ -47,8 +44,9 @@ var serverConfig = {
  *         Start standalone server
  *
  */
-gulp.task('server', function () {
+gulp.task('server',['default'], function () {
     connect.server(serverConfig);
+    gulp.watch('src/**/*.js', ['default'])  // watch src files
     //open('http://localhost:' + serverConfig.port);
 });
 
