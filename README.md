@@ -97,3 +97,19 @@ npm install
 ````
 gulp watch 
 ````
+
+## Flow ( without transclude )
+Book.ctrl
+Loader.Ctrl
+Loader.Linkfn
+Page.Ctrl
+    bookCtrl.register(ctrls[1]);    
+Page.Linkfn
+Page.Ctrl
+    bookCtrl.register(ctrls[1]);    
+Page.Linkfn
+Book.Linkfn   
+        bind event
+        turnJS
+
+## Flow ( with transclude )            
