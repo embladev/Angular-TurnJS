@@ -1,5 +1,5 @@
 /**
- * by malithJKMT
+ * by malithJKMT,Chandimal
  */
 (function () {
     'use strict';
@@ -11,28 +11,38 @@
      */
 
     var bookDir = function ($timeout, $compile) {
+
         var bookCtrl = function ($scope, $element, $attrs) {
-            console.log('book constroller');
+            console.log('BookCtrl:Init-Start');
             var ctrl = this;
             ctrl.loader;
-            ctrl.pageDirCtrls = [];
-            ctrl.height = $attrs.ngbHeight;
-            ctrl.width = $attrs.ngbWidth;
-            ctrl.autoCenter = $attrs.ngbAutocenter;
+            ctrl.pageDirCtrls   = [];
+            ctrl.height         = $attrs.ngbHeight;
+            ctrl.width          = $attrs.ngbWidth;
+            ctrl.autoCenter     = $attrs.ngbAutocenter;
+            ctrl.loaderElem     = {};
 
             /******************Book controller functions***********************/
             // store page dir instances
-            ctrl.register = function (pageDirCtrl) {
+            ctrl.addPage = function (pageDirCtrl) {
 
                 // handover the token to first page directive
                 if (ctrl.isFirstDir) {
                     ctrl.isFirstDir = false;
                     pageDirCtrl.hasToken = true;
-                }
-                console.log(pageDirCtrl);
+                }                
                 ctrl.pageDirCtrls.push(pageDirCtrl);
-
             }
+            ctrl.addLoader = function (loaderCtrl) {
+                
+                ctrl.loaderElem = angular.element('<div id="'+loaderCtrl.id+'" class="'+loaderCtrl.class+'">' + loaderCtrl.element.html() + '<div>'); 
+                ctrl.loaderElem.css("position", 'absolute');
+                ctrl.loaderElem.css("height",  ctrl.height);
+                ctrl.loaderElem.css("width",   ctrl.width); 
+                ctrl.loaderElem.css("border-style", "solid"); // TODO: Remove : For testing purpose only
+                $element.parent().append(ctrl.loaderElem);
+            }
+
             ctrl.turnPageForward = function () {
 
             }
@@ -40,23 +50,16 @@
 
             };
             ctrl.hideLoader = function () {
-                if (ctrl.loader) {
-                    ctrl.loader[0].style.display = 'none';
+                if (ctrl.loaderElem) {
+                    ctrl.loaderElem.hide();
                 }
             }
-            ctrl.setLoader = function (elem) {
-                elem.css("position", 'absolute');
-                elem.css("height", ctrl.height);
-                elem.css("width", ctrl.width);
-                ctrl.loader = elem;
-            }
-
-            console.log('initializing the book.....');
-
+            
+            console.log('BookCtrl:Init-End');
         }
 
         function linkFn(scope, element, attrs) {
-            console.log('book link');
+            console.log('BookCtrl:Link-Start');
             $timeout(   // just to demo the loading page
                 function () {
 
@@ -81,9 +84,9 @@
                 }
                 , 2000
             );
-
-
+            console.log('BookCtrl:Link-End');
         }
+        
 
         return {
             restrict: 'E',

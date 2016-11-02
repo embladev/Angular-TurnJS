@@ -14,7 +14,7 @@
         var pageDirId = 0;
         // page directive controller (a instance of this is sent and sored in book dir controller)
         function pageCtrl($scope, $element, $attrs, $http, $compile, $timeout) {
-            console.log('page controller');
+            console.log('PageCtrl:Init-Start');
             var ctrl = this;
 
             //page properties
@@ -45,21 +45,23 @@
             // breaks HTML content in to pages,  move this to  common - util
             ctrl.breakPages = function (html) {
             }
+
+            console.log('PageCtrl:Init-End');
         }
 
         function linkFn(scope, element, attrs, ctrls) {
-            console.log('page link');
+            console.log('PageCtrl:Link-Start');
             element[0].style.display = 'none';
             pageDirId++;
 
             scope.ctrl.innerHTML = element.html();
             // add classes, ids, 'hard' style to the new element
 
-
             bookCtrl = ctrls[0];
 
             // send page directive's controller instance to book directive's controller
-            bookCtrl.register(ctrls[1]);
+            bookCtrl.addPage(ctrls[1]);
+            console.log('PageCtrl:Link-End');
         }
 
         return {

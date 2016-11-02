@@ -1,6 +1,10 @@
 /**
- * by malithJKMT
+ * @author malithJKMT,chandimal@embla.asia
+ * @description
+ * Loader configuration directive
+ * @copyright 2016 Embla Software Innovation (Pvt) Ltd All rights reserved.
  */
+
 (function () {
     'use strict';
     /**
@@ -8,28 +12,42 @@
      * @name  angularTurn.page
      * @description  page directive for Angular-TurnJS wrapper
      */
-
     var dir = function ($controller) {
 
+        /**
+         * @ngdoc controller
+         * @name  angularTurn.loader
+         * @description Loader controller
+         */
         var loaderCtrl = function ($scope, $element, $attrs) {
-            console.log('loader controller');
+            console.log('LoaderCtrl:Init-Start');           
+            this.id             = $attrs.id;
+            this.class          = $attrs.class;
+            this.element        = $element;
+            console.log('LoaderCtrl:Init-End');
         }
 
-        function linkFn(scope, element, attrs, ctrl) {
-            //element.css("border-style", "solid");
-            console.log('loader link');
-            ctrl.setLoader(element);
-
+        /**
+         * @ngdoc linkFn
+         * @name  angularTurn.loader
+         * @description Loader link function
+         */
+        function linkFn(scope, element, attrs, bookCtrl) {           
+            element.hide();
+            console.log('LoaderCtrl:Link-Start');
+            bookCtrl.addLoader(scope.ctrl);
+            console.log('LoaderCtrl:Link-End');
         }
 
         return {
             restrict: 'E',
             require: '^book',
             replace:true,
-            link: linkFn,
+            link: linkFn, 
+            controllerAs: 'ctrl',           
            //scope: {}, // isolate page instance's scope from user's angular app
-            transclude: true,
-            template: '<div ng-transclude></div>',
+            //transclude: true,
+            //template: '<div ng-transclude></div>',
             controller:loaderCtrl
         }
     }
