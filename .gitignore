@@ -30,7 +30,7 @@ GitHub.sublime-settings
 
 ### VisualStudioCode ###
 .vscode/*
-dist/
+dist/*
 
 ### VisualStudio ###
 ## Ignore Visual Studio temporary files, build results, and
