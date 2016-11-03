@@ -8,6 +8,8 @@
      * @ngdoc directive
      * @name  angularTurn.book
      * @description  book directive for Angular-TurnJS wrapper
+     * facts : 
+     * Book has the same scope as the parent ( to compile inline page content )
      */
 
     var bookDir = function ($timeout, $compile) {
@@ -35,7 +37,9 @@
             }
             ctrl.addLoader = function (loaderCtrl) {
                 
-                ctrl.loaderElem = angular.element('<div id="'+loaderCtrl.id+'" class="ngTurn-loader">' + loaderCtrl.element.html() + '<div>'); 
+                ctrl.loaderElem = angular.element('<div id="'+loaderCtrl.id+'" class="ngTurn-loader">' + loaderCtrl.element.html() + '<div>');
+                // complie and connect the parent scope 
+                var content = $compile(ctrl.loaderElem)($scope);                
                 $element.parent().append(ctrl.loaderElem);
             }
 
@@ -85,12 +89,10 @@
         
 
         return {
-            restrict: 'E',
-            scope: {}, // isolate book component's scope from user's app
+            restrict: 'E',            
             controller: bookCtrl,
             controllerAs: 'ctrl',
-            link: linkFn,
-           // replace: true, // replace <book> tag with <div> tag (turnJS reads only divs)
+            link: linkFn,           
             transclude: true,
             template: '<div ng-transclude></div>'
         };

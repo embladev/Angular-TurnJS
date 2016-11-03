@@ -1,0 +1,30 @@
+/*
+
+    User styles
+
+*/
+body {
+    background: #ccc;
+}
+
+.bookContainer {
+    margin:50px;
+    height:400px;
+    width:650px;
+    background-color:dimgray;
+    border-style:solid
+}
+
+/* book page styling */
+#b1 .page {
+    background-color: white;
+}
+
+/* overriding ngTurn styles */
+.ngTurn-loader{    
+    background:aqua;
+}
+
+
+
+

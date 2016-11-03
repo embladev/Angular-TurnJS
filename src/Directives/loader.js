@@ -34,21 +34,18 @@
          */
         function linkFn(scope, element, attrs, bookCtrl) {           
             element.hide();
-            console.log('LoaderCtrl:Link-Start');
-            bookCtrl.addLoader(scope.ctrl);
+            console.log('LoaderCtrl:Link-Start' + element.html());            
+            bookCtrl.addLoader(scope.ctrl);         // binded to scope as "ctrl"
             console.log('LoaderCtrl:Link-End');
         }
 
         return {
             restrict: 'E',
-            require: '^book',
-            replace:true,
+            require: '^book',            
             link: linkFn, 
-            controllerAs: 'ctrl',           
-           //scope: {}, // isolate page instance's scope from user's angular app
-            //transclude: true,
-            //template: '<div ng-transclude></div>',
-            controller:loaderCtrl
+            controllerAs: 'ctrl',
+            controller:loaderCtrl,
+            scope:false
         }
     }
     angular.module("angularTurn").directive('loader', dir);

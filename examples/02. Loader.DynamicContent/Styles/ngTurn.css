@@ -1,0 +1,16 @@
+/* 
+
+    ngTurn style 
+
+*/
+/* All elements using ngTurn will use "ngTurn" prefix */
+/* Loader element for styling */
+.ngTurn-loader{
+    margin:0 auto;
+    border-style: solid;    
+    height:400px;
+    width:300px;
+    background:bisque;
+}
+
+
