@@ -6,29 +6,31 @@
     <script type="text/javascript" src="../tools/turn.min.js"></script>
     <script type="text/javascript" src="../../dist/angular-turn.debug.js"></script>
     <script type="text/javascript" src="app.js"></script>
+    <link rel="stylesheet" type="text/css" href="Styles/ngTurn.css">
     <link rel="stylesheet" type="text/css" href="Styles/style.css">
 </head>
 
 <body>
 <div ng-app="appMain" ng-controller="ctrlMain">
     <div class="bookContainer">
+        
         <book ngb-height="400" ngb-width="600" ngb-autocenter="true" id="b1">
             <loader id="loader1">
-                <h3>Book 1 Loading...</h3>
+                <h3>Book 1 - loader</h3>
             </loader>            
             <page>
-               Book 1 page 1
+                Book 1 - page 1
             </page>
 
             <page class="myPage">
-                page 2
+                Book 1 - page 2
             </page>
 
             <page class="myPage">
-                page 3
+                Book 1 - page 3
             </page>
             <page class="myPage">
-                page 4
+                Book 1 - page 4
             </page>
         </book>
     </div>

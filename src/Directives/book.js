@@ -35,11 +35,7 @@
             }
             ctrl.addLoader = function (loaderCtrl) {
                 
-                ctrl.loaderElem = angular.element('<div id="'+loaderCtrl.id+'" class="'+loaderCtrl.class+'">' + loaderCtrl.element.html() + '<div>'); 
-                ctrl.loaderElem.css("position", 'absolute');
-                ctrl.loaderElem.css("height",  ctrl.height);
-                ctrl.loaderElem.css("width",   ctrl.width); 
-                ctrl.loaderElem.css("border-style", "solid"); // TODO: Remove : For testing purpose only
+                ctrl.loaderElem = angular.element('<div id="'+loaderCtrl.id+'" class="ngTurn-loader">' + loaderCtrl.element.html() + '<div>'); 
                 $element.parent().append(ctrl.loaderElem);
             }
 
