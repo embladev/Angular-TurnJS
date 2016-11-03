@@ -14,10 +14,15 @@
         var pageDirId = 0;
         // page directive controller (a instance of this is sent and sored in book dir controller)
         function pageCtrl($scope, $element, $attrs, $http, $compile, $timeout) {
-            console.log('PageCtrl:Init-Start');
-            var ctrl = this;
-
+            
             //page properties
+            this.id         = $attrs.id;
+            this.element    = $element;
+
+            console.log('PageCtrl:Init-Start,'+this.id);
+            
+            var ctrl = this;
+            console.log("page:"+this.id);
             ctrl.id = pageDirId;
             ctrl.innerHTML;
             ctrl.classList;
@@ -46,17 +51,20 @@
             ctrl.breakPages = function (html) {
             }
 
-            console.log('PageCtrl:Init-End');
+            console.log('PageCtrl:Init-Ok');
         }
 
         function linkFn(scope, element, attrs, ctrls) {
             console.log('PageCtrl:Link-Start');
-            element[0].style.display = 'none';
+            element.hide();
+
+            //element[0].style.display = 'none';
             pageDirId++;
 
-            scope.ctrl.innerHTML = element.html();
+            //scope.pageInstance.innerHTML = element.html();
             // add classes, ids, 'hard' style to the new element
 
+            // Book controller
             bookCtrl = ctrls[0];
 
             // send page directive's controller instance to book directive's controller
@@ -70,10 +78,7 @@
             link: linkFn,
             scope: {}, // isolate page instance's scope from user's angular app
             controller: pageCtrl,
-            controllerAs: 'ctrl',
-           // replace: true, // replace <page> tag with <div> tag (turnJS reads only divs)
-            transclude: true,
-            template: '<div ng-transclude></div>'
+            controllerAs: 'pageInstance'            
         }
     }
     angular.module("angularTurn").directive('page', pageDir);

@@ -34,16 +34,16 @@
          */
         function linkFn(scope, element, attrs, bookCtrl) {           
             element.hide();
-            console.log('LoaderCtrl:Link-Start' + element.html());            
-            bookCtrl.addLoader(scope.ctrl);         // binded to scope as "ctrl"
-            console.log('LoaderCtrl:Link-End');
+            console.log('LoaderCtrl:Link-Start');            
+            bookCtrl.addLoader(scope.loaderInstance);         // binded to scope as "ctrl"
+            console.log('LoaderCtrl:Link-Ok');
         }
 
         return {
             restrict: 'E',
             require: '^book',            
             link: linkFn, 
-            controllerAs: 'ctrl',
+            controllerAs: 'loaderInstance',
             controller:loaderCtrl,
             scope:false
         }

@@ -15,32 +15,31 @@
     var bookDir = function ($timeout, $compile) {
 
         var bookCtrl = function ($scope, $element, $attrs) {
+            // Set properties
+            this.id             = $attrs.id;
+            this.pageControllers= [];
+            this.loaderElement  = null;
+
             console.log('BookCtrl:Init-Start');
+             
             var ctrl = this;
             ctrl.loader;
-            ctrl.pageDirCtrls   = [];
+            
             ctrl.height         = $attrs.ngbHeight;
             ctrl.width          = $attrs.ngbWidth;
             ctrl.autoCenter     = $attrs.ngbAutocenter;
-            ctrl.loaderElem     = {};
+            
+           
 
-            /******************Book controller functions***********************/
-            // store page dir instances
-            ctrl.addPage = function (pageDirCtrl) {
-
-                // handover the token to first page directive
-                if (ctrl.isFirstDir) {
-                    ctrl.isFirstDir = false;
-                    pageDirCtrl.hasToken = true;
-                }                
-                ctrl.pageDirCtrls.push(pageDirCtrl);
-            }
-            ctrl.addLoader = function (loaderCtrl) {
-                // Create a new HTML element
-                ctrl.loaderElem = angular.element('<div id="'+loaderCtrl.id+'" class="ngTurn-loader">' + loaderCtrl.element.html() + '<div>');
-                // Complie the HTML element and connect the parent scope 
-                var content = $compile(ctrl.loaderElem)($scope);                
-                $element.parent().append(ctrl.loaderElem);
+            /**
+             * 
+             *              Page functions
+             * 
+             */
+            // Add a new page controller to the list            
+            ctrl.addPage = function (pageCtrl) {
+                console.log("BookCtrl:AddPage-"+ pageCtrl.id);
+                this.pageControllers.push(pageCtrl);
             }
 
             ctrl.turnPageForward = function () {
@@ -49,13 +48,30 @@
             ctrl.loadNextPages = function () {
 
             };
+
+            /**
+             * 
+             *              Loader functions
+             * 
+             */
+            // Add a loader ( will be replaces if there are two ) - Only one loader for book
+            ctrl.addLoader = function (loaderCtrl) {
+                // Create a new HTML element
+                this.loaderElement = angular.element('<div id="'+loaderCtrl.id+'" class="ngTurn-loader">' + loaderCtrl.element.html() + '<div>');
+                // Complie the HTML element and connect the parent scope 
+                var content = $compile(this.loaderElement)($scope);                
+                $element.parent().append(this.loaderElement);
+                console.log('BookCtrl:AddLoader-OK');
+            }
+            // Hide and remove the loader HTML element 
             ctrl.hideLoader = function () {
-                if (ctrl.loaderElem) {
-                    ctrl.loaderElem.hide();
+                if (ctrl.loaderElement) {
+                    ctrl.loaderElement.hide();
+                    ctrl.loaderElement.remove();    
                 }
             }
             
-            console.log('BookCtrl:Init-End');
+            console.log('BookCtrl:Init-OK');
         }
 
         function linkFn(scope, element, attrs) {
@@ -63,38 +79,36 @@
             $timeout(   // just to demo the loading page
                 function () {
 
-                    // get pages
-                    var innerBook = '';
-                    scope.ctrl.pageDirCtrls.forEach(function (pageDir) {
-                        innerBook += pageDir.innerHTML;
-                    });
-
-
-                    scope.ctrl.hideLoader();
-                    var elem = angular.element('<div>' + innerBook + '<div>');
-                   // $compile(elem)(scope);
-                    element.append(elem);
-
+                    var bookElement = angular.element('<div id="'+scope.bookInstance.id+'" class="ngTurn-book"><div>');
+                    // $compile(elem)(scope);
+                    element.parent().append(bookElement);
+                    
+                    scope.bookInstance.hideLoader();
                     // initialize turnJS book
-                    elem.turn({
-                        width: scope.ctrl.width,
-                        height: scope.ctrl.height,
-                        autoCenter: scope.ctrl.autoCenter
+                    bookElement.turn({
+                        width: scope.bookInstance.width,
+                        height: scope.bookInstance.height,
+                        autoCenter: scope.bookInstance.autoCenter
                     });
+
+                    // Start processing pages
+                    var pgCount = 1;
+                    scope.bookInstance.pageControllers.forEach(function (pageCtrl) {                        
+                        bookElement.turn("addPage", pageCtrl.element.html(), pgCount);
+                        pgCount++;
+                    });                    
                 }
-                , 2000
+                , 1000
             );
-            console.log('BookCtrl:Link-End');
+            console.log('BookCtrl:Link-OK');
         }
         
 
         return {
             restrict: 'E',            
             controller: bookCtrl,
-            controllerAs: 'ctrl',
-            link: linkFn,           
-            transclude: true,
-            template: '<div ng-transclude></div>'
+            controllerAs: 'bookInstance',
+            link: linkFn
         };
     };
     angular.module("angularTurn").directive('book', bookDir);
