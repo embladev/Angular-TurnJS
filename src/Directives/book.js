@@ -36,9 +36,9 @@
                 ctrl.pageDirCtrls.push(pageDirCtrl);
             }
             ctrl.addLoader = function (loaderCtrl) {
-                
+                // Create a new HTML element
                 ctrl.loaderElem = angular.element('<div id="'+loaderCtrl.id+'" class="ngTurn-loader">' + loaderCtrl.element.html() + '<div>');
-                // complie and connect the parent scope 
+                // Complie the HTML element and connect the parent scope 
                 var content = $compile(ctrl.loaderElem)($scope);                
                 $element.parent().append(ctrl.loaderElem);
             }
