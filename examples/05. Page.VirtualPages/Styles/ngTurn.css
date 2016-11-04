@@ -13,6 +13,9 @@
     background:bisque;
 }
 
+.ngTurn-page{
+    background: white;
+}
 .ngTurn-book{
     overflow: hidden;
 }

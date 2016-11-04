@@ -61,8 +61,8 @@
                     var pageCtrl = ctrls[1];
                     
                     // compile on page content if there are any
-                    pageCtrl.compliedElement = angular.element('<div id="'+pageCtrl.id+'" class="ngTurn-loader">' + pageCtrl.baseElement.html() + '<div>');                    
-                    $compile(pageCtrl.compliedElement)(scope);
+                    pageCtrl.compliedElement = angular.element('<div id="'+pageCtrl.id+'" class="ngTurn-Page">' + pageCtrl.baseElement.html() + '</div>');                    
+                    $compile(pageCtrl.compliedElement)(scope).html();
                     // send page directive's controller instance to book directive's controller
                     
                     bookCtrl.addPage(pageCtrl);

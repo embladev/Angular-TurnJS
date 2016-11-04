@@ -8,6 +8,6 @@ angular.module('appMain', ['angularTurn'])
         // Test adding page
         $scope.addPage = function(){
             // add virtual page1Title
-            $scope.bookInstance.addVPage({"id":1, "html" : "<div>new page</div>" });
+            $scope.bookInstance.addVPage({"id":1, "html" : '<div class="pageContainer"><div class="content">Test</div></div>' });
         }
     })
