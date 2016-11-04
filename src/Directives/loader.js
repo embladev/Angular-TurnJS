@@ -11,42 +11,54 @@
      * @ngdoc directive
      * @name  angularTurn.page
      * @description  page directive for Angular-TurnJS wrapper
-     */
-    var dir = function ($controller) {
+     */   
+    angular.module("angularTurn").directive('loader', function ($compile) {
+        
+        return {             
+            restrict: 'E',   
+            scope:false,
+            controller:
+                /**
+                 * @ngdoc controller
+                 * @name  angularTurn.loader
+                 * @description Loader controller
+                */
+                function ($scope, $element, $attrs, $compile) {
+                    console.log('LoaderCtrl:Init-Start');           
+                    this.id             = $attrs.id;
+                    this.class          = $attrs.class;
+                    this.baseElement    = $element;
+                    this.compliedElement= null;
+                    console.log('LoaderCtrl:Init-End');
 
-        /**
-         * @ngdoc controller
-         * @name  angularTurn.loader
-         * @description Loader controller
-         */
-        var loaderCtrl = function ($scope, $element, $attrs) {
-            console.log('LoaderCtrl:Init-Start');           
-            this.id             = $attrs.id;
-            this.class          = $attrs.class;
-            this.element        = $element;
-            console.log('LoaderCtrl:Init-End');
-        }
-
-        /**
-         * @ngdoc linkFn
-         * @name  angularTurn.loader
-         * @description Loader link function
-         */
-        function linkFn(scope, element, attrs, bookCtrl) {           
-            element.hide();
-            console.log('LoaderCtrl:Link-Start');            
-            bookCtrl.addLoader(scope.loaderInstance);         // binded to scope as "ctrl"
-            console.log('LoaderCtrl:Link-Ok');
-        }
-
-        return {
-            restrict: 'E',
-            require: '^book',            
-            link: linkFn, 
-            controllerAs: 'loaderInstance',
-            controller:loaderCtrl,
-            scope:false
-        }
-    }
-    angular.module("angularTurn").directive('loader', dir);
+                    this.hide = function(){
+                        if (this.compliedElement) {
+                            this.compliedElement.hide();
+                            this.compliedElement.remove();    
+                        }
+                    }
+                } // end controller function
+            ,
+            require: ['^book','loader'],
+            link: 
+               /**
+                 * @ngdoc linkFn
+                 * @name  angularTurn.loader
+                 * @description Loader link function
+                 */  
+                function (scope, element, attrs, ctrls) {
+                    var bookCtrl    = ctrls[0];
+                    var loaderCtrl  = ctrls[1];
+                    // Hide config element
+                    element.hide();
+                    console.log('LoaderCtrl:Link-Start');
+                    // Create new loader element and compile
+                    loaderCtrl.compliedElement = angular.element('<div id="'+loaderCtrl.id+'" class="ngTurn-loader">' + loaderCtrl.baseElement.html() + '<div>');                    
+                    var content = $compile(loaderCtrl.compliedElement)(scope);
+                    // Add to the book ( if two loader elements one will be overriden )
+                    bookCtrl.setLoader(loaderCtrl);         
+                    console.log('LoaderCtrl:Link-Ok');
+                }
+        } // end return
+    }); // end directive
 })();
