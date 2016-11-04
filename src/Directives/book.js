@@ -11,12 +11,12 @@
      * facts : 
      * Book has the same scope as the parent ( to compile inline page content )
      */
-    angular.module("angularTurn").directive('book', function ($timeout, $compile) {
+    angular.module("angularTurn").directive('book', function ($timeout, $http) {
 
         return {
-            restrict: 'E',            
+            restrict: 'E',    
             controller: 
-                function ($scope, $element, $attrs) {
+                function ($scope, $element, $attrs) { 
                     // Set properties
                     this.id                 = $attrs.id;
                     this.height             = $attrs.ngbHeight;
@@ -25,8 +25,12 @@
                     
                     this.pageControllers    = [];
                     this.loaderController   = null;
-                    this.loaderElement      = null;
+                   
+                    this.bookElement        = angular.element('<div id="'+this.id+'" class="ngTurn-book"><div>');
+                    this.pgCount            = 1;
 
+                    $scope.virtualPages     = [];
+                    
                     console.log('BookCtrl:Init-Start-'+this.id);
                     
                     /**
@@ -40,7 +44,26 @@
                         this.pageControllers.push(pageCtrl);
                     }
 
-                    this.turnPageForward = function () {}
+                    this.addVPage = function (virtualPage) {                        
+                        console.log("BookCtrl:AddVPage=>"+virtualPage);
+                        $scope.virtualPages.push(virtualPage);
+                        console.log("PG count " + this.pgCount);
+                        this.pgCount++;
+                    }
+
+                    
+                    // Check if there are any new pages
+                    $scope.$watchCollection( 'virtualPages', function(newValue, oldValue) {
+                        //this.bookElement.turn("addPage",htmlCompiledContent, this.pgCount);
+                        console.log("virtual pages changed" + newValue + ","+ oldValue);
+                        $scope.bookInstance.bookElement.turn("addPage", '<div class="pageContainer"><div class="content">Test</div></div>', $scope.bookInstance.pgCount-1);
+                    });
+                    
+
+                    this.turnPageForward = function () {                        
+                        
+                    }
+                    //this.turnPageForward();
                     this.loadNextPages = function () {};
 
                     /**
@@ -54,7 +77,9 @@
                         // Add to the DOM
                         $element.parent().append(loaderCtrl.compliedElement);// TODO: Not so good coding
                         console.log('BookCtrl:AddLoader-OK');
-                    }           
+                    }
+                               
+
                     console.log('BookCtrl:Init-OK-'+this.id);
                 }, // end controller function
             controllerAs: 'bookInstance',
@@ -62,27 +87,28 @@
             link:
                 function(scope, element, attrs, bookCtrl) {
                     console.log('BookCtrl:Link-Start');
-                    $timeout(   // just to demo the loading page
-                        function () {
-                            var bookElement = angular.element('<div id="'+bookCtrl.id+'" class="ngTurn-book"><div>');
-                            element.parent().append(bookElement);                            
+                    // just to demo the loading page
+                    $timeout( function () {
+
+                            //bookCtrl.bookElement = angular.element('<div id="'+bookCtrl.id+'" class="ngTurn-book"><div>');
+                            element.parent().append(bookCtrl.bookElement);                            
                             bookCtrl.loaderController.hide();
                             
                             // initialize turnJS book
-                            bookElement.turn({
+                            bookCtrl.bookElement.turn({
                                 width: bookCtrl.width,
                                 height: bookCtrl.height,
                                 autoCenter: bookCtrl.autoCenter
                             });
-
+                            
+                            // Start process for Watch for changes !
                             // Start processing pages
-                            var pgCount = 1;
-                            bookCtrl.pageControllers.forEach(function (pageCtrl) { 
-                                //var content = $compile(pageCtrl.baseElement.html())(scope);                       
-                                bookElement.turn("addPage", pageCtrl.compliedElement.html(), pgCount);
-                                pgCount++;
+                            bookCtrl.pgCount = 1;
+                            bookCtrl.pageControllers.forEach(function (pageCtrl) {
+                                bookCtrl.bookElement.turn("addPage", pageCtrl.compliedElement.html(), bookCtrl.pgCount);
+                                bookCtrl.pgCount++;
                             });                    
-                        }, 100);
+                    }, 500); // end timeout
                     console.log('BookCtrl:Link-OK');
                 } // end link fn
         };
