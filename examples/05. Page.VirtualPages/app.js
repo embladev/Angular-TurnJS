@@ -1,5 +1,5 @@
 angular.module('appMain', ['angularTurn'])
-    .controller('ctrlMain', function ($scope) {       
+    .controller('ctrlMain', function ($scope, $compile) {       
         $scope.title = "Report title";
 
         $scope.page1Title = "Ronaldinho1";
@@ -8,6 +8,9 @@ angular.module('appMain', ['angularTurn'])
         // Test adding page
         $scope.addPage = function(){
             // add virtual page1Title
-            $scope.bookInstance.addVPage({"id":1, "html" : '<div class="pageContainer"><div class="content">Test</div></div>' });
+            var content = '<div class="pageContainer"><div class="content">{{page1Title}}</div></div>';
+            content = $compile(content)($scope);
+            $scope.bookInstance.addVPage({"id":1, "html" : content });
+            $scope.page1Title = "xxxxxxxxxxxxxx";
         }
     })
