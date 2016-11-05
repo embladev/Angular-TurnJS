@@ -11,7 +11,7 @@
      * facts : 
      * Book has the same scope as the parent ( to compile inline page content )
      */
-    angular.module("angularTurn").directive('book', function ($timeout, $http) {
+    angular.module("angularTurn").directive('book', function ($timeout, $http, $q) {
 
         return {
             restrict: 'E',    
@@ -68,20 +68,54 @@
                     }                    
                     $scope.$watch( 'isBookReady', function(newValue, oldValue) {
                         if ( newValue == true )                            
-                            $scope.bookInstance.loadNextPages($scope.bookInstance);
+                            $scope.bookInstance.processPages($scope.bookInstance);
                     });
 
                     this.turnPageForward = function () {                        
                         
                     }
                     //this.turnPageForward();
-                    this.loadNextPages = function (bookCtrl) {                        
-                       this.pageControllers.forEach(function (pageCtrl) {                            
+                    this.stateNextPageCtrlIndex = 0;
+                    this.processPages = function (bookCtrl, pageCtrl) {
+
+                            // Exit condition
+                            if ( bookCtrl.stateNextPageCtrlIndex >= bookCtrl.pageControllers.length ){
+                                return;
+                            }
+
+                            if ( !pageCtrl ) pageCtrl = bookCtrl.pageControllers[bookCtrl.stateNextPageCtrlIndex];
+                            
+                            if ( pageCtrl.template ){
+                                $http.get(pageCtrl.template).success(function(data){                                    
+                                    add(data);
+                                })
+                            }else{
+                                add(pageCtrl.baseElement.html());
+                            }
+                            // Adding a page
+                            function add(htmlBase){                                                                
+                                pageCtrl.setCompliedElement(htmlBase);
+                                // TODO : get the virtual page from content
+                                // add Pages // update buffer
+                                $scope.virtualPages.push({"id":pageCtrl.id, "html" : pageCtrl.compliedElement });
+
+                                // if can fill more go to the same PageCtrl with different reference or different PageCtrl
+                                bookCtrl.stateNextPageCtrlIndex++;
+                                bookCtrl.processPages(bookCtrl);
+                            }
+                       /*                     
+                       this.pageControllers.forEach(function (pageCtrl) {
+                           
+                           // if there is a template priority will be for that
+                            // Load and compile
+                            
                             // Check how many pages needed to be loaded
                             bookCtrl.addVPage({"id":pageCtrl.id, "html": pageCtrl.compliedElement});
                             //bookCtrl.bookElement.turn("addPage", pageCtrl.compliedElement, bookCtrl.pgCount);                                
                             //bookCtrl.pgCount++;
+
                        });
+                       */
                     };
 
                     /**

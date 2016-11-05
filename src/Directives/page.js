@@ -24,6 +24,8 @@
                     this.id                 = $attrs.id;
                     this.baseElement        = $element;
                     this.compliedElement    = null;
+                    this.template           = $attrs.template;
+                    this.wrapperElement     = '<div id="'+this.id+'" class="ngTurn-Page">{0}</div>';
 
                     console.log('PageCtrl:Init-Start,'+this.id);
                     
@@ -31,6 +33,11 @@
                         $element.addClass('hard');
                     }
 
+                    // Get wrapped element
+                    this.setCompliedElement = function(baseHtml){
+                        this.compliedElement = angular.element( this.wrapperElement.replace("{0}",baseHtml) );                    
+                        this.compliedElement = $compile(this.compliedElement)($scope);
+                    }
                     // load template at 'pageTemplatePath' and store in 'pageTemplate'
                     this.loadTemplate = function () {}
 
@@ -61,8 +68,8 @@
                     var pageCtrl = ctrls[1];
                     
                     // compile on page content if there are any
-                    pageCtrl.compliedElement = angular.element('<div id="'+pageCtrl.id+'" class="ngTurn-Page">' + pageCtrl.baseElement.html() + '</div>');                    
-                    $compile(pageCtrl.compliedElement)(scope).html();
+                    //pageCtrl.compliedElement = angular.element('<div id="'+pageCtrl.id+'" class="ngTurn-Page">' + pageCtrl.baseElement.html() + '</div>');                    
+                    //$compile(pageCtrl.compliedElement)(scope).html();
                     // send page directive's controller instance to book directive's controller
                     
                     bookCtrl.addPage(pageCtrl);
