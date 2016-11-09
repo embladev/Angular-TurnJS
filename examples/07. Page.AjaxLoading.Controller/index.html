@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="../tools/jquery.min.js"></script>
+    <script type="text/javascript" src="../tools/angular.min.js"></script>
+    <script type="text/javascript" src="../tools/turn.min.js"></script>
+    <script type="text/javascript" src="../../dist/angular-turn.debug.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+    <link rel="stylesheet" type="text/css" href="Styles/ngTurn.css">
+    <link rel="stylesheet" type="text/css" href="Styles/style.css">
+</head>
+
+<body>
+<div ng-app="appMain" ng-controller="ctrlMain">
+    <div class="bookContainer">               
+        <book ngb-height="400" ngb-width="600" ngb-autocenter="true" id="b1">
+            <loader id="loader1">
+                <h1>{{title}}</h1>
+                <h3>Book 1 - loader</h3>
+            </loader>
+            <page id="Cover1" >
+                <div class="pageContainer">    
+                    <div class="content">
+                         <strong>Page Cover</strong>
+                         <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>                    
+                    </div>            
+                </div>
+            </page>            
+            <page id="page1" template="templates\pageWithController.html" service="reportService" >                
+            </page>
+            <page id="Page2" template="templates\page1.html" >                
+            </page>
+            <page id="Page3" >
+                <div class="pageContainer">                    
+                     <div class="content">
+                         <strong>{{page2Title}} XXX</strong>
+                        <br><img class="page2Image" src="img/sanga.jpg"/><br>
+                        Kumar Sanga Chokshanada Sangakkara is a former Sri Lankan cricketer and captain of the Sri
+                        Lankan national team. Widely regarded as one of the world's most influential
+                        cricketers,Sangakkara rated as the second greatest ODI batsman of all time in a recent public
+                        poll.
+                     </div>
+                </div>
+            </page>            
+        </book>         
+    </div>
+    <button ng-click="addPage()">Add virtual page</button>
+</div>
+</body>
+</html>

@@ -8,7 +8,7 @@
      * @name  angularTurn.page
      * @description  page directive for Angular-TurnJS wrapper
      */
-    angular.module("angularTurn").directive('page', function ($compile) {
+    angular.module("angularTurn").directive('page', function ($compile, $injector) {
         return {
             restrict: 'E',            
             scope: false,            
@@ -25,6 +25,8 @@
                     this.baseElement        = $element;
                     this.compliedElement    = null;
                     this.template           = $attrs.template;
+                    this.service            = $attrs.service;
+
                     this.wrapperElement     = '<div id="'+this.id+'" class="ngTurn-Page">{0}</div>';
 
                     console.log('PageCtrl:Init-Start,'+this.id);
@@ -35,6 +37,12 @@
 
                     // Get wrapped element
                     this.setCompliedElement = function(baseHtml){
+
+                        if ( this.service ){
+                            console.log("Service found >>> " + this.service);
+                            var pageService = $injector.get(this.service);                        
+                            pageService.HasMore();
+                        }
                         this.compliedElement = angular.element( this.wrapperElement.replace("{0}",baseHtml) );                    
                         this.compliedElement = $compile(this.compliedElement)($scope);
                     }
