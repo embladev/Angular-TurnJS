@@ -86,21 +86,31 @@
                             if ( !pageCtrl ) pageCtrl = bookCtrl.pageControllers[bookCtrl.stateNextPageCtrlIndex];
                             
                             if ( pageCtrl.template ){
-                                $http.get(pageCtrl.template).success(function(data){                                    
-                                    add(data, $scope);
+                                console.log(" data template >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + pageCtrl.template);
+                                $http.get(pageCtrl.template).success(function(data){
+                                    pageCtrl.setBaseHtml(data);
+                                    console.log(" data loaded >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + data);                                    
+                                    add($scope);
                                 })
                             }else{
-                                add(pageCtrl.baseElement.html(), $scope);
+                                add($scope);
                             }
                             // Adding a page
-                            function add(htmlBase, previousScope){                                                                
-                                pageCtrl.setCompliedElement(htmlBase);                                
+                            function add(previousScope){
+                                if ( !pageCtrl.hasMore() ){
+                                    bookCtrl.stateNextPageCtrlIndex++;
+                                    bookCtrl.processPages(bookCtrl);
+                                    return;
+                                }
+
+                                pageCtrl.setCompliedElement();
+                                console.log(" complied data >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + pageCtrl.baseHtml);
                                 // TODO : get the virtual page from content
                                 // add Pages // update buffer
                                 $scope.virtualPages.push({"id":pageCtrl.id, "html" : pageCtrl.compliedElement });
                                 
                                 // if can fill more go to the same PageCtrl with different reference or different PageCtrl
-                                bookCtrl.stateNextPageCtrlIndex++;
+                                
                                 bookCtrl.processPages(bookCtrl);
                             }                       
                     };

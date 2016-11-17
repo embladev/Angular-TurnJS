@@ -20,6 +20,7 @@ angular.module('appMain', ['angularTurn'])
         $scope.img = reportService.next().img;
         $scope.description = reportService.next().description;        
     })
+
     .factory('reportService', function() {
         
         var index = -1 ;
@@ -32,7 +33,7 @@ angular.module('appMain', ['angularTurn'])
             next: function(){
                 return dataSet[index];
             },
-            HasMore : function(){                
+            hasMore : function(){                
                 index++;            
                 if ( index >= dataSet.length ){
                     return false;

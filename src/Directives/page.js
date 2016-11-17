@@ -18,32 +18,49 @@
                  * @name  angularTurn.Page
                  * @description Page controller function
                  */            
-                function ($scope, $element, $attrs, $http, $compile, $timeout) {
+                function ($scope, $element, $attrs, $http, $compile, $timeout, $injector) {
             
                     //page properties
                     this.id                 = $attrs.id;
                     this.baseElement        = $element;
+                    this.baseHtml           = $element.html();
+
                     this.compliedElement    = null;
                     this.template           = $attrs.template;
-                    this.service            = $attrs.service;
-
+                    this.serviceName        = $attrs.service;                    
+                    if ( this.serviceName ){
+                        this.service        = $injector.get(this.serviceName);                        
+                    }
+                    this.hasMoreData        = false;
                     this.wrapperElement     = '<div id="'+this.id+'" class="ngTurn-Page">{0}</div>';
 
                     console.log('PageCtrl:Init-Start,'+this.id);
                     
-                    if($attrs.ngbCover != undefined){
-                        $element.addClass('hard');
+                    //if($attrs.ngbCover != undefined){
+                    //    $element.addClass('hard');
+                    //}
+
+                    // Set the base html
+                    this.setBaseHtml = function(html){
+                        this.baseHtml = html;
                     }
 
+                    // Check more elements // move to next element
+                    this.hasMore = function(){
+                        // if there is a service, move to the next page
+                        // if not simple boolean variable to turn off at the next reqeust       
+                        if ( this.service  ){
+                            this.hasMoreData = this.service.hasMore();
+                        }else{
+                            this.hasMoreData = !this.hasMoreData;
+                        }         
+                        console.log("More pages :"+this.hasMoreData); 
+                        return this.hasMoreData;
+                    }                    
+                    
                     // Get wrapped element
-                    this.setCompliedElement = function(baseHtml){
-
-                        if ( this.service ){
-                            console.log("Service found >>> " + this.service);
-                            var pageService = $injector.get(this.service);                        
-                            pageService.HasMore();
-                        }
-                        this.compliedElement = angular.element( this.wrapperElement.replace("{0}",baseHtml) );                    
+                    this.setCompliedElement = function(){
+                        this.compliedElement = angular.element( this.wrapperElement.replace("{0}",this.baseHtml) );                    
                         this.compliedElement = $compile(this.compliedElement)($scope);
                     }
                     // load template at 'pageTemplatePath' and store in 'pageTemplate'

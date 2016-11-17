@@ -1,0 +1,57 @@
+/*
+
+    User styles
+
+*/
+body {
+    background: #ccc;
+}
+
+.bookContainer {
+    margin:50px;
+    height:400px;
+    width:650px;
+    background-color:dimgray;
+    border-style:solid
+}
+
+/* book page styling */
+#b1 .pageContainer {    
+    background-color: white;    
+    overflow: hidden;
+    width : 100%;
+}
+
+#b1 .pageContainer .content {    
+    padding: 50px 30px;
+}
+
+.pageContainer .page1Image{
+    display: block;
+    border-radius: 8px;
+    max-width: 100%;
+    width : 230px;
+    height: 230px;
+    margin: auto;
+}
+
+.pageContainer .page2Image{
+    display: block;
+    border-radius: 8px;
+    max-width: 100%;
+    width : 230px;
+    height: 230px;
+    margin: auto;
+}
+
+/* overriding ngTurn styles */
+.ngTurn-loader{    
+    background:aqua;
+}
+
+.ngTurn-page{
+    height: 600px;
+}
+
+
+
