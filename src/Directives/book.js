@@ -27,11 +27,15 @@
                     this.loaderController   = null;
                    
                     this.bookElement        = angular.element('<div id="'+this.id+'" class="ngTurn-book"><div>');
-                    this.cuurentPageNo      = 0;
+                    this.currentPageNo      = 0;
+                    this.htmlBuffer         = "";
                     
                     $scope.virtualPages     = [];
                     
                     $scope.isBookReady      = false;
+
+                    this.offScreenBuffer    = angular.element('<div id="offscreenBuffer">');
+                    this.isProcess          = true;
 
                     console.log('BookCtrl:Init-Start-'+this.id);
                     
@@ -57,7 +61,7 @@
                         console.log(" Page element add "+oldValue.length + "," + newValue.length);
                         if ( oldValue.length == newValue.length ) return;
                         for(var x = oldValue.length ;x < newValue.length; x++ ){
-                            console.log(" page "+newValue[x].html);
+                            console.log(" page "+newValue[x].html);                            
                             $scope.bookInstance.bookElement.turn("addPage", newValue[x].html, x+1);                            
                         }
                     });
@@ -78,42 +82,76 @@
                     this.stateNextPageCtrlIndex = 0;
                     this.processPages = function (bookCtrl, pageCtrl) {
 
+                            // Stop processing more pages
+                            if ( ! bookCtrl.isProcess ){
+                                return;
+                            }
                             // Exit condition
                             if ( bookCtrl.stateNextPageCtrlIndex >= bookCtrl.pageControllers.length ){
                                 return;
                             }
 
                             if ( !pageCtrl ) pageCtrl = bookCtrl.pageControllers[bookCtrl.stateNextPageCtrlIndex];
-                            
-                            if ( pageCtrl.template ){
-                                console.log(" data template >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + pageCtrl.template);
-                                $http.get(pageCtrl.template).success(function(data){
-                                    pageCtrl.setBaseHtml(data);
-                                    console.log(" data loaded >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + data);                                    
-                                    add($scope);
-                                })
-                            }else{
-                                add($scope);
-                            }
-                            // Adding a page
-                            function add(previousScope){
-                                if ( !pageCtrl.hasMore() ){
-                                    bookCtrl.stateNextPageCtrlIndex++;
-                                    bookCtrl.processPages(bookCtrl);
-                                    return;
-                                }
-
-                                pageCtrl.setCompliedElement();
-                                console.log(" complied data >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + pageCtrl.baseHtml);
-                                // TODO : get the virtual page from content
-                                // add Pages // update buffer
-                                $scope.virtualPages.push({"id":pageCtrl.id, "html" : pageCtrl.compliedElement });
-                                
-                                // if can fill more go to the same PageCtrl with different reference or different PageCtrl
-                                
+                 
+                            if ( !pageCtrl.hasMore() ){
+                                bookCtrl.stateNextPageCtrlIndex++;
                                 bookCtrl.processPages(bookCtrl);
-                            }                       
+                                return;
+                            }
+
+                            pageCtrl.setCompliedElement();
+                                
+                            bookCtrl.offScreenBuffer.append(pageCtrl.getCompliedElement());
+                            console.log("Before >> " + bookCtrl.offScreenBuffer.height());
+                            
+                            // Call back and wait for the content
+                            $timeout(function() {
+                                    // This code runs after the DOM renders is it ???
+                                    console.log("rendered !!!!!!!!!!!!! after >> " + bookCtrl.offScreenBuffer.height());
+                                    // More than two pages then stop
+                                    if ( bookCtrl.offScreenBuffer.height() > 800 ){
+                                        bookCtrl.isProcess = false;        
+                                    }
+
+                                    console.log(">>>>>>>>>>>>>>>>>>>>> " + pageCtrl.compliedElement.html());
+                                    // Add page breaks
+                                    var retObj = bookCtrl.breakContent(pageCtrl.compliedElement, bookCtrl.width, bookCtrl.height);
+                                    // add Pages // update buffer
+                                    for(var x = 0 ;x < retObj.htmlPages.length; x++ ){
+                                        $scope.virtualPages.push({"id":pageCtrl.id, "html" : retObj.htmlPages[x] });
+                                    }
+                                    // if can fill more go to the same PageCtrl with different reference or different PageCtrl
+                                    bookCtrl.processPages(bookCtrl);
+                            });
+                                                   
                     };
+                    
+                    this.loadAllPageTemplate = function( callBackFn ){
+                        var pageCtrlWithTemplates = []
+                        angular.forEach(this.pageControllers , function(pageCtrl) {
+                            if ( pageCtrl.template ) pageCtrlWithTemplates.push(pageCtrl);
+                        });
+
+                        var promises = pageCtrlWithTemplates.map(function(pageCtrl) {
+                            return $http.get(pageCtrl.template);
+                        });
+                        
+                        $q.all(promises).then( function(datas) {
+                            for( var x=0;x < datas.length;x++ ){
+                                pageCtrlWithTemplates[x].setBaseHtml( datas[x].data );
+                                callBackFn();
+                            }                            
+                        });
+
+                    }
+
+                    this.breakContent = function (html, w, h){
+                        var retObj = {};
+                        retObj.htmlPages = [html];
+                        retObj.buffer = "";                        
+                        
+                        return retObj;
+                    }
 
                     /**
                      * 
@@ -134,11 +172,19 @@
             link:
                 function(scope, element, attrs, bookCtrl) {
                     console.log('BookCtrl:Link-Start');
-                    // just to demo the loading page
-                    $timeout( function () {
-                            element.parent().append(bookCtrl.bookElement);                            
+
+                    bookCtrl.loadAllPageTemplate( function(){
+
+                        element.parent().append(bookCtrl.bookElement);
+
+                            bookCtrl.offScreenBuffer.width = 600;                        
+                            //bookCtrl.offScreenBuffer.height = 300;
+                            //bookCtrl.offScreenBuffer.append("<h1>Hello</h1>");
+                            element.parent().append( bookCtrl.offScreenBuffer );
+
+
                             bookCtrl.loaderController.hide();
-                            
+
                             // initialize turnJS book
                             bookCtrl.bookElement.turn({
                                 width: bookCtrl.width,
@@ -146,20 +192,13 @@
                                 autoCenter: bookCtrl.autoCenter
                             });
                             
-                            bookCtrl.setBookReady();
-                            // Start process for Watch for changes !
-                            // Start processing pages
-                            /*
-                            bookCtrl.pgCount = 1;
-                            bookCtrl.pageControllers.forEach(function (pageCtrl) {
-                                bookCtrl.bookElement.turn("addPage", pageCtrl.compliedElement, bookCtrl.pgCount);                                
-                                bookCtrl.pgCount++;
-                            });                    
-                            */
-
-                    }, 100); // end timeout
+                            //bookCtrl.setBookReady();
+                            bookCtrl.processPages(bookCtrl);
+                        
+                        //console.log(">>>>>>>>>>>>"+bookCtrl);
+                    } );                  
                     console.log('BookCtrl:Link-OK');
-                 
+                    
                 } // end link fn
         };
     }); // End directive

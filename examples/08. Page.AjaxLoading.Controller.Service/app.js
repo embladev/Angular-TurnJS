@@ -26,7 +26,8 @@ angular.module('appMain', ['angularTurn'])
         var index = -1 ;
         var dataSet = [
             { "title" : "Ronaldinho from Service 1", "img": "img/ronaldino.jpg", "description" : "Ronaldo de Assis Moreira (born 21 March 1980), commonly known as Ronaldinho, is a Brazilian professional footballer and current club ambassador for Spanish club FC" },
-            { "title" : "Kumar Sangakkara from Service 2", "img": "img/sanga.jpg", "description" : "Kumar Sanga Chokshanada Sangakkara is a former Sri Lankan cricketer and captain of the Sri Lankan national team. Widely regarded as one of the world's most influential cricketers,Sangakkara rated as the second greatest ODI batsman of all time in a recent public  poll." }
+            { "title" : "Serena Williams from Service 2", "img": "img/Serena.jpg", "description" : "Serena Jameka Williams (born September 26, 1981) is an American professional tennis player. The Women's Tennis Association (WTA) has ranked her world No.1 in singles on six separate occasions" },
+            { "title" : "Kumar Sangakkara from Service 3", "img": "img/sanga.jpg", "description" : "Kumar Sanga Chokshanada Sangakkara is a former Sri Lankan cricketer and captain of the Sri Lankan national team. Widely regarded as one of the world's most influential cricketers,Sangakkara rated as the second greatest ODI batsman of all time in a recent public  poll." }
             ];
  
         return {

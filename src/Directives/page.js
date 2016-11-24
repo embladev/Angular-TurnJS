@@ -41,8 +41,8 @@
                     //}
 
                     // Set the base html
-                    this.setBaseHtml = function(html){
-                        this.baseHtml = html;
+                    this.setBaseHtml = function(html){                        
+                        this.baseHtml = html;                        
                     }
 
                     // Check more elements // move to next element
@@ -53,8 +53,7 @@
                             this.hasMoreData = this.service.hasMore();
                         }else{
                             this.hasMoreData = !this.hasMoreData;
-                        }         
-                        console.log("More pages :"+this.hasMoreData); 
+                        }
                         return this.hasMoreData;
                     }                    
                     
@@ -62,9 +61,26 @@
                     this.setCompliedElement = function(){
                         this.compliedElement = angular.element( this.wrapperElement.replace("{0}",this.baseHtml) );                    
                         this.compliedElement = $compile(this.compliedElement)($scope);
+                        //$scope.$apply();
+                    }
+
+                    // Get wrapped element
+                    this.getCompliedElement = function(){
+                        var compliedElement = angular.element( this.wrapperElement.replace("{0}",this.baseHtml) );                    
+                        return $compile(compliedElement)($scope);                        
                     }
                     // load template at 'pageTemplatePath' and store in 'pageTemplate'
-                    this.loadTemplate = function () {}
+                    this.loadTemplate = function ( callbackFn, index ) {
+                        if ( this.template){                                
+                            $http.get(this.template).success(function(data){
+                                this.setBaseHtml(data);
+                                if ( callbackFn ) callbackFn(index);
+                            })
+                        }else{
+                            this.setBaseHtml();
+                            if ( callbackFn ) callbackFn(index);
+                        }
+                    }
 
                     // returns virtual pages >= noOfVirtualPages (precession depends on k, can also send exact number of pages requested by merging the excess pages as overflow html)
                     this.makeVirtualPages = function (noOfVirtualPages) {}
