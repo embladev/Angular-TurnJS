@@ -10,6 +10,10 @@
      * @description  book directive for Angular-TurnJS wrapper
      * facts : 
      * Book has the same scope as the parent ( to compile inline page content )
+     * 
+     * TODO:
+     *  style needs to be applied to the book not outside// offscreen buffer dont have it
+     *  var level2 = child.firstElementChild.firstElementChild; need to be configurable
      */
     angular.module("angularTurn").directive('book', function ($timeout, $http, $q, $controller) {
 
@@ -34,7 +38,8 @@
                     
                     $scope.isBookReady      = false;
 
-                    this.offScreenBuffer    = angular.element('<div id="offscreenBuffer">');
+                    this.offScreenBuffer    = angular.element('<div id="offscreenBuffer" style="width:300px">');
+                    this.offScreenPage      = angular.element('<div id="offscreenPage" style="width:300px">');
                     this.isProcess          = true;
 
                     console.log('BookCtrl:Init-Start-'+this.id);
@@ -80,10 +85,54 @@
                     }
                     //this.turnPageForward();
                     this.stateNextPageCtrlIndex = 0;
+
+                    this.getChild = function(  element, level ){
+                        if ( level == 0 ) return element;
+                        this.getChild( angular.element( element.children , level - 1 ) );
+                    }
                     this.processPages = function (bookCtrl, pageCtrl) {
 
                             // Stop processing more pages
                             if ( ! bookCtrl.isProcess ){
+
+                                var previousPageLevel1   = null;
+                                var previousPageLevel2   = null;
+                                var previousChildren     = null;
+                                angular.forEach( bookCtrl.offScreenBuffer.children(), function( child ){
+                                    
+                                    var x=0;
+                                    do{
+                                        
+                                        if ( previousPageLevel1 == null || (previousPageLevel2.offsetHeight + ( previousChildren.length> 0 ? previousChildren[0].offsetHeight: 0) ) >= 400  ){
+                                            
+                                            //overflow add content
+                                            if ( previousPageLevel2 && (previousPageLevel2.offsetHeight + ( previousChildren.length> 0 ? previousChildren[0].offsetHeight: 0) ) >= 400 ){
+                                                bookCtrl.currentPageNo++;
+                                                bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);                                                
+                                            }
+                                            // a new page create 
+                                            previousPageLevel1 = child.firstElementChild.cloneNode();
+                                            previousPageLevel2 = child.firstElementChild.firstElementChild.cloneNode();
+                                            previousChildren   = child.firstElementChild.firstElementChild.children;
+                                            previousPageLevel1.appendChild(previousPageLevel2);
+
+                                            //bookCtrl.currentPageNo++;
+                                            //bookCtrl.bookElement.turn("addPage", previousPageLevel1 , 1);
+                                            bookCtrl.offScreenPage.append(previousPageLevel1);
+                                        }    
+                                        
+                                        previousPageLevel2.appendChild( previousChildren[0] );
+                                        
+                                        console.log(previousChildren[0] +  ","+previousPageLevel2.offsetHeight);
+                                    }while( previousChildren.length > 0 )
+                                    // add the rest of the content
+                                    bookCtrl.currentPageNo++;
+                                    bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);                                                
+                                    
+                                    previousPageLevel1 = null;
+                                    
+                                   
+                                });
                                 return;
                             }
                             // Exit condition
@@ -109,17 +158,24 @@
                                     // This code runs after the DOM renders is it ???
                                     console.log("rendered !!!!!!!!!!!!! after >> " + bookCtrl.offScreenBuffer.height());
                                     // More than two pages then stop
-                                    if ( bookCtrl.offScreenBuffer.height() > 800 ){
-                                        bookCtrl.isProcess = false;        
-                                    }
+                                    if ( bookCtrl.offScreenBuffer.height() > 1200 ){
+                                        bookCtrl.isProcess = false;    
 
-                                    console.log(">>>>>>>>>>>>>>>>>>>>> " + pageCtrl.compliedElement.html());
+
+
+                                    }
+                                    
+                                    //bookCtrl.bookElement.turn("addPage", pageCtrl.getCompliedElement(), bookCtrl.bookElement.turn("pages") );
+
+                                    console.log(">>>>>>>>>>>>>>>>>>>>> " + pageCtrl.compliedElement.html());                                    
                                     // Add page breaks
                                     var retObj = bookCtrl.breakContent(pageCtrl.compliedElement, bookCtrl.width, bookCtrl.height);
+                                    /*
                                     // add Pages // update buffer
                                     for(var x = 0 ;x < retObj.htmlPages.length; x++ ){
                                         $scope.virtualPages.push({"id":pageCtrl.id, "html" : retObj.htmlPages[x] });
                                     }
+                                    */
                                     // if can fill more go to the same PageCtrl with different reference or different PageCtrl
                                     bookCtrl.processPages(bookCtrl);
                             });
@@ -177,10 +233,12 @@
 
                         element.parent().append(bookCtrl.bookElement);
 
-                            bookCtrl.offScreenBuffer.width = 600;                        
+                                                    
                             //bookCtrl.offScreenBuffer.height = 300;
                             //bookCtrl.offScreenBuffer.append("<h1>Hello</h1>");
                             element.parent().append( bookCtrl.offScreenBuffer );
+                            //bookCtrl.offScreenBuffer.width = 300;
+                            element.parent().append( bookCtrl.offScreenPage );
 
 
                             bookCtrl.loaderController.hide();

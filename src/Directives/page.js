@@ -69,18 +69,6 @@
                         var compliedElement = angular.element( this.wrapperElement.replace("{0}",this.baseHtml) );                    
                         return $compile(compliedElement)($scope);                        
                     }
-                    // load template at 'pageTemplatePath' and store in 'pageTemplate'
-                    this.loadTemplate = function ( callbackFn, index ) {
-                        if ( this.template){                                
-                            $http.get(this.template).success(function(data){
-                                this.setBaseHtml(data);
-                                if ( callbackFn ) callbackFn(index);
-                            })
-                        }else{
-                            this.setBaseHtml();
-                            if ( callbackFn ) callbackFn(index);
-                        }
-                    }
 
                     // returns virtual pages >= noOfVirtualPages (precession depends on k, can also send exact number of pages requested by merging the excess pages as overflow html)
                     this.makeVirtualPages = function (noOfVirtualPages) {}

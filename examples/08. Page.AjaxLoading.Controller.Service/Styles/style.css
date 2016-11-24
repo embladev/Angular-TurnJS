@@ -16,13 +16,13 @@ body {
 }
 
 /* book page styling */
-#b1 .pageContainer {    
+.pageContainer {    
     background-color: white;    
     overflow: hidden;
     width : 100%;
 }
 
-#b1 .pageContainer .content {    
+.pageContainer .content {    
     padding: 50px 30px;
 }
 
