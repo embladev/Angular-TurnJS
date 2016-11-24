@@ -38,8 +38,8 @@
                     
                     $scope.isBookReady      = false;
 
-                    this.offScreenBuffer    = angular.element('<div id="offscreenBuffer" style="width:300px">');
-                    this.offScreenPage      = angular.element('<div id="offscreenPage" style="width:300px">');
+                    this.offScreenBuffer    = angular.element('<div id="offscreenBuffer" style="width:300px;visibility:hidden">');
+                    this.offScreenPage      = angular.element('<div id="offscreenPage" style="width:300px;visibility:hidden">');
                     this.isProcess          = true;
 
                     console.log('BookCtrl:Init-Start-'+this.id);
