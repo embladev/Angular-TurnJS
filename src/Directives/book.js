@@ -139,9 +139,13 @@
                                     //previousPageLevel1 = null;
                                 });
 
-                                // Add the remaining content
+                                // Keep remaining content in PageBuffer 
                                 bookCtrl.currentPageNo++;
-                                bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);      
+                                bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);
+                                // Clear offscreen buffer                                
+                                while (bookCtrl.offScreenBuffer.children()[0]) {
+                                    bookCtrl.offScreenBuffer.children()[0].remove();
+                                }
                                 return;
                             }
                             // Exit condition
