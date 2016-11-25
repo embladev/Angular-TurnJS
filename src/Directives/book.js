@@ -38,8 +38,8 @@
                     
                     $scope.isBookReady      = false;
 
-                    this.offScreenBuffer    = angular.element('<div id="offscreenBuffer" style="width:300px;visibility:hidden">');
-                    this.offScreenPage      = angular.element('<div id="offscreenPage" style="width:300px;visibility:hidden">');
+                    this.offScreenBuffer    = angular.element('<div id="offscreenBuffer" style="width:300px">');
+                    this.offScreenPage      = angular.element('<div id="offscreenPage" style="width:300px">'); //;visibility:hidden
                     this.isProcess          = true;
 
                     console.log('BookCtrl:Init-Start-'+this.id);
@@ -97,23 +97,30 @@
 
                                 var previousPageLevel1   = null;
                                 var previousPageLevel2   = null;
-                                var previousChildren     = null;
+                                var children             = null;
                                 angular.forEach( bookCtrl.offScreenBuffer.children(), function( child ){
+                                    console.log("page id : " + child.id);
                                     
-                                    var x=0;
+                                    // Get the children of each page ( Might be more for the flipbook page or less for the flipbookpage )
+                                    children   = child.firstElementChild.firstElementChild.children;
+
                                     do{
                                         
-                                        if ( previousPageLevel1 == null || (previousPageLevel2.offsetHeight + ( previousChildren.length> 0 ? previousChildren[0].offsetHeight: 0) ) >= 400  ){
+                                        if ( previousPageLevel1 == null ||
+                                                 previousPageLevel1.attributes["pageId"] != child.id ||
+                                                (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400  ){
                                             
                                             //overflow add content
-                                            if ( previousPageLevel2 && (previousPageLevel2.offsetHeight + ( previousChildren.length> 0 ? previousChildren[0].offsetHeight: 0) ) >= 400 ){
+                                            if ( ( previousPageLevel1 && previousPageLevel1.attributes["pageId"] != child.id) || 
+                                                 (previousPageLevel2 && 
+                                                 (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400) ){
                                                 bookCtrl.currentPageNo++;
                                                 bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);                                                
                                             }
                                             // a new page create 
-                                            previousPageLevel1 = child.firstElementChild.cloneNode();
-                                            previousPageLevel2 = child.firstElementChild.firstElementChild.cloneNode();
-                                            previousChildren   = child.firstElementChild.firstElementChild.children;
+                                            previousPageLevel1 = child.firstElementChild.cloneNode(); 
+                                            previousPageLevel1.attributes["pageId"] = child.id;                                           
+                                            previousPageLevel2 = child.firstElementChild.firstElementChild.cloneNode();                                            
                                             previousPageLevel1.appendChild(previousPageLevel2);
 
                                             //bookCtrl.currentPageNo++;
@@ -121,18 +128,20 @@
                                             bookCtrl.offScreenPage.append(previousPageLevel1);
                                         }    
                                         
-                                        previousPageLevel2.appendChild( previousChildren[0] );
+                                        //if ( children.length <= 0 ) break;
+                                        previousPageLevel2.appendChild( children[0] );
                                         
-                                        console.log(previousChildren[0] +  ","+previousPageLevel2.offsetHeight);
-                                    }while( previousChildren.length > 0 )
+                                        console.log(children[0] +  ","+previousPageLevel2.offsetHeight);
+                                    }while( children.length > 0 )
                                     // add the rest of the content
-                                    bookCtrl.currentPageNo++;
-                                    bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);                                                
-                                    
-                                    previousPageLevel1 = null;
-                                    
-                                   
+                                    //bookCtrl.currentPageNo++;
+                                    //bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);                                                
+                                    //previousPageLevel1 = null;
                                 });
+
+                                // Add the remaining content
+                                bookCtrl.currentPageNo++;
+                                bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);      
                                 return;
                             }
                             // Exit condition
