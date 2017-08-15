@@ -172,17 +172,11 @@
                                     console.log("rendered !!!!!!!!!!!!! after >> " + bookCtrl.offScreenBuffer.height());
                                     // More than two pages then stop
                                     if ( bookCtrl.offScreenBuffer.height() > 1200 ){
-                                        bookCtrl.isProcess = false;    
-
-
-
+                                        bookCtrl.isProcess = false;
                                     }
                                     
-                                    //bookCtrl.bookElement.turn("addPage", pageCtrl.getCompliedElement(), bookCtrl.bookElement.turn("pages") );
-
-                                    console.log(">>>>>>>>>>>>>>>>>>>>> " + pageCtrl.compliedElement.html());                                    
                                     // Add page breaks
-                                    var retObj = bookCtrl.breakContent(pageCtrl.compliedElement, bookCtrl.width, bookCtrl.height);
+                                    //var retObj = bookCtrl.breakContent(pageCtrl.compliedElement, bookCtrl.width, bookCtrl.height);
                                     /*
                                     // add Pages // update buffer
                                     for(var x = 0 ;x < retObj.htmlPages.length; x++ ){
