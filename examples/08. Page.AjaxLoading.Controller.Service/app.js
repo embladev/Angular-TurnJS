@@ -8,38 +8,66 @@ angular.module('appMain', ['angularTurn'])
         // Test adding page
         $scope.addPage = function(){
             // add virtual page1Title
-            var content = '<div class="pageContainer"><div class="content">{{page1Title}}</div></div>';
+            var content = '<div class="pageContainer"><div class="content"><strong>{{page1Title}}</strong></div></div>';
             content = $compile(content)($scope);
             $scope.bookInstance.addVPage({"id":1, "html" : content });
             $scope.page1Title = "xxxxxxxxxxxxxx";
         }
     })    
     .controller('ctrlReport', function ($scope, reportService) {
-        // Test controller with its own scope / combine with a template
-        $scope.title = reportService.next().title;
-        $scope.img = reportService.next().img;
-        $scope.description = reportService.next().description;        
+        // Test controller with its own scope / combine with a template       
+        reportService.next().then(function(titleData){            
+            $scope.title = titleData.title;
+        });
+        reportService.next().then(function(imgData){
+            $scope.img = imgData.img;
+        });
+        reportService.next().then(function(descData){
+            $scope.description = descData.description;
+        });        
     })
 
-    .factory('reportService', function() {
+    .factory('reportService', function(dataManagement, $q) {
         
-        var index = -1 ;
-        var dataSet = [
-            { "title" : "Ronaldinho from Service 1", "img": "img/ronaldino.jpg", "description" : "Ronaldo de Assis Moreira (born 21 March 1980), commonly known as Ronaldinho, is a Brazilian professional footballer and current club ambassador for Spanish club FC" },
-            { "title" : "Serena Williams from Service 2", "img": "img/Serena.jpg", "description" : "Serena Jameka Williams (born September 26, 1981) is an American professional tennis player. The Women's Tennis Association (WTA) has ranked her world No.1 in singles on six separate occasions" },
-            { "title" : "Kumar Sangakkara from Service 3", "img": "img/sanga.jpg", "description" : "Kumar Sanga Chokshanada Sangakkara is a former Sri Lankan cricketer and captain of the Sri Lankan national team. Widely regarded as one of the world's most influential cricketers,Sangakkara rated as the second greatest ODI batsman of all time in a recent public  poll." }
-            ];
- 
+        var index = -1;      
         return {
             next: function(){
-                return dataSet[index];
+
+                var deferred = $q.defer();
+                dataManagement.getBookData().then(function(dataSet){                   
+                    deferred.resolve(dataSet[index]);
+                });
+                return deferred.promise;                
             },
-            hasMore : function(){                
-                index++;            
-                if ( index >= dataSet.length ){
-                    return false;
-                }
-                return true;              
+            hasMore : function(){
+
+                var deferred = $q.defer();
+                dataManagement.getBookData().then(function(dataSet){
+                    index++;                  
+                    if ( index >= dataSet.length ){
+                        deferred.resolve(false);                        
+                    }
+                    else{
+                        deferred.resolve(true);
+                    }
+                });               
+                return deferred.promise;                           
             } 
         };
+    }).factory('dataManagement', function($http, $q){
+
+        return {
+            getBookData: function(){
+
+                var deferred = $q.defer(); 
+                $http.get('data.json').
+                success(function(data, status, headers, config) {
+                    deferred.resolve(data);
+                }).
+                error(function(msg, status, headers, config) {
+                    deferred.reject(msg);
+                });
+                return deferred.promise; 
+            }
+        }
     });

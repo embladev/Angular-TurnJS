@@ -155,6 +155,7 @@
 
                             if ( !pageCtrl ) pageCtrl = bookCtrl.pageControllers[bookCtrl.stateNextPageCtrlIndex];
                  
+                            
                             if ( !pageCtrl.hasMore() ){
                                 bookCtrl.stateNextPageCtrlIndex++;
                                 bookCtrl.processPages(bookCtrl);

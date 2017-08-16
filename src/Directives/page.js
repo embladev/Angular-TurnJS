@@ -48,8 +48,15 @@
                     // Check more elements // move to next element
                     this.hasMore = function(){
                         // if there is a service, move to the next page
-                        // if not simple boolean variable to turn off at the next reqeust       
+                        // if not simple boolean variable to turn off at the next reqeust    
+                        
+
+                        
+
+                        console.log("service name: " + this.serviceName);
+
                         if ( this.service  ){
+                            
                             this.hasMoreData = this.service.hasMore();
                         }else{
                             this.hasMoreData = !this.hasMoreData;
