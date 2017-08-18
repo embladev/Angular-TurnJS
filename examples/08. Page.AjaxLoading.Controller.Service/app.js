@@ -27,14 +27,14 @@ angular.module('appMain', ['angularTurn'])
         });        
     })
 
-    .factory('reportService', function(dataManagement, $q) {
+    .factory('reportService', function(dataManagementService, $q) {
         
         var index = -1;      
         return {
             next: function(){
 
                 var deferred = $q.defer();
-                dataManagement.getBookData().then(function(dataSet){                   
+                dataManagementService.getBookData().then(function(dataSet){                   
                     deferred.resolve(dataSet[index]);
                 });
                 return deferred.promise;                
@@ -42,7 +42,7 @@ angular.module('appMain', ['angularTurn'])
             hasMore : function(){
 
                 var deferred = $q.defer();
-                dataManagement.getBookData().then(function(dataSet){
+                dataManagementService.getBookData().then(function(dataSet){
                     console.log(index);
                     index++;                  
                     if ( index >= dataSet.length ){
@@ -55,7 +55,7 @@ angular.module('appMain', ['angularTurn'])
                 return deferred.promise;                           
             } 
         };
-    }).factory('dataManagement', function($http, $q){
+    }).factory('dataManagementService', function($http, $q){
 
         return {
             getBookData: function(){
