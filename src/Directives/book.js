@@ -99,11 +99,13 @@
 
                                 var previousPageLevel1   = null;
                                 var previousPageLevel2   = null;
+                                var previousPageLevel3   = null;
+                                var previousPageLevel4   = null;
                                 var children             = null;
                                
                                 angular.forEach( bookCtrl.offScreenBuffer.children(), function( child ){
                                     console.log("page id : " + child.id);
-                                    
+                                                                        
                                     // Get the children of each page ( Might be more for the flipbook page or less for the flipbookpage )
                                     children = child.firstElementChild.firstElementChild.children; 
                                    
@@ -112,40 +114,57 @@
                                         if ( previousPageLevel1 == null || previousPageLevel1.attributes["pageId"] != child.id ||
                                                 (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400  ){
                                          
+                                            // console.log(">>>>>>>>>>>>>>>>>>>>>>>")
+                                            // console.log(children[0])
+                                            // console.log(children[0].offsetHeight)
+
+
                                             //overflow add content
                                             if ( ( previousPageLevel1 && previousPageLevel1.attributes["pageId"] != child.id) || 
-                                                 (previousPageLevel2 && 
-                                                 (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400) ){
+                                                 (previousPageLevel2 && (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400) ){
+                                                          
                                                 bookCtrl.currentPageNo++;                                             
-                                                bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);                                                
+                                                bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);  
+
+                                                if(children[0].offsetHeight > 300){                                                    
+                                                    var br = document.createElement('br');
+                                                    console.log(children[0])
+
+
+                                                     previousPageLevel3 = child.firstElementChild.cloneNode(); 
+                                                     previousPageLevel3.attributes["pageId"] = child.id;
+                                                     previousPageLevel4 = child.firstElementChild.firstElementChild.cloneNode();
+                                                     previousPageLevel3.appendChild(previousPageLevel4);
+
+                                                     
+                                                    //  .appendChild(br).appendChild(br.cloneNode())
+                                                     bookCtrl.offScreenPage.append(previousPageLevel3);
+                                                     
+                                                     console.log(bookCtrl.offScreenPage.children()[0])
+                                                     bookCtrl.currentPageNo++;         
+                                                     bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);
+                                                 }
                                             }
-                                           
+                                          
                                             // a new page create 
-                                            previousPageLevel1 = child.firstElementChild.cloneNode(); 
+                                            previousPageLevel1 = child.firstElementChild.cloneNode();                                            
                                             previousPageLevel1.attributes["pageId"] = child.id;                                           
-                                            previousPageLevel2 = child.firstElementChild.firstElementChild.cloneNode();                                            
+                                            previousPageLevel2 = child.firstElementChild.firstElementChild.cloneNode();
                                             previousPageLevel1.appendChild(previousPageLevel2);
 
-                                            //bookCtrl.currentPageNo++;
-                                            //bookCtrl.bookElement.turn("addPage", previousPageLevel1 , 1);
-                                           
                                             bookCtrl.offScreenPage.append(previousPageLevel1);                                            
                                         }    
                                        
                                         //if ( children.length <= 0 ) break;
-                                        previousPageLevel2.appendChild( children[0] );
-                                        
+                                        previousPageLevel2.appendChild( children[0] );                                        
 
                                     }while( children.length > 0 )
-                                    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>")
-                                    // console.log(bookCtrl.offScreenPage.children()[0].firstElementChild.children)
-                                    // while (bookCtrl.offScreenBuffer.children()[0]) {                                    
-                                    //     bookCtrl.offScreenBuffer.children()[0].remove();
-                                    // }
+                                   
                                     // add the rest of the content
                                     bookCtrl.currentPageNo++;
                                     bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);  
-                                                                                  
+                                                      
+                                    // a new page create 
                                     previousPageLevel1 = child.firstElementChild.cloneNode(); 
                                     previousPageLevel1.attributes["pageId"] = child.id;                                           
                                     previousPageLevel2 = child.firstElementChild.firstElementChild.cloneNode();   
@@ -187,26 +206,26 @@
                                                                        
                                     // This code runs after the DOM renders is it ???
                                     console.log("rendered !!!!!!!!!!!!! after >> " + bookCtrl.offScreenBuffer.height());
-                                    // $scope.totalHieght++
-                                    // // More than two pages then stop    
-                                    // if ( $scope.totalHieght > 4 ){
-                                    //     bookCtrl.isProcess = false;
-                                    // }                                
+                                    
+                                    // // More than two pages then stop                                                                       
                                     if ( bookCtrl.offScreenBuffer.height() > 1750 ){
                                         bookCtrl.isProcess = false;
                                     }
+
                                     // Add page breaks
-                                    var retObj = bookCtrl.breakContent(pageCtrl.compliedElement, bookCtrl.width, bookCtrl.height);
-                                   
-                                    // add Pages // update buffer
+                                    //var retObj = bookCtrl.breakContent(pageCtrl.compliedElement, bookCtrl.width, bookCtrl.height);
+                                    
+                                    //console.log(">>>>>>>>>>>>>>>>>>>>>>>>")
+                                    //console.log(retObj.htmlPages[0][0].firstElementChild.firstElementChild.children[4])
+                                    
+                                    // add Pages // update buffer                                   
                                     // for(var x = 0 ;x < retObj.htmlPages.length; x++ ){
                                     //     $scope.virtualPages.push({"id":pageCtrl.id, "html" : retObj.htmlPages[x] });
                                     // }
                                     
                                     // if can fill more go to the same PageCtrl with different reference or different PageCtrl
                                     bookCtrl.processPages(bookCtrl);
-                            });
-                                                   
+                            });                                                   
                     };
                     
                     this.loadAllPageTemplate = function( callBackFn ){                       
@@ -230,6 +249,12 @@
 
                     this.breakContent = function (html, w, h){
                       
+                        //console.log("asdadsadads")
+                        //console.log(html[0].firstElementChild.firstElementChild.children[4])
+                        //  console.log(w)
+                        //  console.log(h)
+
+
                         var retObj = {};
                         retObj.htmlPages = [html];
                         retObj.buffer = "";                        
