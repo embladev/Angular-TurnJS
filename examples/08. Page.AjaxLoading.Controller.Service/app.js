@@ -1,9 +1,9 @@
 angular.module('appMain', ['angularTurn'])
     .controller('ctrlMain', function ($scope, $compile) {       
-        $scope.title = "Report title";
+        // $scope.title = "Report title";
 
-        $scope.page1Title = "Ronaldinho1";
-        $scope.page2Title = "Kumar Sangakkara";
+        // $scope.page1Title = "Ronaldinho1";
+        // $scope.page2Title = "Kumar Sangakkara";
 
         // Test adding page
         $scope.addPage = function(){
@@ -43,6 +43,7 @@ angular.module('appMain', ['angularTurn'])
 
                 var deferred = $q.defer();
                 dataManagement.getBookData().then(function(dataSet){
+                    console.log(index);
                     index++;                  
                     if ( index >= dataSet.length ){
                         deferred.resolve(false);                        

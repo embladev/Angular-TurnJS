@@ -41,6 +41,7 @@
                     this.offScreenBuffer    = angular.element('<div id="offscreenBuffer" style="width:300px">');
                     this.offScreenPage      = angular.element('<div id="offscreenPage" style="width:300px">'); //;visibility:hidden
                     this.isProcess          = true;
+                    $scope.totalHieght        = 0;
 
                     console.log('BookCtrl:Init-Start-'+this.id);
                     
@@ -59,7 +60,6 @@
                         console.log("BookCtrl:AddVPage=>"+virtualPage);
                         $scope.virtualPages.push(virtualPage);                        
                     }
-
                     
                     // Check if there are any new pages
                     $scope.$watchCollection( 'virtualPages', function(newValue, oldValue) {
@@ -74,15 +74,16 @@
                     // watch for book element ready -- start processing pages
                     this.setBookReady = function(){
                         $scope.isBookReady = true;
-                    }                    
+                    }  
+
                     $scope.$watch( 'isBookReady', function(newValue, oldValue) {
                         if ( newValue == true )                            
                             $scope.bookInstance.processPages($scope.bookInstance);
                     });
 
-                    this.turnPageForward = function () {                        
-                        
+                    this.turnPageForward = function () {
                     }
+                    
                     //this.turnPageForward();
                     this.stateNextPageCtrlIndex = 0;
 
@@ -90,33 +91,35 @@
                         if ( level == 0 ) return element;
                         this.getChild( angular.element( element.children , level - 1 ) );
                     }
-                    this.processPages = function (bookCtrl, pageCtrl) {
 
+                    this.processPages = function (bookCtrl, pageCtrl) {
+                        
                             // Stop processing more pages
                             if ( ! bookCtrl.isProcess ){
 
                                 var previousPageLevel1   = null;
                                 var previousPageLevel2   = null;
                                 var children             = null;
+                               
                                 angular.forEach( bookCtrl.offScreenBuffer.children(), function( child ){
                                     console.log("page id : " + child.id);
                                     
                                     // Get the children of each page ( Might be more for the flipbook page or less for the flipbookpage )
-                                    children   = child.firstElementChild.firstElementChild.children;
-
+                                    children = child.firstElementChild.firstElementChild.children; 
+                                   
                                     do{
                                         
-                                        if ( previousPageLevel1 == null ||
-                                                 previousPageLevel1.attributes["pageId"] != child.id ||
+                                        if ( previousPageLevel1 == null || previousPageLevel1.attributes["pageId"] != child.id ||
                                                 (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400  ){
-                                            
+                                         
                                             //overflow add content
                                             if ( ( previousPageLevel1 && previousPageLevel1.attributes["pageId"] != child.id) || 
                                                  (previousPageLevel2 && 
                                                  (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400) ){
-                                                bookCtrl.currentPageNo++;
+                                                bookCtrl.currentPageNo++;                                             
                                                 bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);                                                
                                             }
+                                           
                                             // a new page create 
                                             previousPageLevel1 = child.firstElementChild.cloneNode(); 
                                             previousPageLevel1.attributes["pageId"] = child.id;                                           
@@ -125,74 +128,84 @@
 
                                             //bookCtrl.currentPageNo++;
                                             //bookCtrl.bookElement.turn("addPage", previousPageLevel1 , 1);
+                                           
                                             bookCtrl.offScreenPage.append(previousPageLevel1);
+                                            
                                         }    
-                                        
+                                       
                                         //if ( children.length <= 0 ) break;
                                         previousPageLevel2.appendChild( children[0] );
                                         
-                                        console.log(children[0] +  ","+previousPageLevel2.offsetHeight);
+
                                     }while( children.length > 0 )
+
+                                    while (bookCtrl.offScreenBuffer.children()[0]) {                                    
+                                        bookCtrl.offScreenBuffer.children()[0].remove();
+                                    }
                                     // add the rest of the content
                                     //bookCtrl.currentPageNo++;
                                     //bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);                                                
-                                    //previousPageLevel1 = null;
+                                    //previousPageLevel1 = null;                                    
                                 });
 
                                 // Keep remaining content in PageBuffer 
                                 bookCtrl.currentPageNo++;
                                 bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);
+                                
                                 // Clear offscreen buffer                                
-                                while (bookCtrl.offScreenBuffer.children()[0]) {
+                                while (bookCtrl.offScreenBuffer.children()[0]) {                                    
                                     bookCtrl.offScreenBuffer.children()[0].remove();
                                 }
                                 return;
                             }
-                            // Exit condition
+
+                            // Exit condition                                                       
                             if ( bookCtrl.stateNextPageCtrlIndex >= bookCtrl.pageControllers.length ){
                                 return;
                             }
 
                             if ( !pageCtrl ) pageCtrl = bookCtrl.pageControllers[bookCtrl.stateNextPageCtrlIndex];
-                 
                             
-                            if ( !pageCtrl.hasMore() ){
+                            if ( !pageCtrl.hasMore() ){   
                                 bookCtrl.stateNextPageCtrlIndex++;
                                 bookCtrl.processPages(bookCtrl);
                                 return;
                             }
 
-                            pageCtrl.setCompliedElement();
-                                
+                            pageCtrl.setCompliedElement();                                
                             bookCtrl.offScreenBuffer.append(pageCtrl.getCompliedElement());
                             console.log("Before >> " + bookCtrl.offScreenBuffer.height());
-                            
+
                             // Call back and wait for the content
                             $timeout(function() {
+                                                                       
                                     // This code runs after the DOM renders is it ???
                                     console.log("rendered !!!!!!!!!!!!! after >> " + bookCtrl.offScreenBuffer.height());
-                                    // More than two pages then stop
-                                    if ( bookCtrl.offScreenBuffer.height() > 1200 ){
+                                    $scope.totalHieght++
+                                    // More than two pages then stop    
+                                    if ( $scope.totalHieght > 3 ){
                                         bookCtrl.isProcess = false;
-                                    }
-                                    
+                                    }                                
+                                    // if ( bookCtrl.offScreenBuffer.height() > 1650 ){
+                                    //     bookCtrl.isProcess = false;
+                                    // }
                                     // Add page breaks
-                                    //var retObj = bookCtrl.breakContent(pageCtrl.compliedElement, bookCtrl.width, bookCtrl.height);
-                                    /*
+                                    var retObj = bookCtrl.breakContent(pageCtrl.compliedElement, bookCtrl.width, bookCtrl.height);
+                                   
                                     // add Pages // update buffer
-                                    for(var x = 0 ;x < retObj.htmlPages.length; x++ ){
-                                        $scope.virtualPages.push({"id":pageCtrl.id, "html" : retObj.htmlPages[x] });
-                                    }
-                                    */
+                                    // for(var x = 0 ;x < retObj.htmlPages.length; x++ ){
+                                    //     $scope.virtualPages.push({"id":pageCtrl.id, "html" : retObj.htmlPages[x] });
+                                    // }
+                                    
                                     // if can fill more go to the same PageCtrl with different reference or different PageCtrl
                                     bookCtrl.processPages(bookCtrl);
                             });
                                                    
                     };
                     
-                    this.loadAllPageTemplate = function( callBackFn ){
+                    this.loadAllPageTemplate = function( callBackFn ){                       
                         var pageCtrlWithTemplates = []
-                        angular.forEach(this.pageControllers , function(pageCtrl) {
+                        angular.forEach(this.pageControllers , function(pageCtrl) {                           
                             if ( pageCtrl.template ) pageCtrlWithTemplates.push(pageCtrl);
                         });
 
@@ -200,7 +213,7 @@
                             return $http.get(pageCtrl.template);
                         });
                         
-                        $q.all(promises).then( function(datas) {
+                        $q.all(promises).then( function(datas) {                            
                             for( var x=0;x < datas.length;x++ ){
                                 pageCtrlWithTemplates[x].setBaseHtml( datas[x].data );
                                 callBackFn();
@@ -210,10 +223,11 @@
                     }
 
                     this.breakContent = function (html, w, h){
+                      
                         var retObj = {};
                         retObj.htmlPages = [html];
                         retObj.buffer = "";                        
-                        
+                       
                         return retObj;
                     }
 
@@ -238,16 +252,14 @@
                     console.log('BookCtrl:Link-Start');
 
                     bookCtrl.loadAllPageTemplate( function(){
-
+                                               
                         element.parent().append(bookCtrl.bookElement);
-
-                                                    
+              
                             //bookCtrl.offScreenBuffer.height = 300;
                             //bookCtrl.offScreenBuffer.append("<h1>Hello</h1>");
                             element.parent().append( bookCtrl.offScreenBuffer );
                             //bookCtrl.offScreenBuffer.width = 300;
                             element.parent().append( bookCtrl.offScreenPage );
-
 
                             bookCtrl.loaderController.hide();
 
@@ -260,8 +272,6 @@
                             
                             //bookCtrl.setBookReady();
                             bookCtrl.processPages(bookCtrl);
-                        
-                        //console.log(">>>>>>>>>>>>"+bookCtrl);
                     } );                  
                     console.log('BookCtrl:Link-OK');
                     
