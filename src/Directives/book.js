@@ -75,15 +75,15 @@
                     this.setBookReady = function(){
                         $scope.isBookReady = true;
                     }   
-                                     
+
                     $scope.$watch( 'isBookReady', function(newValue, oldValue) {
                         if ( newValue == true )                            
                             $scope.bookInstance.processPages($scope.bookInstance);
                     });
 
-                    this.turnPageForward = function () {                        
-                        
+                    this.turnPageForward = function () {
                     }
+
                     //this.turnPageForward();
                     this.stateNextPageCtrlIndex = 0;
 
@@ -91,6 +91,7 @@
                         if ( level == 0 ) return element;
                         this.getChild( angular.element( element.children , level - 1 ) );
                     }
+
                     this.processPages = function (bookCtrl, pageCtrl) {
 
                             // Stop processing more pages
@@ -131,32 +132,7 @@
                                         previousPageLevel2.appendChild( children[0] );
                                         
                                         //if height of the description section is grater than page size, content will devide
-                                        if(previousPageLevel2.offsetHeight >= 400){
-                                            
-                                            var elementLevel1 = null;
-                                            var elementLevel2 = null;
-                                            var contentArray = [];
-
-                                             var innerContent = previousPageLevel2.firstElementChild.innerHTML; 
-                                             contentArray.push(innerContent.substring(0,1225));
-                                             contentArray.push(innerContent.substring(1225,previousPageLevel2.children[0].length))
-                                             
-                                             angular.forEach(contentArray, function(devidedContent){
-                                                var descriptionNode = previousPageLevel2.firstElementChild.cloneNode();
-                                                
-                                                elementLevel1 = child.firstElementChild.cloneNode(); 
-                                                elementLevel1.attributes["pageId"] = child.id;                                        
-                                                elementLevel2 = child.firstElementChild.firstElementChild.cloneNode(); 
-                                                elementLevel1.appendChild(elementLevel2);
-
-                                                descriptionNode.append(devidedContent);
-                                                elementLevel2.appendChild(descriptionNode)
-
-                                                bookCtrl.currentPageNo++;                                               
-                                                bookCtrl.bookElement.turn("addPage", elementLevel1, bookCtrl.currentPageNo);
-                                             })
-                                             bookCtrl.offScreenPage.children()[0].firstElementChild.firstElementChild.remove()                                            
-                                        }                                                                                    
+                                        bookCtrl.breakPageContent(bookCtrl, previousPageLevel2, child);
 
                                     }while( children.length > 0 )                                  
                                     
@@ -195,7 +171,7 @@
                                     // This code runs after the DOM renders is it ???
                                     console.log("rendered !!!!!!!!!!!!! after >> " + bookCtrl.offScreenBuffer.height());
                                     // More than two pages then stop
-                                    if ( bookCtrl.offScreenBuffer.height() > 2100 ){
+                                    if ( bookCtrl.offScreenBuffer.height() > 2800 ){
                                         bookCtrl.isProcess = false;
                                     }
                                     
@@ -212,6 +188,34 @@
                             });
                                                    
                     };
+
+                    this.breakPageContent = function(bookCtrl, previousPageLevel, child ){
+                        if(previousPageLevel.offsetHeight >= 400){
+                            
+                            var elementLevel1 = null;
+                            var elementLevel2 = null;
+                            var contentArray = [];
+
+                             var innerContent = previousPageLevel.firstElementChild.innerHTML; 
+                            
+                             contentArray = innerContent.match(/.{0,1224}/g).filter(Boolean)                            
+                             angular.forEach(contentArray, function(devidedContent){
+                                var descriptionNode = previousPageLevel.firstElementChild.cloneNode();
+                                
+                                elementLevel1 = child.firstElementChild.cloneNode(); 
+                                elementLevel1.attributes["pageId"] = child.id;                                        
+                                elementLevel2 = child.firstElementChild.firstElementChild.cloneNode(); 
+                                elementLevel1.appendChild(elementLevel2);
+
+                                descriptionNode.append(devidedContent);
+                                elementLevel2.appendChild(descriptionNode)
+
+                                bookCtrl.currentPageNo++;                                               
+                                bookCtrl.bookElement.turn("addPage", elementLevel1, bookCtrl.currentPageNo);
+                             })                             
+                             bookCtrl.offScreenPage.children()[0].firstElementChild.firstElementChild.remove()                                            
+                        }
+                    }
                     
                     this.loadAllPageTemplate = function( callBackFn ){
                         var pageCtrlWithTemplates = []
