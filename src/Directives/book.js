@@ -74,7 +74,8 @@
                     // watch for book element ready -- start processing pages
                     this.setBookReady = function(){
                         $scope.isBookReady = true;
-                    }                    
+                    }   
+                                     
                     $scope.$watch( 'isBookReady', function(newValue, oldValue) {
                         if ( newValue == true )                            
                             $scope.bookInstance.processPages($scope.bookInstance);
@@ -105,7 +106,6 @@
                                     children   = child.firstElementChild.firstElementChild.children;                                   
                                     
                                     do{
-
                                         if ( previousPageLevel1 == null ||
                                                  previousPageLevel1.attributes["pageId"] != child.id ||
                                                 (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400  ){
@@ -114,7 +114,7 @@
                                             if ( ( previousPageLevel1 && previousPageLevel1.attributes["pageId"] != child.id) || 
                                                  (previousPageLevel2 && 
                                                  (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400) ){
-                                                
+                                                                                                   
                                                 bookCtrl.currentPageNo++;
                                                 bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);                                                
                                             }
@@ -129,43 +129,42 @@
                                         
                                         //if ( children.length <= 0 ) break;
                                         previousPageLevel2.appendChild( children[0] );
-
-                                        //if page description section height grater than page size content will devide
+                                        
+                                        //if height of the description section is grater than page size, content will devide
                                         if(previousPageLevel2.offsetHeight >= 400){
-                                                                  
-                                            var contentArray = [];
-                                            var innerContent = previousPageLevel2.firstElementChild.innerHTML;                                           
                                             
+                                            var elementLevel1 = null;
+                                            var elementLevel2 = null;
+                                            var contentArray = [];
+
+                                             var innerContent = previousPageLevel2.firstElementChild.innerHTML; 
                                              contentArray.push(innerContent.substring(0,1225));
                                              contentArray.push(innerContent.substring(1225,previousPageLevel2.children[0].length))
                                              
                                              angular.forEach(contentArray, function(devidedContent){
                                                 var descriptionNode = previousPageLevel2.firstElementChild.cloneNode();
                                                 
-                                                previousPageLevel1 = child.firstElementChild.cloneNode(); 
-                                                previousPageLevel1.attributes["pageId"] = child.id;                                        
-                                                previousPageLevel2 = child.firstElementChild.firstElementChild.cloneNode(); 
-                                                previousPageLevel1.appendChild(previousPageLevel2);
+                                                elementLevel1 = child.firstElementChild.cloneNode(); 
+                                                elementLevel1.attributes["pageId"] = child.id;                                        
+                                                elementLevel2 = child.firstElementChild.firstElementChild.cloneNode(); 
+                                                elementLevel1.appendChild(elementLevel2);
 
                                                 descriptionNode.append(devidedContent);
-                                                previousPageLevel2.appendChild(descriptionNode)
-                                                
+                                                elementLevel2.appendChild(descriptionNode)
+
                                                 bookCtrl.currentPageNo++;                                               
-                                                bookCtrl.bookElement.turn("addPage", previousPageLevel1, bookCtrl.currentPageNo);
+                                                bookCtrl.bookElement.turn("addPage", elementLevel1, bookCtrl.currentPageNo);
                                              })
+                                             bookCtrl.offScreenPage.children()[0].firstElementChild.firstElementChild.remove()                                            
+                                        }                                                                                    
 
-                                             while (bookCtrl.offScreenPage.children()[0]) {
-                                                bookCtrl.offScreenPage.children()[0].remove();
-                                             }
-                                            }
-
-                                    }while( children.length > 0 )
-                                  
+                                    }while( children.length > 0 )                                  
+                                    
                                 });
                                
                                 // Keep remaining content in PageBuffer 
-                                //bookCtrl.currentPageNo++;
-                                //bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);
+                                bookCtrl.currentPageNo++;
+                                bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);
                                 
                                 // Clear offscreen buffer                                
                                 while (bookCtrl.offScreenBuffer.children()[0]) {
@@ -196,7 +195,7 @@
                                     // This code runs after the DOM renders is it ???
                                     console.log("rendered !!!!!!!!!!!!! after >> " + bookCtrl.offScreenBuffer.height());
                                     // More than two pages then stop
-                                    if ( bookCtrl.offScreenBuffer.height() > 1200 ){
+                                    if ( bookCtrl.offScreenBuffer.height() > 2100 ){
                                         bookCtrl.isProcess = false;
                                     }
                                     
@@ -283,10 +282,8 @@
                             });
                             
                             //bookCtrl.setBookReady();
-                            bookCtrl.processPages(bookCtrl);
-                        
-                        //console.log(">>>>>>>>>>>>"+bookCtrl);
-                    } );                  
+                            bookCtrl.processPages(bookCtrl);                        
+                    });                  
                     console.log('BookCtrl:Link-OK');
                     
                 } // end link fn
