@@ -168,6 +168,7 @@
                             
                             // Call back and wait for the content
                             $timeout(function() {
+                                    console.log(bookCtrl.offScreenPage)
                                     // This code runs after the DOM renders is it ???
                                     console.log("rendered !!!!!!!!!!!!! after >> " + bookCtrl.offScreenBuffer.height());
                                     // More than two pages then stop
@@ -189,16 +190,15 @@
                                                    
                     };
 
+                    //divide overflow content into separate pages
                     this.breakPageContent = function(bookCtrl, previousPageLevel, child ){
                         if(previousPageLevel.offsetHeight >= 400){
                             
                             var elementLevel1 = null;
                             var elementLevel2 = null;
                             var contentArray = [];
-
-                             var innerContent = previousPageLevel.firstElementChild.innerHTML; 
-                            
-                             contentArray = innerContent.match(/.{0,1224}/g).filter(Boolean)                            
+                             
+                             contentArray = previousPageLevel.firstElementChild.innerHTML.match(/.{0,1224}/g).filter(Boolean)
                              angular.forEach(contentArray, function(devidedContent){
                                 var descriptionNode = previousPageLevel.firstElementChild.cloneNode();
                                 
@@ -212,7 +212,8 @@
 
                                 bookCtrl.currentPageNo++;                                               
                                 bookCtrl.bookElement.turn("addPage", elementLevel1, bookCtrl.currentPageNo);
-                             })                             
+                             })  
+                             //after adding divided content into the pages remove old content from the dom                           
                              bookCtrl.offScreenPage.children()[0].firstElementChild.firstElementChild.remove()                                            
                         }
                     }
