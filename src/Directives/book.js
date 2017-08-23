@@ -40,6 +40,7 @@
 
                     this.offScreenBuffer    = angular.element('<div id="offscreenBuffer" style="width:300px">');
                     this.offScreenPage      = angular.element('<div id="offscreenPage" style="width:300px">'); //;visibility:hidden
+                    this.compilePages       = angular.element('<div id="compilePage" style="width:300px">');
                     this.isProcess          = true;
 
                     console.log('BookCtrl:Init-Start-'+this.id);
@@ -102,11 +103,12 @@
                                 var children             = null;
                              
                                 angular.forEach( bookCtrl.offScreenBuffer.children(), function( child ){
-                                    
+
                                     // Get the children of each page ( Might be more for the flipbook page or less for the flipbookpage )
                                     children   = child.firstElementChild.firstElementChild.children;                                   
                                     
                                     do{
+
                                         if ( previousPageLevel1 == null ||
                                                  previousPageLevel1.attributes["pageId"] != child.id ||
                                                 (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400  ){
@@ -115,11 +117,32 @@
                                             if ( ( previousPageLevel1 && previousPageLevel1.attributes["pageId"] != child.id) || 
                                                  (previousPageLevel2 && 
                                                  (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400) ){
-                                                                                                   
-                                                bookCtrl.currentPageNo++;
-                                                bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);                                                
-                                            }
+                                                
+                                                    if(children[0].offsetHeight >= 400){
 
+                                                         var contentArray = [];
+                                                         contentArray = children[0].innerHTML.match(/.{0,1224}/g).filter(Boolean)
+                                                         angular.forEach(contentArray, function(devidedContent){
+
+                                                            previousPageLevel1 = child.firstElementChild.cloneNode(); 
+                                                            previousPageLevel1.attributes["pageId"] = child.id;                                        
+                                                            previousPageLevel2 = child.firstElementChild.firstElementChild.cloneNode(); 
+                                                            previousPageLevel1.appendChild(previousPageLevel2);
+                                                            
+                                                            var childNode = children[0].cloneNode();
+                                                            childNode.append(devidedContent);                                                                                                                  
+                                                            previousPageLevel2.appendChild( childNode );
+
+                                                            bookCtrl.offScreenPage.append(previousPageLevel1);
+
+                                                         }) 
+                                                         children[0].innerHTML = ""                                                                                                                
+                                                    }
+                                                                                                    
+                                                bookCtrl.currentPageNo++;
+                                                bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);
+                                            }                                           
+                                           
                                             // a new page create 
                                             previousPageLevel1 = child.firstElementChild.cloneNode(); 
                                             previousPageLevel1.attributes["pageId"] = child.id;                                        
@@ -131,9 +154,7 @@
                                         //if ( children.length <= 0 ) break;
                                         previousPageLevel2.appendChild( children[0] );
                                         
-                                        //if height of the description section is grater than page size, content will devide
-                                        bookCtrl.breakPageContent(bookCtrl, previousPageLevel2, child);
-
+                                        //if height of the description section is grater than page size, content will devide                                                                         
                                     }while( children.length > 0 )                                  
                                     
                                 });
@@ -145,6 +166,9 @@
                                 // Clear offscreen buffer                                
                                 while (bookCtrl.offScreenBuffer.children()[0]) {
                                     bookCtrl.offScreenBuffer.children()[0].remove();
+                                }
+                                while (bookCtrl.offScreenPage.children()[0]) {
+                                    bookCtrl.offScreenPage.children()[0].remove();
                                 }
                                 return;
                             }
@@ -168,16 +192,17 @@
                             
                             // Call back and wait for the content
                             $timeout(function() {
-                                    console.log(bookCtrl.offScreenPage)
+                                   
                                     // This code runs after the DOM renders is it ???
                                     console.log("rendered !!!!!!!!!!!!! after >> " + bookCtrl.offScreenBuffer.height());
+
                                     // More than two pages then stop
-                                    if ( bookCtrl.offScreenBuffer.height() > 2800 ){
+                                    if ( bookCtrl.offScreenBuffer.height() > 5712 ){
                                         bookCtrl.isProcess = false;
-                                    }
+                                    }                                    
                                     
-                                    // Add page breaks
-                                    //var retObj = bookCtrl.breakContent(pageCtrl.compliedElement, bookCtrl.width, bookCtrl.height);
+                                    // Add page breaks                                    
+                                    //var retObj = bookCtrl.breakContent(bookCtrl.compilePages, bookCtrl.width, bookCtrl.height, bookCtrl);
                                     
                                     // add Pages // update buffer
                                     // for(var x = 0 ;x < retObj.htmlPages.length; x++ ){
@@ -190,7 +215,10 @@
                                                    
                     };
 
-                    //divide overflow content into separate pages
+
+
+                    
+                    // //divide overflow content into separate pages
                     this.breakPageContent = function(bookCtrl, previousPageLevel, child ){
                         if(previousPageLevel.offsetHeight >= 400){
                             
@@ -237,7 +265,11 @@
 
                     }
 
-                    this.breakContent = function (html, w, h){
+                    this.breakContent = function (html, w, h, bookCtrl){
+
+                        
+                        console.log(html)
+                        //console.log(bookCtrl.compilePages.height())
                         var retObj = {};
                         retObj.htmlPages = [html];
                         retObj.buffer = "";                        
