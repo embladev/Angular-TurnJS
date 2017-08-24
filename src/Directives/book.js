@@ -94,10 +94,10 @@
                     }
 
                     this.processPages = function (bookCtrl, pageCtrl) {
-
+                        
                             // Stop processing more pages
                             if ( ! bookCtrl.isProcess ){
-
+                               
                                 var previousPageLevel1   = null;
                                 var previousPageLevel2   = null;
                                 var children             = null;
@@ -160,21 +160,21 @@
                                 return;
                             }
 
-                            //compile individual pages and add those pages into DOM for temporary store
+                            // compile individual pages and add those pages into DOM for temporary store
                             pageCtrl.setCompliedElement();
                             bookCtrl.compilePages.append(pageCtrl.getCompliedElement())
                            
                             // Call back and wait for the content
                             $timeout(function() {
-                                    
-                                //Add page breaks and update offscreen buffer for to add pages to the book
+                                   
+                                // Add page breaks and update offscreen buffer for to add pages to the book
                                 var retObj = bookCtrl.breakContent(bookCtrl.compilePages, bookCtrl.width, bookCtrl.height, bookCtrl);
 
                                 // This code runs after the DOM renders is it ???
                                 console.log("rendered !!!!!!!!!!!!! after >> " + bookCtrl.offScreenBuffer.height());
 
                                 // More than two pages then stop
-                                if ( bookCtrl.offScreenBuffer.height() > 2700 ){
+                                if ( bookCtrl.offScreenBuffer.height() > 1850 ){
                                     bookCtrl.isProcess = false;
                                 }                                    
                                                                 
@@ -183,7 +183,6 @@
                             });
                                                    
                     };
-
 
                     
                     this.loadAllPageTemplate = function( callBackFn ){
@@ -205,8 +204,8 @@
 
                     }
 
-                    //page breaking and offscrren buffer updating
-                    this.breakContent = function (compiledHtml, w, h, bookCtrl){
+                    // page breaking and offscrren buffer updating
+                    this.breakContent = function (compiledHtml, pageWidth, pageHeight, bookCtrl){
 
                         var pageLevel1 = null;
                         var pageLevel2 = null;
@@ -221,8 +220,8 @@
                                 pageLevel2 = child.firstElementChild.cloneNode(); 
                                 pageLevel1.appendChild(pageLevel2);
                                 pageLevel2.appendChild(child.firstElementChild.firstElementChild.cloneNode())
-
-                                if(childHtml.offsetHeight >= 400){
+                                
+                                if(childHtml.offsetHeight >= pageHeight){
 
                                      var contentArray = [];
                                      contentArray = childHtml.innerHTML.match(/.{0,1224}/g).filter(Boolean)
@@ -243,7 +242,7 @@
                             })
                         })
 
-                        //clear the dom element which hold the compile pages
+                        // clear the dom element which hold the compile pages
                         while (bookCtrl.compilePages.children()[0]) {
                             bookCtrl.compilePages.children()[0].remove();
                         }
@@ -272,11 +271,8 @@
                     bookCtrl.loadAllPageTemplate( function(){
 
                         element.parent().append(bookCtrl.bookElement);
-                                 
-                            //bookCtrl.offScreenBuffer.height = 300;
-                            //bookCtrl.offScreenBuffer.append("<h1>Hello</h1>");
-                            element.parent().append( bookCtrl.offScreenBuffer );
-                            //bookCtrl.offScreenBuffer.width = 300;
+                         
+                            element.parent().append( bookCtrl.offScreenBuffer );                            
                             element.parent().append( bookCtrl.offScreenPage );
                             element.parent().append( bookCtrl.compilePages);                            
 
