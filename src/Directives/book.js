@@ -40,7 +40,7 @@
 
                     this.offScreenBuffer    = angular.element('<div id="offscreenBuffer" style="width:300px">');
                     this.offScreenPage      = angular.element('<div id="offscreenPage" style="width:300px">'); //;visibility:hidden
-                    this.compilePages       = angular.element('<div id="compilePage" style="width:300px">');
+                    this.compilePages       = angular.element('<div id="compilePage" style="width:300px">');                   
                     this.isProcess          = true;
 
                     console.log('BookCtrl:Init-Start-'+this.id);
@@ -103,12 +103,11 @@
                                 var children             = null;
                              
                                 angular.forEach( bookCtrl.offScreenBuffer.children(), function( child ){
-                                    //console.log(bookCtrl.offScreenBuffer.children())
+
                                     // Get the children of each page ( Might be more for the flipbook page or less for the flipbookpage )
                                     children   = child.firstElementChild.firstElementChild.children;                                   
                                     
-                                    do{
-
+                                    do{                                        
                                         if ( previousPageLevel1 == null ||
                                                  previousPageLevel1.attributes["pageId"] != child.id ||
                                                 (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400  ){
@@ -117,28 +116,7 @@
                                             if ( ( previousPageLevel1 && previousPageLevel1.attributes["pageId"] != child.id) || 
                                                  (previousPageLevel2 && 
                                                  (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400) ){
-                                                
-                                                    // if(children[0].offsetHeight >= 400){
-
-                                                    //      var contentArray = [];
-                                                    //      contentArray = children[0].innerHTML.match(/.{0,1224}/g).filter(Boolean)
-                                                    //      angular.forEach(contentArray, function(devidedContent){
-
-                                                    //         previousPageLevel1 = child.firstElementChild.cloneNode(); 
-                                                    //         previousPageLevel1.attributes["pageId"] = child.id;                                        
-                                                    //         previousPageLevel2 = child.firstElementChild.firstElementChild.cloneNode(); 
-                                                    //         previousPageLevel1.appendChild(previousPageLevel2);
-                                                            
-                                                    //         var childNode = children[0].cloneNode();
-                                                    //         childNode.append(devidedContent);                                                                                                                  
-                                                    //         previousPageLevel2.appendChild( childNode );
-
-                                                    //         bookCtrl.offScreenPage.append(previousPageLevel1);
-
-                                                    //      }) 
-                                                    //      children[0].innerHTML = ""                                                                                                                
-                                                    // }
-                                                                                                    
+                                                                                                                           
                                                 bookCtrl.currentPageNo++;
                                                 bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);
                                             }                                           
@@ -148,11 +126,9 @@
                                             previousPageLevel1.attributes["pageId"] = child.id;                                        
                                             previousPageLevel2 = child.firstElementChild.firstElementChild.cloneNode(); 
                                             previousPageLevel1.appendChild(previousPageLevel2);
-                                            bookCtrl.offScreenPage.append(previousPageLevel1);
-                                            //console.log(previousPageLevel1)
+                                            bookCtrl.offScreenPage.append(previousPageLevel1);                                            
                                         }    
-                                        
-                                        //console.log(previousPageLevel2)
+                                                                                
                                         //if ( children.length <= 0 ) break;
                                         previousPageLevel2.appendChild( children[0] );
                                         
@@ -168,10 +144,7 @@
                                 // Clear offscreen buffer                                
                                 while (bookCtrl.offScreenBuffer.children()[0]) {
                                     bookCtrl.offScreenBuffer.children()[0].remove();
-                                }
-                                // while (bookCtrl.offScreenPage.children()[0]) {
-                                //     bookCtrl.offScreenPage.children()[0].remove();
-                                // }
+                                }                               
                                 return;
                             }
                             // Exit condition
@@ -187,71 +160,31 @@
                                 return;
                             }
 
+                            //compile individual pages and add those pages into DOM for temporary store
                             pageCtrl.setCompliedElement();
-                                
-                            bookCtrl.offScreenBuffer.append(pageCtrl.getCompliedElement());
-                            console.log("Before >> " + bookCtrl.offScreenBuffer.height());
                             bookCtrl.compilePages.append(pageCtrl.getCompliedElement())
-
-                            // console.log(bookCtrl.offScreenBuffer.height())
-                            //console.log(pageCtrl.getCompliedElement()[0])
-                            var retObj = bookCtrl.breakContent(bookCtrl.compilePages, bookCtrl.width, bookCtrl.height, bookCtrl);
-
+                           
                             // Call back and wait for the content
                             $timeout(function() {
-                                   
-                                    // This code runs after the DOM renders is it ???
-                                    console.log("rendered !!!!!!!!!!!!! after >> " + bookCtrl.offScreenBuffer.height());
+                                    
+                                //Add page breaks and update offscreen buffer for to add pages to the book
+                                var retObj = bookCtrl.breakContent(bookCtrl.compilePages, bookCtrl.width, bookCtrl.height, bookCtrl);
 
-                                    // More than two pages then stop
-                                    if ( bookCtrl.offScreenBuffer.height() > 1612 ){
-                                        bookCtrl.isProcess = false;
-                                    }                                    
-                                    
-                                    // Add page breaks                                    
-                                    //var retObj = bookCtrl.breakContent(pageCtrl.compliedElement, bookCtrl.width, bookCtrl.height, bookCtrl);
-                                    
-                                    // add Pages // update buffer
-                                    // for(var x = 0 ;x < retObj.htmlPages.length; x++ ){
-                                    //     $scope.virtualPages.push({"id":pageCtrl.id, "html" : retObj.htmlPages[x] });
-                                    // }
-                                    
-                                    // if can fill more go to the same PageCtrl with different reference or different PageCtrl
-                                    bookCtrl.processPages(bookCtrl);
+                                // This code runs after the DOM renders is it ???
+                                console.log("rendered !!!!!!!!!!!!! after >> " + bookCtrl.offScreenBuffer.height());
+
+                                // More than two pages then stop
+                                if ( bookCtrl.offScreenBuffer.height() > 2700 ){
+                                    bookCtrl.isProcess = false;
+                                }                                    
+                                                                
+                                // if can fill more go to the same PageCtrl with different reference or different PageCtrl
+                                bookCtrl.processPages(bookCtrl);
                             });
                                                    
                     };
 
 
-
-                    
-                    // //divide overflow content into separate pages
-                    this.breakPageContent = function(bookCtrl, previousPageLevel, child ){
-                        if(previousPageLevel.offsetHeight >= 400){
-                            
-                            var elementLevel1 = null;
-                            var elementLevel2 = null;
-                            var contentArray = [];
-                             
-                             contentArray = previousPageLevel.firstElementChild.innerHTML.match(/.{0,1224}/g).filter(Boolean)
-                             angular.forEach(contentArray, function(devidedContent){
-                                var descriptionNode = previousPageLevel.firstElementChild.cloneNode();
-                                
-                                elementLevel1 = child.firstElementChild.cloneNode(); 
-                                elementLevel1.attributes["pageId"] = child.id;                                        
-                                elementLevel2 = child.firstElementChild.firstElementChild.cloneNode(); 
-                                elementLevel1.appendChild(elementLevel2);
-
-                                descriptionNode.append(devidedContent);
-                                elementLevel2.appendChild(descriptionNode)
-
-                                bookCtrl.currentPageNo++;                                               
-                                bookCtrl.bookElement.turn("addPage", elementLevel1, bookCtrl.currentPageNo);
-                             })  
-                             //after adding divided content into the pages remove old content from the dom                           
-                             bookCtrl.offScreenPage.children()[0].firstElementChild.firstElementChild.remove()                                            
-                        }
-                    }
                     
                     this.loadAllPageTemplate = function( callBackFn ){
                         var pageCtrlWithTemplates = []
@@ -272,58 +205,48 @@
 
                     }
 
-                    this.breakContent = function (html, w, h, bookCtrl){
+                    //page breaking and offscrren buffer updating
+                    this.breakContent = function (compiledHtml, w, h, bookCtrl){
 
                         var pageLevel1 = null;
                         var pageLevel2 = null;
-                        //console.log(html[0].children)
+                        
+                        angular.forEach( compiledHtml[0].children, function( child ){
+                           
+                            var children   = child.firstElementChild.firstElementChild.children;                             
+                            angular.forEach( children, function( childHtml ){
+                                         
+                                pageLevel1 = child.cloneNode(); 
+                                pageLevel1.attributes["pageId"] = child.id;                                        
+                                pageLevel2 = child.firstElementChild.cloneNode(); 
+                                pageLevel1.appendChild(pageLevel2);
+                                pageLevel2.appendChild(child.firstElementChild.firstElementChild.cloneNode())
 
-                        angular.forEach( html[0].children, function( child ){
-                            //console.log(child);
-                            var children   = child.firstElementChild.firstElementChild.children; 
-                            //console.log(children[0])
-                          
-                            angular.forEach( children, function( child1 ){
-                                //bookCtrl.compilePages.append(child1)
-                                console.log(child1)
-                                console.log(child1.offsetHeight)
-                                //bookCtrl.compilePages.
-                                if(child1.offsetHeight >= 400){
-                                    console.log("<<<<<<<<<<<")
+                                if(childHtml.offsetHeight >= 400){
 
                                      var contentArray = [];
-                                     contentArray = child1.innerHTML.match(/.{0,1224}/g).filter(Boolean)
+                                     contentArray = childHtml.innerHTML.match(/.{0,1224}/g).filter(Boolean)
                                      angular.forEach(contentArray, function(devidedContent){
-                                        console.log(child1)
-                                        
-                                        pageLevel1 = child.cloneNode(); 
-                                        pageLevel1.attributes["pageId"] = child.id;                                        
-                                        pageLevel2 = child.firstElementChild.firstElementChild.cloneNode(); 
-                                        pageLevel1.appendChild(pageLevel2);
-                                        
-                                        var childNode = children[0].cloneNode();
+                                       
+                                        var childNode = childHtml.cloneNode();
                                         childNode.append(devidedContent);                                                                                                                  
-                                        pageLevel2.appendChild( childNode );
-
-                                        //console.log(pageLevel1)
-                                        //bookCtrl.offScreenPage.append(pageLevel1);
+                                        pageLevel2.firstElementChild.appendChild( childNode );
+                                    
                                         bookCtrl.offScreenBuffer.append(pageLevel1);
-
-                                    }) 
-                                //     children[0].innerHTML = ""                                                                                                                
+                                    })                                                                                                   
+                                }
+                                else if(childHtml.offsetHeight > 0){
+                                   
+                                    pageLevel2.firstElementChild.appendChild( childHtml );                                   
+                                    bookCtrl.offScreenBuffer.append(pageLevel1);
                                 }
                             })
                         })
 
-
-
-
-                        //console.log(bookCtrl.compilePages.height())
-                        var retObj = {};
-                        retObj.htmlPages = [html];
-                        retObj.buffer = "";                        
-                        
-                        return retObj;
+                        //clear the dom element which hold the compile pages
+                        while (bookCtrl.compilePages.children()[0]) {
+                            bookCtrl.compilePages.children()[0].remove();
+                        }
                     }
 
                     /**
@@ -355,8 +278,7 @@
                             element.parent().append( bookCtrl.offScreenBuffer );
                             //bookCtrl.offScreenBuffer.width = 300;
                             element.parent().append( bookCtrl.offScreenPage );
-                            element.parent().append( bookCtrl.compilePages);
-
+                            element.parent().append( bookCtrl.compilePages);                            
 
                             bookCtrl.loaderController.hide();
 
