@@ -1,10 +1,6 @@
 angular.module('appMain', ['angularTurn'])
     .controller('ctrlMain', function ($scope, $compile) {       
-        // $scope.title = "Report title";
-
-        // $scope.page1Title = "Ronaldinho1";
-        // $scope.page2Title = "Kumar Sangakkara";
-
+       
         // Test adding page
         $scope.addPage = function(){
             // add virtual page1Title
@@ -15,6 +11,7 @@ angular.module('appMain', ['angularTurn'])
         }
     })    
     .controller('ctrlReport', function ($scope, reportService) {
+
         // Test controller with its own scope / combine with a template       
         reportService.next().then(function(titleData){            
             $scope.title = titleData.title;
@@ -26,7 +23,6 @@ angular.module('appMain', ['angularTurn'])
             $scope.description = descData.description;
         });        
     })
-
     .factory('reportService', function(dataManagementService, $q) {
         
         var index = -1;      
@@ -43,7 +39,7 @@ angular.module('appMain', ['angularTurn'])
 
                 var deferred = $q.defer();
                 dataManagementService.getBookData().then(function(dataSet){
-                    console.log(index);
+                    
                     index++;                  
                     if ( index >= dataSet.length ){
                         deferred.resolve(false);                        
@@ -55,8 +51,10 @@ angular.module('appMain', ['angularTurn'])
                 return deferred.promise;                           
             } 
         };
-    }).factory('dataManagementService', function($http, $q){
+    })
+    .factory('dataManagementService', function($http, $q){
 
+        //read data from the json file
         return {
             getBookData: function(){
 
