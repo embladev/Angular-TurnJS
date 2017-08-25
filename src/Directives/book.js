@@ -95,93 +95,92 @@
 
                     this.processPages = function (bookCtrl, pageCtrl) {
                         
-                            // Stop processing more pages
-                            if ( ! bookCtrl.isProcess ){
-                               
-                                var previousPageLevel1   = null;
-                                var previousPageLevel2   = null;
-                                var children             = null;
-                             
-                                angular.forEach( bookCtrl.offScreenBuffer.children(), function( child ){
+                        // Stop processing more pages
+                        if ( ! bookCtrl.isProcess ){
+                            
+                            var previousPageLevel1   = null;
+                            var previousPageLevel2   = null;
+                            var children             = null;
+                            
+                            angular.forEach( bookCtrl.offScreenBuffer.children(), function( child ){
 
-                                    // Get the children of each page ( Might be more for the flipbook page or less for the flipbookpage )
-                                    children   = child.firstElementChild.firstElementChild.children;                                   
-                                    
-                                    do{                                        
-                                        if ( previousPageLevel1 == null ||
-                                                 previousPageLevel1.attributes["pageId"] != child.id ||
-                                                (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400  ){
-                                            
-                                            //overflow add content
-                                            if ( ( previousPageLevel1 && previousPageLevel1.attributes["pageId"] != child.id) || 
-                                                 (previousPageLevel2 && 
-                                                 (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400) ){
-                                                                                                                           
-                                                bookCtrl.currentPageNo++;
-                                                bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);
-                                            }                                           
-                                           
-                                            // a new page create 
-                                            previousPageLevel1 = child.firstElementChild.cloneNode(); 
-                                            previousPageLevel1.attributes["pageId"] = child.id;                                        
-                                            previousPageLevel2 = child.firstElementChild.firstElementChild.cloneNode(); 
-                                            previousPageLevel1.appendChild(previousPageLevel2);
-                                            bookCtrl.offScreenPage.append(previousPageLevel1);                                            
-                                        }    
-                                                                                
-                                        //if ( children.length <= 0 ) break;
-                                        previousPageLevel2.appendChild( children[0] );
-                                        
-                                        //if height of the description section is grater than page size, content will devide                                                                         
-                                    }while( children.length > 0 )                                  
-                                    
-                                });
-                               
-                                // Keep remaining content in PageBuffer 
-                                bookCtrl.currentPageNo++;
-                                bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);
+                                // Get the children of each page ( Might be more for the flipbook page or less for the flipbookpage )
+                                children   = child.firstElementChild.firstElementChild.children;                                   
                                 
-                                // Clear offscreen buffer                                
-                                while (bookCtrl.offScreenBuffer.children()[0]) {
-                                    bookCtrl.offScreenBuffer.children()[0].remove();
-                                }                               
-                                return;
-                            }
-                            // Exit condition
-                            if ( bookCtrl.stateNextPageCtrlIndex >= bookCtrl.pageControllers.length ){
-                                return;
-                            }
-
-                            if ( !pageCtrl ) pageCtrl = bookCtrl.pageControllers[bookCtrl.stateNextPageCtrlIndex];
-                 
-                            if ( !pageCtrl.hasMore() ){
-                                bookCtrl.stateNextPageCtrlIndex++;
-                                bookCtrl.processPages(bookCtrl);
-                                return;
-                            }
-
-                            // compile individual pages and add those pages into DOM for temporary store
-                            pageCtrl.setCompliedElement();
-                            bookCtrl.compilePages.append(pageCtrl.getCompliedElement())
-                           
-                            // Call back and wait for the content
-                            $timeout(function() {
-                                   
-                                // Add page breaks and update offscreen buffer for to add pages to the book
-                                var retObj = bookCtrl.breakContent(bookCtrl.compilePages, bookCtrl.width, bookCtrl.height, bookCtrl);
-
-                                // This code runs after the DOM renders is it ???
-                                console.log("rendered !!!!!!!!!!!!! after >> " + bookCtrl.offScreenBuffer.height());
-
-                                // More than two pages then stop
-                                if ( bookCtrl.offScreenBuffer.height() > 1850 ){
-                                    bookCtrl.isProcess = false;
-                                }                                    
-                                                                
-                                // if can fill more go to the same PageCtrl with different reference or different PageCtrl
-                                bookCtrl.processPages(bookCtrl);
+                                do{                                        
+                                    if ( previousPageLevel1 == null ||
+                                                previousPageLevel1.attributes["pageId"] != child.id ||
+                                            (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400  ){
+                                        
+                                        //overflow add content
+                                        if ( ( previousPageLevel1 && previousPageLevel1.attributes["pageId"] != child.id) || 
+                                                (previousPageLevel2 && 
+                                                (previousPageLevel2.offsetHeight + ( children.length> 0 ? children[0].offsetHeight: 0) ) >= 400) ){
+                                                                                                                        
+                                            bookCtrl.currentPageNo++;
+                                            bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);
+                                        }                                           
+                                        
+                                        // a new page create 
+                                        previousPageLevel1 = child.firstElementChild.cloneNode(); 
+                                        previousPageLevel1.attributes["pageId"] = child.id;                                        
+                                        previousPageLevel2 = child.firstElementChild.firstElementChild.cloneNode(); 
+                                        previousPageLevel1.appendChild(previousPageLevel2);
+                                        bookCtrl.offScreenPage.append(previousPageLevel1);                                            
+                                    }    
+                                                                            
+                                    //if ( children.length <= 0 ) break;
+                                    previousPageLevel2.appendChild( children[0] );
+                                    
+                                    //if height of the description section is grater than page size, content will devide                                                                         
+                                }while( children.length > 0 )                                  
+                                
                             });
-                                                   
+                            
+                            // Keep remaining content in PageBuffer 
+                            bookCtrl.currentPageNo++;
+                            bookCtrl.bookElement.turn("addPage", bookCtrl.offScreenPage.children()[0] , bookCtrl.currentPageNo);
+                            
+                            // Clear offscreen buffer                                
+                            while (bookCtrl.offScreenBuffer.children()[0]) {
+                                bookCtrl.offScreenBuffer.children()[0].remove();
+                            }                               
+                            return;
+                        }
+                        // Exit condition
+                        if ( bookCtrl.stateNextPageCtrlIndex >= bookCtrl.pageControllers.length ){
+                            return;
+                        }
+
+                        if ( !pageCtrl ) pageCtrl = bookCtrl.pageControllers[bookCtrl.stateNextPageCtrlIndex];
+                
+                        if ( !pageCtrl.hasMore() ){
+                            bookCtrl.stateNextPageCtrlIndex++;
+                            bookCtrl.processPages(bookCtrl);
+                            return;
+                        }
+
+                        // compile individual pages and add those pages into DOM for temporary store
+                        pageCtrl.setCompliedElement();
+                        bookCtrl.compilePages.append(pageCtrl.getCompliedElement())
+                        
+                        // Call back and wait for the content
+                        $timeout(function() {
+                                
+                            // This code runs after the DOM renders is it ???
+                            console.log("rendered !!!!!!!!!!!!! after >> " + bookCtrl.offScreenBuffer.height());
+
+                            // Add page breaks and update offscreen buffer for to add pages to the book
+                            bookCtrl.breakContent(bookCtrl.compilePages, bookCtrl.width, bookCtrl.height, bookCtrl);
+
+                            // More than two pages then stop
+                            if ( bookCtrl.offScreenBuffer.height() > 3000 ){
+                                bookCtrl.isProcess = false;
+                            }                                    
+                                                            
+                            // if can fill more go to the same PageCtrl with different reference or different PageCtrl
+                            bookCtrl.processPages(bookCtrl);
+                        },40);                                                   
                     };
 
                     
@@ -206,7 +205,7 @@
 
                     // page breaking and offscrren buffer updating
                     this.breakContent = function (compiledHtml, pageWidth, pageHeight, bookCtrl){
-
+                        
                         var pageLevel1 = null;
                         var pageLevel2 = null;
                         
@@ -220,7 +219,8 @@
                                 pageLevel2 = child.firstElementChild.cloneNode(); 
                                 pageLevel1.appendChild(pageLevel2);
                                 pageLevel2.appendChild(child.firstElementChild.firstElementChild.cloneNode())
-                                
+                                          
+                              
                                 if(childHtml.offsetHeight >= pageHeight){
 
                                      var contentArray = [];
@@ -230,11 +230,10 @@
                                         var childNode = childHtml.cloneNode();
                                         childNode.append(devidedContent);                                                                                                                  
                                         pageLevel2.firstElementChild.appendChild( childNode );
-                                    
-                                        bookCtrl.offScreenBuffer.append(pageLevel1);
-                                    })                                                                                                   
+                                        bookCtrl.offScreenBuffer.append(pageLevel1); 
+                                    })                                                                                      
                                 }
-                                else if(childHtml.offsetHeight > 0){
+                                else{
                                    
                                     pageLevel2.firstElementChild.appendChild( childHtml );                                   
                                     bookCtrl.offScreenBuffer.append(pageLevel1);
@@ -267,26 +266,25 @@
             link:
                 function(scope, element, attrs, bookCtrl) {
                     console.log('BookCtrl:Link-Start');
-
+                   
                     bookCtrl.loadAllPageTemplate( function(){
 
+                        element.parent().append( bookCtrl.compilePages);                       
                         element.parent().append(bookCtrl.bookElement);
-                         
-                            element.parent().append( bookCtrl.offScreenBuffer );                            
-                            element.parent().append( bookCtrl.offScreenPage );
-                            element.parent().append( bookCtrl.compilePages);                            
+                        element.parent().append( bookCtrl.offScreenBuffer );                            
+                        element.parent().append( bookCtrl.offScreenPage );
+                                                   
+                        bookCtrl.loaderController.hide();
 
-                            bookCtrl.loaderController.hide();
-
-                            // initialize turnJS book
-                            bookCtrl.bookElement.turn({
-                                width: bookCtrl.width,
-                                height: bookCtrl.height,
-                                autoCenter: bookCtrl.autoCenter
-                            });
-                            
-                            //bookCtrl.setBookReady();
-                            bookCtrl.processPages(bookCtrl);                        
+                        // initialize turnJS book
+                        bookCtrl.bookElement.turn({
+                            width: bookCtrl.width,
+                            height: bookCtrl.height,
+                            autoCenter: bookCtrl.autoCenter
+                        });
+                        
+                        //bookCtrl.setBookReady();
+                        bookCtrl.processPages(bookCtrl);                        
                     });                  
                     console.log('BookCtrl:Link-OK');
                     
