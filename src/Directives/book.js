@@ -203,7 +203,7 @@
                         var pageLevel2 = null;
                         
                         angular.forEach( compiledHtml[0].children, function( child ){
-                           
+                            
                             var children   = child.firstElementChild.firstElementChild.children;                             
                             angular.forEach( children, function( childHtml ){
                                          
@@ -212,10 +212,10 @@
                                 pageLevel2 = child.firstElementChild.cloneNode(); 
                                 pageLevel1.appendChild(pageLevel2);
                                 pageLevel2.appendChild(child.firstElementChild.firstElementChild.cloneNode())
-                                          
+                                
                                 //devide the overflow content into separate element and add those into the offscreen buffer                             
                                 if(childHtml.offsetHeight >= pageHeight){
-
+                                    
                                      var contentArray = [];
                                      contentArray = childHtml.innerHTML.match(/.{0,1224}/g).filter(Boolean)
                                      angular.forEach(contentArray, function(devidedContent){
@@ -226,8 +226,8 @@
                                         bookCtrl.offScreenBuffer.append(pageLevel1); 
                                     })                                                                                      
                                 }
-                                else{
-                                   
+                                else if(childHtml.offsetHeight > 0){
+                                    
                                     pageLevel2.firstElementChild.appendChild( childHtml );                                   
                                     bookCtrl.offScreenBuffer.append(pageLevel1);
                                 }
